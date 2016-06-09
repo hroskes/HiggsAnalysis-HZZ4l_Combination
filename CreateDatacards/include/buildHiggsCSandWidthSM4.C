@@ -1,5 +1,5 @@
 {
 
-  gROOT->ProcessLine(".L HiggsCSandWidthSM4.cc++");
+  gROOT->ProcessLine(".L HiggsCSandWidthSM4.cc+");
 
 }

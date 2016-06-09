@@ -21,7 +21,7 @@ rate ggH 18.5001272705
 rate qqZZ 20.0825310046
 rate ggZZ 0.73936802129
 rate zjets 19.4159932937
-eff qqH 0.3179867
+eff qqH 0
 ## signal functions --- no spaces! ##
 usehighmassreweightedshapes
 signalShape n_CB TMath::Max((-13.9463)+(0.328247*@0)+(-0.00208904*@0*@0)+(5.30154e-06*@0*@0*@0)+(-4.91882e-09*@0*@0*@0*@0)+(4.42671e-13*@0*@0*@0*@0*@0),1)
