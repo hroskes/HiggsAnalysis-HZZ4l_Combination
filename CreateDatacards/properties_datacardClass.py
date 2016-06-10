@@ -1274,7 +1274,8 @@ class properties_datacardClass:
 	    sigRate_VBF_Shape=eff_qqH_input*CS_VBF*BR*1000.*self.lumi
 	    print "sigRate_VBF_Shape after custom eficiency: ",sigRate_VBF_Shape
 
-        sigRate_Total_Shape = sigRate_ggH_Shape#+sigRate_VBF_Shape+sigRate_WH_Shape+sigRate_ZH_Shape+sigRate_ttH_Shape
+        sigRate_Total_Shape = sigRate_ggH_Shape+sigRate_VBF_Shape+sigRate_WH_Shape+sigRate_ZH_Shape+sigRate_ttH_Shape
+        print "Heshy", sigRate_ggH_Shape, sigRate_VBF_Shape, sigRate_WH_Shape, sigRate_ZH_Shape, sigRate_ttH_Shape, sigRate_Total_Shape
         sigRate_ggH_Shape=sigRate_Total_Shape
 	print "Total yield: ",sigRate_ggH_Shape
 
@@ -1297,11 +1298,10 @@ class properties_datacardClass:
         sclFactorBkg_qqzz = self.lumi*bkgRate_qqzz/normalizationBackground_qqzz
         sclFactorBkg_ggzz = self.lumi*bkgRate_ggzz/normalizationBackground_ggzz
         sclFactorBkg_zjets = self.lumi*bkgRate_zjets/normalizationBackground_zjets
-        print "HESHY", normalizationBackground_qqzz, normalizationBackground_ggzz, normalizationBackground_zjets
                
-        bkgRate_qqzz_Shape = theInputs['qqZZ_rate']#sclFactorBkg_qqzz * bkg_qqzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
-        bkgRate_ggzz_Shape = theInputs['ggZZ_rate']#sclFactorBkg_ggzz * bkg_ggzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
-        bkgRate_zjets_Shape = theInputs['zjets_rate']#sclFactorBkg_zjets * bkg_zjets.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
+        bkgRate_qqzz_Shape = sclFactorBkg_qqzz * bkg_qqzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
+        bkgRate_ggzz_Shape = sclFactorBkg_ggzz * bkg_ggzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
+        bkgRate_zjets_Shape = sclFactorBkg_zjets * bkg_zjets.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
 
         rfvSMD_Ratio_qqZZ = ROOT.RooFormulaVar()
         rfvSMD_Ratio_ggZZ = ROOT.RooFormulaVar()

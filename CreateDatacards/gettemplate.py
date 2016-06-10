@@ -13,8 +13,16 @@ class keydefaultdict(collections.defaultdict):
             return ret
 tfiles = keydefaultdict(ROOT.TFile.Open)
 
+def run1or2(*args):
+    if True:#"ggH" in args:
+        return 2
+    else:
+        return 1
+
+
 def gettemplate(*args):
-    print "run 2", args
+    run = run1or2(*args)
+    print "run", run, args
     argsbkp = args
     args = list(args)
     productionmode = None
@@ -53,17 +61,23 @@ def gettemplate(*args):
     if productionmode == "data":
         filename = "templates_Heshy/data.root"
     else:
-        filename = "templates_Heshy/{}{}_fa3Adap_new.root".format(flavor, "_bkg" if isbkg else "")
+        if run == 2:
+            filename = "templates_Heshy/{}{}_fa3Adap_new.root".format(flavor, "_bkg" if isbkg else "")
+        elif run == 1:
+            filename = "templates_run1/{}_fa3Adap_new{}.root".format(flavor, "_bkg" if isbkg else "")
     if productionmode == "ggH":
         templatename = {
                         "0+": "template0PlusAdapSmoothMirror",
-                        "0-": "templateIntAdapSmoothMirror",
-                        "int": "template0MinusAdapSmoothMirror",
+                        "0-": "template0MinusAdapSmoothMirror",
+                        "int": "templateg1g4AdapSmooth",
                        }[hypothesis]
     elif productionmode == "data":
         templatename = "candTree"
     else:
-        templatename = "template{}AdapSmoothMirror".format(productionmode)
+        if run == 2:
+            templatename = "template{}AdapSmoothMirror".format(productionmode)
+        elif run == 1:
+            templatename = "template_{}".format(productionmode)
 
     f = tfiles[filename]
     if not f:
