@@ -9,7 +9,15 @@ import ROOT
 from array import array
 from systematicsClass import *
 from inputReader import *
-from gettemplate import *
+#from gettemplate import gettemplate
+import gettemplate as gettemplate_module
+import gettemplate_run1
+
+def gettemplate(*args):
+    if "ggH" in args:
+        return gettemplate_module.gettemplate(*args)
+    else:
+        return gettemplate_run1.gettemplate(*args)
 
 ## ------------------------------------
 ##  card and workspace class
@@ -197,7 +205,7 @@ class properties_datacardClass:
         CMS_zz4l_mass = ROOT.RooRealVar(CMS_zz4l_mass_name,CMS_zz4l_mass_name,self.low_M,self.high_M)    
         CMS_zz4l_mass.setBins(bins)
 
-        x_name = "CMS_zz4l_fai1"
+        x_name = "CMS_zz4l_fg4"
 
         x = ROOT.RooRealVar(x_name,x_name,-1.,1.)
         x.setBins(bins)

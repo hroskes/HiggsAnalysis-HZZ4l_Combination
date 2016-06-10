@@ -14,6 +14,7 @@ class keydefaultdict(collections.defaultdict):
 tfiles = keydefaultdict(ROOT.TFile.Open)
 
 def gettemplate(*args):
+    print "run 2", args
     argsbkp = args
     args = list(args)
     productionmode = None

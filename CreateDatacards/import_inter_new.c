@@ -75,11 +75,11 @@ gROOT->SetStyle("Plain");
 	 TH1F *ggh_vbf = (TH1F*)fvbf_sys->Get("histo");
   RooRealVar r_ww ("CMS_hww_r","CMS_hww_r",1.,0.,200000000.);
   r_ww.removeMax();
-  RooRealVar x_zz4l ("CMS_zz4l_fai1","CMS_zz4l_fai1",0.,-1.,1.);
+  RooRealVar x_zz4l ("CMS_zz4l_fg4","CMS_zz4l_fg4",0.,-1.,1.);
   RooRealVar alpha ("CMS_zz4l_alpha","CMS_zz4l_alpha",0.5,-1.,1.);
   double sigma_ZZ_WW = pow( (13680.97/12046.01) ,2);
   RooRealVar S ("CMS_hwwzz4l_S","CMS_hwwzz4l_S",sigma_ZZ_WW);
-  RooFormulaVar x("CMS_hww_fai1","@0*@1/ ( @2*(1-abs(@0))*(1-abs(@1)) + abs(@0*@1) )", RooArgList(alpha,x_zz4l,S));
+  RooFormulaVar x("CMS_hww_fg4","@0*@1/ ( @2*(1-abs(@0))*(1-abs(@1)) + abs(@0*@1) )", RooArgList(alpha,x_zz4l,S));
 
   RooFormulaVar extra_norm("CMS_hww_extranorm","@3*( (1-abs(@0))*(1-abs(@1)) + abs(@0*@1)/@2 )", RooArgList(alpha,x_zz4l,S,r_ww));
 
@@ -352,7 +352,7 @@ coeffs.Print("v");
 	VerticalInterpPdf *ggH = new VerticalInterpPdf("ggH_","",pdflist,coeffs,1,0);
     w.import(*ggH,RecycleConflictNodes());
 	 w.import(*ggH_norm,RecycleConflictNodes());
-  w.var("CMS_zz4l_fai1")->setVal(0);
+  w.var("CMS_zz4l_fg4")->setVal(0);
   w.var("CMS_zz4l_alpha")->setVal(0.5);
 	
 	TString jetName= jet0 ? "0j_":"1j_";
