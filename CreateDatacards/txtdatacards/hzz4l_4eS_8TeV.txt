@@ -1,0 +1,31 @@
+imax 1
+jmax 3
+kmax *
+------------
+shapes * * hzz4l_4eS_8TeV.input.root w:$PROCESS w:$PROCESS_$SYSTEMATIC
+------------
+bin a2 
+observation 9 
+------------
+## mass window [105.6,140.6] 
+bin a2 a2 a2 a2 
+process ggH bkg_qqzz bkg_ggzz bkg_zjets 
+process 0 1 2 3 
+#rate 3.0898 2.9364 0.2041 2.7676 
+rate 3.1396009452 3.2607099533 0.400560541346 1.38326558966
+------------
+lumi_8TeV lnN 1.026 1.026 1.026 - 
+pdf_gg lnN 1.0720 - 1.0710 - 
+pdf_qqbar lnN - 1.0342 - - 
+pdf_hzz4l_accept lnN 1.02 - - - 
+QCDscale_ggH lnN 1.0750 - - - 
+QCDscale_qqH lnN - - - - 
+QCDscale_VH lnN - - - - 
+QCDscale_ttH lnN - - - - 
+QCDscale_ggVV lnN - - 1.2435 - 
+QCDscale_VV lnN - 1.0285 - - 
+BRhiggs_hzz4l lnN 1.02 - - - 
+CMS_eff_e lnN 1.101 1.101 1.101 - 
+CMS_hzz4e_Zjets lnN - - - 0.8/1.2 
+Res4e shape1 1 - - - 
+CMS_zz4l_smd_zjets_bkg_2 param 0  1  [-3,3]
