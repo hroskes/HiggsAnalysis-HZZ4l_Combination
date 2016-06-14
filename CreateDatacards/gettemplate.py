@@ -14,7 +14,8 @@ class keydefaultdict(collections.defaultdict):
 tfiles = keydefaultdict(ROOT.TFile.Open)
 
 def run1or2(*args):
-    if True:#"ggH" in args:
+    #if "ggH" in args:
+    if True:
         return 2
     else:
         return 1
@@ -69,7 +70,7 @@ def gettemplate(*args):
         templatename = {
                         "0+": "template0PlusAdapSmoothMirror",
                         "0-": "template0MinusAdapSmoothMirror",
-                        "int": "templateg1g4AdapSmooth",
+                        "int": "templateIntAdapSmoothMirror",
                        }[hypothesis]
     elif productionmode == "data":
         templatename = "candTree"
@@ -82,7 +83,11 @@ def gettemplate(*args):
     f = tfiles[filename]
     if not f:
         raise OSError("No file {}".format(f))
-    h = getattr(f, templatename)
-    if not h:
+    try:
+        h = getattr(f, templatename)
+        if not h:
+            raise AttributeError
+    except AttributeError:
+        f.ls()
         raise OSError("No template {} in {}".format(templatename, filename))
     return h

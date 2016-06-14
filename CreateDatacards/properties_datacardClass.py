@@ -9,15 +9,7 @@ import ROOT
 from array import array
 from systematicsClass import *
 from inputReader import *
-#from gettemplate import gettemplate
-import gettemplate as gettemplate_module
-import gettemplate_run1
-
-def gettemplate(*args):
-    if "ggH" in args:
-        return gettemplate_module.gettemplate(*args)
-    else:
-        return gettemplate_run1.gettemplate(*args)
+from gettemplate import gettemplate
 
 ## ------------------------------------
 ##  card and workspace class
