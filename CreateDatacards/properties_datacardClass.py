@@ -1267,7 +1267,6 @@ class properties_datacardClass:
 	    print "sigRate_VBF_Shape after custom eficiency: ",sigRate_VBF_Shape
 
         sigRate_Total_Shape = sigRate_ggH_Shape+sigRate_VBF_Shape+sigRate_WH_Shape+sigRate_ZH_Shape+sigRate_ttH_Shape
-        print "Heshy", sigRate_ggH_Shape, sigRate_VBF_Shape, sigRate_WH_Shape, sigRate_ZH_Shape, sigRate_ttH_Shape, sigRate_Total_Shape
         sigRate_ggH_Shape=sigRate_Total_Shape
 	print "Total yield: ",sigRate_ggH_Shape
 
