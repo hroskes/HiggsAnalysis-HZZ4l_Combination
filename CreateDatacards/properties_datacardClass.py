@@ -1196,6 +1196,7 @@ class properties_datacardClass:
         sigRate_ttH_Shape = sclFactorSig_ttH*integral_ttH
         
 
+        print  sigRate_ggH_Shape, sigRate_VBF_Shape, sigRate_WH_Shape, sigRate_ZH_Shape, sigRate_ttH_Shape
         normSigName = "cmshzz4l_normalizationSignal_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         rrvNormSig = ROOT.RooRealVar()
 
