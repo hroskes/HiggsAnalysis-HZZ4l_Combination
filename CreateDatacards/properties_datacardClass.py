@@ -26,6 +26,13 @@ class properties_datacardClass:
 
     def loadIncludes(self):
         
+        path = os.getcwd()
+        os.chdir("include")
+        for f in os.listdir("."):
+            if f.startswith("build"):
+                gROOT.Macro(f)
+        os.chdir("..")
+
         ROOT.gSystem.AddIncludePath("-I$ROOFITSYS/include/")
         ROOT.gSystem.AddIncludePath("-Iinclude/")
         ROOT.gROOT.ProcessLine(".L include/tdrstyle.cc")

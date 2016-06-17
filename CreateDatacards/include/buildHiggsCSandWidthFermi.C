@@ -1,5 +1,5 @@
 {
 
-  gROOT->ProcessLine(".L HiggsCSandWidthFermi.cc++");
+  gROOT->ProcessLine(".L HiggsCSandWidthFermi.cc+");
 
 }
