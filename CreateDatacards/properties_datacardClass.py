@@ -9,6 +9,7 @@ import ROOT
 from array import array
 from systematicsClass import *
 from inputReader import *
+from gettemplate import *
 
 ## ------------------------------------
 ##  card and workspace class
@@ -198,9 +199,9 @@ class properties_datacardClass:
         alpha_zz4l = ROOT.RooRealVar(alpha_name,alpha_name,0.,-1.,1.)
         alpha_zz4l.setBins(bins)
 
-        D1Name = "CMS_zz4l_KD1"
-        D2Name = "CMS_zz4l_KD2"
-        D3Name = "CMS_zz4l_smd"
+        D1Name = "D_0minus_decay"
+        D2Name = "D_CP_decay"
+        D3Name = "D_bkg_0plus"
 
         self.LUMI = ROOT.RooRealVar("LUMI_{0:.0f}".format(self.sqrts),"LUMI_{0:.0f}".format(self.sqrts),self.lumi)
         self.LUMI.setConstant(True)
@@ -444,30 +445,29 @@ class properties_datacardClass:
         ## -------------------- 2D SIGNAL SHAPES FOR PROPERTIES ------------------------- ##
 
         print '2D signal shapes for Properties'
-
-        mytemplateDir = "{1}/{0:.0f}TeV".format(self.sqrts,self.templateDir)
-        signalTemplates = "{0}_templates_Modified_Nominal_ScaleResUpDown.root".format(self.appendName)
-        bkgTemplates = "{0}_templates_Modified_Nominal_bkg.root".format(self.appendName)
-
-        templateSigName = "{0}/{1}".format(mytemplateDir,signalTemplates)
-        sigTempFile = ROOT.TFile(templateSigName)
         
-        Sig_T_1 = sigTempFile.Get("T_3D_1")
-        Sig_T_2 = sigTempFile.Get("T_3D_2")
-        Sig_T_4 = sigTempFile.Get("T_3D_4")
+        channelName = ""
+        if (self.channel == self.ID_4mu): channelName = "4mu"
+        elif (self.channel == self.ID_4e): channelName = "4e"
+        elif (self.channel == self.ID_2e2mu): channelName = "2e2mu"
+        else: print "Input Error: Unknown channel! (4mu = 1, 4e = 2, 2e2mu = 3)" 
+
+        Sig_T_1 = gettemplate("ggH", "0+", channelName)
+        Sig_T_2 = gettemplate("ggH", "0-", channelName)
+        Sig_T_4 = gettemplate("ggH", "int", channelName)
         Sig_T_1.SetName("T_ZZ_{0:.0f}_{1}_3D_1".format(self.sqrts,self.appendName))
         Sig_T_2.SetName("T_ZZ_{0:.0f}_{1}_3D_2".format(self.sqrts,self.appendName))
         Sig_T_4.SetName("T_ZZ_{0:.0f}_{1}_3D_4".format(self.sqrts,self.appendName))
 
-        Sig_T_1_ScaleResUp = sigTempFile.Get("T_3D_1_ScaleResUp")
-        Sig_T_2_ScaleResUp = sigTempFile.Get("T_3D_2_ScaleResUp")
-        Sig_T_4_ScaleResUp = sigTempFile.Get("T_3D_4_ScaleResUp")
+        Sig_T_1_ScaleResUp = gettemplate("ggH", "0+", channelName)
+        Sig_T_2_ScaleResUp = gettemplate("ggH", "0-", channelName)
+        Sig_T_4_ScaleResUp = gettemplate("ggH", "int", channelName)
         Sig_T_1_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_1_ScaleResUp".format(self.sqrts,self.appendName))
         Sig_T_2_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_2_ScaleResUp".format(self.sqrts,self.appendName))
         Sig_T_4_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_4_ScaleResUp".format(self.sqrts,self.appendName))
-        Sig_T_1_ScaleResDown = sigTempFile.Get("T_3D_1_ScaleResDown")
-        Sig_T_2_ScaleResDown = sigTempFile.Get("T_3D_2_ScaleResDown")
-        Sig_T_4_ScaleResDown = sigTempFile.Get("T_3D_4_ScaleResDown")
+        Sig_T_1_ScaleResDown = gettemplate("ggH", "0+", channelName)
+        Sig_T_2_ScaleResDown = gettemplate("ggH", "0-", channelName)
+        Sig_T_4_ScaleResDown = gettemplate("ggH", "int", channelName)
         Sig_T_1_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_1_ScaleResDown".format(self.sqrts,self.appendName))
         Sig_T_2_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_2_ScaleResDown".format(self.sqrts,self.appendName))
         Sig_T_4_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_4_ScaleResDown".format(self.sqrts,self.appendName))
@@ -776,38 +776,34 @@ class properties_datacardClass:
 
         ## ------------------ 2D BACKGROUND SHAPES FOR PROPERTIES ------------------- ##
 
-        print '2D backgorund shapes for Properties'
-
-        templateBkgName = "{0}/{1}".format(mytemplateDir,bkgTemplates)
-        bkgTempFile = ROOT.TFile(templateBkgName)
-        qqZZTemplate = bkgTempFile.Get("template_qqZZ")
+        qqZZTemplate = gettemplate("qqZZ", channelName)
 
         TemplateName = "qqZZTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         qqZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),qqZZTemplate)
         PdfName = "qqZZ_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         qqZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),qqZZTempDataHist)
 
-        ggZZTemplate = bkgTempFile.Get("template_ggZZ")
+        ggZZTemplate = gettemplate("ggZZ", channelName)
         
         TemplateName = "ggZZTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ggZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ggZZTemplate)
         PdfName = "ggZZ_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ggZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ggZZTempDataHist)
 
-        ZjetsTemplate = bkgTempFile.Get("template_ZX")
 
+        ZjetsTemplate = gettemplate("ZX", channelName)
         TemplateName = "ZjetsTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplate)
         PdfName = "Zjets_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHist)
 
-        ZjetsTemplateDown = bkgTempFile.Get("template_ZX_Down")
+        ZjetsTemplateDown = gettemplate("ZX", channelName)
         TemplateName = "ZjetsTempDownDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTempDataHistDown = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateDown)
         PdfName = "Zjets_TemplateDownPdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTemplatePdfDown = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHistDown)
 
-        ZjetsTemplateUp = bkgTempFile.Get("template_ZX_Up")
+        ZjetsTemplateUp = gettemplate("ZX", channelName)
         TemplateName = "ZjetsTempUpDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTempDataHistUp = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateUp)
         PdfName = "Zjets_TemplateUpPdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
@@ -1321,23 +1317,7 @@ class properties_datacardClass:
         
         ## --------------------------- DATASET --------------------------- ##
 
-        dataFileDir = "CMSdata"
-        dataTreeName = "data_obs" 
-        if (self.dataAppendDir == ''):
-            dataFileName = "{0}/hzz{1}_{2}.root".format(dataFileDir,self.appendName,self.lumi)
-        else:
-            dataFileName = "{0}_{1}/hzz{2}_{3}.root".format(dataFileDir,self.dataAppendDir,self.appendName,self.lumi)
-        if (DEBUG): print dataFileName," ",dataTreeName 
-        data_obs_file = ROOT.TFile(dataFileName)
-
-        print data_obs_file.Get(dataTreeName)
-        
-        if not (data_obs_file.Get(dataTreeName)):
-            print "File, \"",dataFileName,"\", or tree, \"",dataTreeName,"\", not found" 
-            print "Exiting..."
-            sys.exit()
-        
-        data_obs_tree = data_obs_file.Get(dataTreeName)
+        data_obs_tree = gettemplate("data", channelName)
         data_obs = ROOT.RooDataSet()
         datasetName = "data_obs_{0}".format(self.appendName)
         
