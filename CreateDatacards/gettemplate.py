@@ -14,8 +14,7 @@ class keydefaultdict(collections.defaultdict):
 tfiles = keydefaultdict(ROOT.TFile.Open)
 
 def run1or2(*args):
-    #if "ggH" in args:
-    if True:
+    if not ("ZX" in args and "4mu" in args):
         return 2
     else:
         return 1
