@@ -28,6 +28,7 @@ def gettemplate(*args):
     productionmode = None
     hypothesis = None
     flavor = None
+    systematic = None
 
     for a in "ggH", "ggZZ", "qqZZ", "ZX", "data":
         if a in args:
@@ -46,6 +47,12 @@ def gettemplate(*args):
         if hypothesis is None:
             raise ValueError("No hypothesis in {}".format(argsbkp))
 
+        for a in "ScaleUp", "ScaleDown", "ResUp", "ResDown", "ScaleResUp", "ScaleResDown":
+            if a in args:
+                systematic = a
+                args.remove(a)
+                break
+
     for a in "2e2mu", "4e", "4mu":
         if a in args:
             flavor = a
@@ -58,13 +65,19 @@ def gettemplate(*args):
         raise ValueError("Extra arguments in {}".format(argsbkp))
 
     isbkg = (productionmode != "ggH")
+    appendname = ""
+    if isbkg:
+        appendname = "_bkg"
+    elif systematic is not None:
+        appendname = "_"+systematic
+
     if productionmode == "data":
         filename = "templates_run2/data.root"
     else:
         if run == 2:
-            filename = "templates_run2/{}{}_fa3Adap_new.root".format(flavor, "_bkg" if isbkg else "")
+            filename = "templates_run2/{}{}_fa3Adap_new.root".format(flavor, appendname)
         elif run == 1:
-            filename = "templates_run1/{}_fa3Adap_new{}.root".format(flavor, "_bkg" if isbkg else "")
+            filename = "templates_run1/{}_fa3Adap_new{}.root".format(flavor, appendname)
     if productionmode == "ggH":
         templatename = {
                         "0+": "template0PlusAdapSmoothMirror",
