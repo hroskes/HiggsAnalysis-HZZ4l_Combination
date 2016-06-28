@@ -3,6 +3,7 @@ import sys
 import os
 import re
 import math
+import subprocess
 from scipy.special import erf
 from ROOT import *
 import ROOT
@@ -30,7 +31,7 @@ class properties_datacardClass:
         os.chdir("include")
         for f in os.listdir("."):
             if f.startswith("build"):
-                gROOT.Macro(f)
+                subprocess.check_call(["root", "-l", "-b", "-q", f])
         os.chdir("..")
 
         ROOT.gSystem.AddIncludePath("-I$ROOFITSYS/include/")
