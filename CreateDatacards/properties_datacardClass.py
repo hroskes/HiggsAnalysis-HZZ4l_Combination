@@ -804,13 +804,13 @@ class properties_datacardClass:
         PdfName = "Zjets_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHist)
 
-        ZjetsTemplateDown = gettemplate("ZX", channelName)
+        ZjetsTemplateDown = gettemplate("ZX", channelName, "ZXDown")
         TemplateName = "ZjetsTempDownDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTempDataHistDown = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateDown)
         PdfName = "Zjets_TemplateDownPdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTemplatePdfDown = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHistDown)
 
-        ZjetsTemplateUp = gettemplate("ZX", channelName)
+        ZjetsTemplateUp = gettemplate("ZX", channelName, "ZXUp")
         TemplateName = "ZjetsTempUpDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTempDataHistUp = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateUp)
         PdfName = "Zjets_TemplateUpPdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)

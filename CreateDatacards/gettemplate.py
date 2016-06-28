@@ -53,6 +53,13 @@ def gettemplate(*args):
                 args.remove(a)
                 break
 
+    if productionmode == "ZX":
+        for a in "ZXUp", "ZXDown":
+            if a in args:
+                systematic = a
+                args.remove(a)
+                break
+
     for a in "2e2mu", "4e", "4mu":
         if a in args:
             flavor = a
@@ -67,9 +74,9 @@ def gettemplate(*args):
     isbkg = (productionmode != "ggH")
     appendname = ""
     if isbkg:
-        appendname = "_bkg"
-    elif systematic is not None:
-        appendname = "_"+systematic
+        appendname += "_bkg"
+    if systematic is not None and not (run==1 and productionmode == "ZX"):
+        appendname += "_"+systematic
 
     if productionmode == "data":
         filename = "templates_run2/data.root"
@@ -90,7 +97,12 @@ def gettemplate(*args):
         if run == 2:
             templatename = "template{}AdapSmoothMirror".format(productionmode)
         elif run == 1:
-            templatename = "template_{}".format(productionmode)
+            if productionmode == "ZX" and systematic == "ZXUp":
+                templatename = "template_qqZZ"
+            elif productionmode == "ZX" and systematic == "ZXDown":
+                templatename = "T_mirror"
+            else:
+                templatename = "template_{}".format(productionmode)
 
     f = tfiles[filename]
     if not f:
