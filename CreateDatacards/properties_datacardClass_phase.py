@@ -24,15 +24,7 @@ class properties_datacardClass_phase:
         self.isFSR = True
 
     def loadIncludes(self):
-        
-        ROOT.gSystem.AddIncludePath("-I$ROOFITSYS/include/")
-        ROOT.gSystem.AddIncludePath("-Iinclude/")
-        ROOT.gROOT.ProcessLine(".L include/tdrstyle.cc")
-        ROOT.gSystem.Load("libRooFit")
-        ROOT.gSystem.Load("libHiggsAnalysisCombinedLimit.so")
-        ROOT.gSystem.Load("include/HiggsCSandWidth_cc.so")
-        ROOT.gSystem.Load("include/HiggsCSandWidthSM4_cc.so")
-
+        import include
 
     # cs x br function 
     def makeXsBrFunction(self,signalProc,rrvMH):
