@@ -180,7 +180,7 @@ class properties_datacardClass:
         bins = 1000
         if(self.bUseCBnoConvolution): bins = 200
 
-        CMS_zz4l_mass_name = "CMS_zz4l_mass"
+        CMS_zz4l_mass_name = "ZZMass"
             
         CMS_zz4l_mass = ROOT.RooRealVar(CMS_zz4l_mass_name,CMS_zz4l_mass_name,self.low_M,self.high_M)    
         CMS_zz4l_mass.setBins(bins)
