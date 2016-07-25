@@ -28,6 +28,7 @@ def parseOptions():
     parser.add_option('-m', '--model', type='string', dest='model', default="1D" ,help='model: 1D, phase, 2D ')
     parser.add_option('-r', '--datadir', type='string', dest='dataDirAppend', default="" ,help='dataDirAppend: Reference CMSdata folder per measurement')
     parser.add_option('-A', "--analysis", type='string', dest='analysis', default="fa3", help="fa3, fa2, or fL1")
+    parser.add_option('-P', "--production", type='string', dest='production', help="see helperstuff/enums.py, search for class Production(MyEnum) for the list")
     
     # store options and arguments as global variables
     global opt, args
@@ -76,7 +77,7 @@ def creationLoop(directory):
     endVal=[     1]
 
     if (opt.model== '1D'):
-      myClass = properties_datacardClass(opt.analysis)
+      myClass = properties_datacardClass(opt.analysis, opt.production)
     elif (opt.model== 'phase'):
       myClass = properties_datacardClass_phase()
     elif (opt.model== '2D'):

@@ -11,7 +11,7 @@ from array import array
 from systematicsClass import *
 from inputReader import *
 from helperstuff.combinehelpers import getdatatree, gettemplate, discriminantnames
-from helperstuff.enums import Analysis
+from helperstuff.enums import Analysis, Production
 
 ## ------------------------------------
 ##  card and workspace class
@@ -19,13 +19,14 @@ from helperstuff.enums import Analysis
 
 class properties_datacardClass:
 
-    def __init__(self, analysis):
+    def __init__(self, analysis, production):
     
         self.ID_4mu = 1
         self.ID_4e  = 2
-        self.ID_2e2mu = 3    
+        self.ID_2e2mu = 3
         self.isFSR = True
         self.analysis = Analysis(analysis)
+        self.production = Production(production)
 
     def loadIncludes(self):
         import include
@@ -446,22 +447,22 @@ class properties_datacardClass:
         elif (self.channel == self.ID_2e2mu): channelName = "2e2mu"
         else: print "Input Error: Unknown channel! (4mu = 1, 4e = 2, 2e2mu = 3)" 
 
-        Sig_T_1 = gettemplate(self.analysis, self.analysis.signalsamples()[0], channelName)
-        Sig_T_2 = gettemplate(self.analysis, self.analysis.signalsamples()[1], channelName)
-        Sig_T_4 = gettemplate(self.analysis, self.analysis.signalsamples()[2], channelName)
+        Sig_T_1 = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[0], channelName)
+        Sig_T_2 = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[1], channelName)
+        Sig_T_4 = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[2], channelName)
         Sig_T_1.SetName("T_ZZ_{0:.0f}_{1}_3D_1".format(self.sqrts,self.appendName))
         Sig_T_2.SetName("T_ZZ_{0:.0f}_{1}_3D_2".format(self.sqrts,self.appendName))
         Sig_T_4.SetName("T_ZZ_{0:.0f}_{1}_3D_4".format(self.sqrts,self.appendName))
 
-        Sig_T_1_ScaleResUp = gettemplate(self.analysis, self.analysis.signalsamples()[0], channelName, "ScaleResUp")
-        Sig_T_2_ScaleResUp = gettemplate(self.analysis, self.analysis.signalsamples()[1], channelName, "ScaleResUp")
-        Sig_T_4_ScaleResUp = gettemplate(self.analysis, self.analysis.signalsamples()[2], channelName, "ScaleResUp")
+        Sig_T_1_ScaleResUp = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[0], channelName, "ScaleResUp")
+        Sig_T_2_ScaleResUp = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[1], channelName, "ScaleResUp")
+        Sig_T_4_ScaleResUp = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[2], channelName, "ScaleResUp")
         Sig_T_1_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_1_ScaleResUp".format(self.sqrts,self.appendName))
         Sig_T_2_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_2_ScaleResUp".format(self.sqrts,self.appendName))
         Sig_T_4_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_4_ScaleResUp".format(self.sqrts,self.appendName))
-        Sig_T_1_ScaleResDown = gettemplate(self.analysis, self.analysis.signalsamples()[0], channelName, "ScaleResDown")
-        Sig_T_2_ScaleResDown = gettemplate(self.analysis, self.analysis.signalsamples()[1], channelName, "ScaleResDown")
-        Sig_T_4_ScaleResDown = gettemplate(self.analysis, self.analysis.signalsamples()[2], channelName, "ScaleResDown")
+        Sig_T_1_ScaleResDown = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[0], channelName, "ScaleResDown")
+        Sig_T_2_ScaleResDown = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[1], channelName, "ScaleResDown")
+        Sig_T_4_ScaleResDown = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[2], channelName, "ScaleResDown")
         Sig_T_1_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_1_ScaleResDown".format(self.sqrts,self.appendName))
         Sig_T_2_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_2_ScaleResDown".format(self.sqrts,self.appendName))
         Sig_T_4_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_4_ScaleResDown".format(self.sqrts,self.appendName))
@@ -770,14 +771,14 @@ class properties_datacardClass:
 
         ## ------------------ 2D BACKGROUND SHAPES FOR PROPERTIES ------------------- ##
 
-        qqZZTemplate = gettemplate(self.analysis, "qqZZ", channelName)
+        qqZZTemplate = gettemplate(self.analysis, self.production, "qqZZ", channelName)
 
         TemplateName = "qqZZTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         qqZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),qqZZTemplate)
         PdfName = "qqZZ_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         qqZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),qqZZTempDataHist)
 
-        ggZZTemplate = gettemplate(self.analysis, "ggZZ", channelName)
+        ggZZTemplate = gettemplate(self.analysis, self.production, "ggZZ", channelName)
         
         TemplateName = "ggZZTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ggZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ggZZTemplate)
@@ -785,19 +786,19 @@ class properties_datacardClass:
         ggZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ggZZTempDataHist)
 
 
-        ZjetsTemplate = gettemplate(self.analysis, "ZX", channelName)
+        ZjetsTemplate = gettemplate(self.analysis, self.production, "ZX", channelName)
         TemplateName = "ZjetsTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplate)
         PdfName = "Zjets_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHist)
 
-        ZjetsTemplateDown = gettemplate(self.analysis, "ZX", channelName, "ZXDown")
+        ZjetsTemplateDown = gettemplate(self.analysis, self.production, "ZX", channelName, "ZXDown")
         TemplateName = "ZjetsTempDownDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTempDataHistDown = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateDown)
         PdfName = "Zjets_TemplateDownPdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTemplatePdfDown = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHistDown)
 
-        ZjetsTemplateUp = gettemplate(self.analysis, "ZX", channelName, "ZXUp")
+        ZjetsTemplateUp = gettemplate(self.analysis, self.production, "ZX", channelName, "ZXUp")
         TemplateName = "ZjetsTempUpDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
         ZjetsTempDataHistUp = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateUp)
         PdfName = "Zjets_TemplateUpPdf_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
@@ -1311,7 +1312,7 @@ class properties_datacardClass:
         
         ## --------------------------- DATASET --------------------------- ##
 
-        data_obs_tree = getdatatree(channelName)
+        data_obs_tree = getdatatree(channelName, self.production)
         data_obs = ROOT.RooDataSet()
         datasetName = "data_obs_{0}".format(self.appendName)
         
@@ -1331,16 +1332,16 @@ class properties_datacardClass:
         name_ShapeWS2 = ""
         name_ShapeWSXSBR = ""
 
-        if (endsInP5): name_Shape = "{0}/HCG/{1:.1f}/hzz4l_{2}S_{3:.0f}TeV.txt".format(self.outputDir,self.mH,self.appendName,self.sqrts)
-        else: name_Shape = "{0}/HCG/{1:.0f}/hzz4l_{2}S_{3:.0f}TeV.txt".format(self.outputDir,self.mH,self.appendName,self.sqrts)
+        if (endsInP5): name_Shape = "{0}/HCG/{1:.1f}/hzz4l_{2}S_{3}.txt".format(self.outputDir,self.mH,self.appendName,self.production.year)
+        else: name_Shape = "{0}/HCG/{1:.0f}/hzz4l_{2}S_{3}.txt".format(self.outputDir,self.mH,self.appendName,self.production.year)
         
-        if (endsInP5): name_ShapeWS = "{0}/HCG/{1:.1f}/hzz4l_{2}S_{3:.0f}TeV.input.root".format(self.outputDir,self.mH,self.appendName,self.sqrts)
-        else: name_ShapeWS = "{0}/HCG/{1:.0f}/hzz4l_{2}S_{3:.0f}TeV.input.root".format(self.outputDir,self.mH,self.appendName,self.sqrts)
+        if (endsInP5): name_ShapeWS = "{0}/HCG/{1:.1f}/hzz4l_{2}S_{3}.input.root".format(self.outputDir,self.mH,self.appendName,self.production.year)
+        else: name_ShapeWS = "{0}/HCG/{1:.0f}/hzz4l_{2}S_{3}.input.root".format(self.outputDir,self.mH,self.appendName,self.production.year)
         
-        if (endsInP5): name_ShapeWSXSBR = "{0}/HCG_XSxBR/{1:.1f}/hzz4l_{2}S_{3:.0f}TeV.input.root".format(self.outputDir,self.mH,self.appendName,self.sqrts)
-        else: name_ShapeWSXSBR = "{0}/HCG_XSxBR/{1:.0f}/hzz4l_{2}S_{3:.0f}TeV.input.root".format(self.outputDir,self.mH,self.appendName,self.sqrts)
+        if (endsInP5): name_ShapeWSXSBR = "{0}/HCG_XSxBR/{1:.1f}/hzz4l_{2}S_{3}.input.root".format(self.outputDir,self.mH,self.appendName,self.production.year)
+        else: name_ShapeWSXSBR = "{0}/HCG_XSxBR/{1:.0f}/hzz4l_{2}S_{3}.input.root".format(self.outputDir,self.mH,self.appendName,self.production.year)
         
-        name_ShapeWS2 = "hzz4l_{0}S_{1:.0f}TeV.input.root".format(self.appendName,self.sqrts)
+        name_ShapeWS2 = "hzz4l_{0}S_{1}.input.root".format(self.appendName,self.production.year)
 
         if(DEBUG): print name_Shape,"  ",name_ShapeWS2
         
@@ -1437,8 +1438,8 @@ class properties_datacardClass:
 
         ## forXSxBR
 
-        if (endsInP5): name_Shape = "{0}/HCG_XSxBR/{2:.1f}/hzz4l_{1}S_{3:.0f}TeV.txt".format(self.outputDir,self.appendName,self.mH,self.sqrts)	
-        else: name_Shape = "{0}/HCG_XSxBR/{2:.0f}/hzz4l_{1}S_{3:.0f}TeV.txt".format(self.outputDir,self.appendName,self.mH,self.sqrts)
+        if (endsInP5): name_Shape = "{0}/HCG_XSxBR/{2:.1f}/hzz4l_{1}S_{3}.txt".format(self.outputDir,self.appendName,self.mH,self.production.year)	
+        else: name_Shape = "{0}/HCG_XSxBR/{2:.0f}/hzz4l_{1}S_{3}.txt".format(self.outputDir,self.appendName,self.mH,self.production.year)
             
         fo = open( name_Shape, "wb" )
 
