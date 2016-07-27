@@ -10,7 +10,7 @@ import ROOT
 from array import array
 from systematicsClass import *
 from inputReader import *
-from helperstuff.combinehelpers import getdatatree, gettemplate, discriminantnames
+from helperstuff.combinehelpers import getdatatree, getsubtractdatatree, gettemplate, discriminantnames
 from helperstuff.enums import Analysis, Production
 
 ## ------------------------------------
@@ -1312,7 +1312,10 @@ class properties_datacardClass:
         
         ## --------------------------- DATASET --------------------------- ##
 
-        data_obs_tree = getdatatree(channelName, self.production)
+        if self.production == "160725":
+            data_obs_tree = getsubtractdatatree(channelName, self.production, "subtract160720")
+        elif self.production == "160225":
+            data_obs_tree = getdatatree(channelName, self.production)
         data_obs = ROOT.RooDataSet()
         datasetName = "data_obs_{0}".format(self.appendName)
         
