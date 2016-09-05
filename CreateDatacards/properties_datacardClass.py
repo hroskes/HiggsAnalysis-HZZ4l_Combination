@@ -11,7 +11,7 @@ from array import array
 from systematicsClass import *
 from inputReader import *
 from helperstuff.combinehelpers import getdatatree, gettemplate, discriminantnames
-from helperstuff.enums import Analysis, Production
+from helperstuff.enums import Analysis, Category, Production
 
 ## ------------------------------------
 ##  card and workspace class
@@ -448,22 +448,22 @@ class properties_datacardClass:
         elif (self.channel == self.ID_2e2mu): channelName = "2e2mu"
         else: print "Input Error: Unknown channel! (4mu = 1, 4e = 2, 2e2mu = 3)" 
 
-        Sig_T_1 = gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName)
-        Sig_T_2 = gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName)
-        Sig_T_4 = gettemplate(self.analysis, self.production, self.category, self.analysis.mixdecayhypothesis, channelName)
+        Sig_T_1 = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName)
+        Sig_T_2 = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName)
+        Sig_T_4 = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.mixdecayhypothesis, channelName)
         Sig_T_1.SetName("T_ZZ_{0:.0f}_{1}_3D_1".format(self.production.year,self.appendName))
         Sig_T_2.SetName("T_ZZ_{0:.0f}_{1}_3D_2".format(self.production.year,self.appendName))
         Sig_T_4.SetName("T_ZZ_{0:.0f}_{1}_3D_4".format(self.production.year,self.appendName))
 
-        Sig_T_1_ScaleResUp = gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResUp")
-        Sig_T_2_ScaleResUp = gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResUp")
-        Sig_T_4_ScaleResUp = gettemplate(self.analysis, self.production, self.category, self.analysis.mixdecayhypothesis, channelName, "ScaleResUp")
+        Sig_T_1_ScaleResUp = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResUp")
+        Sig_T_2_ScaleResUp = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResUp")
+        Sig_T_4_ScaleResUp = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.mixdecayhypothesis, channelName, "ScaleResUp")
         Sig_T_1_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_1_ScaleResUp".format(self.production.year,self.appendName))
         Sig_T_2_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_2_ScaleResUp".format(self.production.year,self.appendName))
         Sig_T_4_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_4_ScaleResUp".format(self.production.year,self.appendName))
-        Sig_T_1_ScaleResDown = gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResDown")
-        Sig_T_2_ScaleResDown = gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResDown")
-        Sig_T_4_ScaleResDown = gettemplate(self.analysis, self.production, self.category, self.analysis.mixdecayhypothesis, channelName, "ScaleResDown")
+        Sig_T_1_ScaleResDown = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResDown")
+        Sig_T_2_ScaleResDown = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResDown")
+        Sig_T_4_ScaleResDown = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.mixdecayhypothesis, channelName, "ScaleResDown")
         Sig_T_1_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_1_ScaleResDown".format(self.production.year,self.appendName))
         Sig_T_2_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_2_ScaleResDown".format(self.production.year,self.appendName))
         Sig_T_4_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_4_ScaleResDown".format(self.production.year,self.appendName))

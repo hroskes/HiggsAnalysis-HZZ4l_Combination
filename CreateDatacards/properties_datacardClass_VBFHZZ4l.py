@@ -10,7 +10,7 @@ import ROOT
 from array import array
 from systematicsClass import *
 from inputReader import *
-from helperstuff.combinehelpers import getdatatree, gettemplate, discriminantnames
+from helperstuff.combinehelpers import discriminantnames, getdatatree, gettemplate, sigmaioversigma1
 from helperstuff.enums import Analysis, Category, Production
 
 ## ------------------------------------
@@ -119,7 +119,7 @@ class properties_datacardClass:
         self.ttH_chan = theInputs['ttH']
         self.qqZZ_chan = theInputs['qqZZ']
         self.ggZZ_chan = theInputs['ggZZ']
-        self.VBFbkg_chan = theInputs['VBFbkg']
+        self.VBFbkg_chan = 0
         self.zjets_chan = theInputs['zjets']
         
         ## ---------------- SET PLOTTING STYLE ---------------- ## 
@@ -450,31 +450,31 @@ class properties_datacardClass:
         else: print "Input Error: Unknown channel! (4mu = 1, 4e = 2, 2e2mu = 3)" 
 
         Sig_T = [
-                 gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName),
-                 gettemplate(self.analysis, self.production, self.category, "g13gi1", channelName),
-                 gettemplate(self.analysis, self.production, self.category, "g12gi2", channelName),
-                 gettemplate(self.analysis, self.production, self.category, "g11gi3", channelName),
-                 gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName),
+                 gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName),
+                 gettemplate("VBF", self.analysis, self.production, self.category, "g13gi1", channelName),
+                 gettemplate("VBF", self.analysis, self.production, self.category, "g12gi2", channelName),
+                 gettemplate("VBF", self.analysis, self.production, self.category, "g11gi3", channelName),
+                 gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName),
                 ]
         for i, t in enumerate(Sig_T, start=1):
             t.SetName("T_ZZ_{:.0f}_{}_3D_{}".format(self.production.year,self.appendName, i))
 
         Sig_T_ScaleResUp = [
-                            gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResUp"),
-                            gettemplate(self.analysis, self.production, self.category, "g13gi1", channelName, "ScaleResUp"),
-                            gettemplate(self.analysis, self.production, self.category, "g12gi2", channelName, "ScaleResUp"),
-                            gettemplate(self.analysis, self.production, self.category, "g11gi3", channelName, "ScaleResUp"),
-                            gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResUp"),
+                            gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResUp"),
+                            gettemplate("VBF", self.analysis, self.production, self.category, "g13gi1", channelName, "ScaleResUp"),
+                            gettemplate("VBF", self.analysis, self.production, self.category, "g12gi2", channelName, "ScaleResUp"),
+                            gettemplate("VBF", self.analysis, self.production, self.category, "g11gi3", channelName, "ScaleResUp"),
+                            gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResUp"),
                            ]
         for i, t in enumerate(Sig_T_ScaleResUp, start=1):
             t.SetName("T_ZZ_{:.0f}_{}_3D_{}_ScaleResUp".format(self.production.year,self.appendName, i))
 
         Sig_T_ScaleResDown = [
-                              gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResDown"),
-                              gettemplate(self.analysis, self.production, self.category, "g13gi1", channelName, "ScaleResDown"),
-                              gettemplate(self.analysis, self.production, self.category, "g12gi2", channelName, "ScaleResDown"),
-                              gettemplate(self.analysis, self.production, self.category, "g11gi3", channelName, "ScaleResDown"),
-                              gettemplate(self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResDown"),
+                              gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResDown"),
+                              gettemplate("VBF", self.analysis, self.production, self.category, "g13gi1", channelName, "ScaleResDown"),
+                              gettemplate("VBF", self.analysis, self.production, self.category, "g12gi2", channelName, "ScaleResDown"),
+                              gettemplate("VBF", self.analysis, self.production, self.category, "g11gi3", channelName, "ScaleResDown"),
+                              gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResDown"),
                              ]
         for i, t in enumerate(Sig_T_ScaleResDown, start=1):
             t.SetName("T_ZZ_{:.0f}_{}_3D_{}_ScaleResDown".format(self.production.year,self.appendName, i))
@@ -502,15 +502,15 @@ class properties_datacardClass:
         D3.setBins(dBinsZ)
 
         T_integralName = ["normt{}_{:.0f}_{:.0f}".format(i, self.channel,self.production.year) for i in range(1, 6)]
-        T_integral = ROOT.RooConstVar(T_integralName[i], T_integralName[i], t.Integral() for i, t in enumerate(Sig_T)]
+        T_integral = [ROOT.RooConstVar(T_integralName[i], T_integralName[i], t.Integral()) for i, t in enumerate(Sig_T)]
         for i, integral in enumerate(T_integral, start=1):
             print "T{}".format(i), integral.getVal()
 
-        r_fai_pures_norm_Name = "sig_PuresNorm_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        r_fai_realints_norm_Name = "sig_RealIntsNorm_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        r_fai_pures_norm = ROOT.RooFormulaVar(r_fai_pures_norm_Name,r_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",RooArgList(x,T1_integral,T2_integral))
-        r_fai_realints_norm = ROOT.RooFormulaVar(r_fai_realints_norm_Name,r_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",RooArgList(x,T4_integral,T1_integral))
-        r_fai_norm = ROOT.RooFormulaVar("ggH_norm","ggH_norm","(abs(@2))>1 ? 0. : TMath::Max((@0+@1)*(1-abs(@3)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,x,alpha_zz4l))
+        #r_fai_pures_norm_Name = "sig_PuresNorm_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        #r_fai_realints_norm_Name = "sig_RealIntsNorm_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        #r_fai_pures_norm = ROOT.RooFormulaVar(r_fai_pures_norm_Name,r_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",RooArgList(x,T1_integral,T2_integral))
+        #r_fai_realints_norm = ROOT.RooFormulaVar(r_fai_realints_norm_Name,r_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",RooArgList(x,T4_integral,T1_integral))
+        #r_fai_norm = ROOT.RooFormulaVar("ggH_norm","ggH_norm","(abs(@2))>1 ? 0. : TMath::Max((@0+@1)*(1-abs(@3)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,x,alpha_zz4l))
 
         Sig_T_hist = [ROOT.RooDataHist ("T_{}_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(Sig_T, start=1)]
         Sig_T_ScaleResUp_hist = [ROOT.RooDataHist ("T_{}_ScaleResUp_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(Sig_T_ScaleResUp, start=1)]
@@ -524,8 +524,8 @@ class properties_datacardClass:
    
         VBFpdfName_syst1Up = "VBF_RooSpinZeroPdf_ScaleResUp_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         VBFpdfName_syst1Down = "VBF_RooSpinZeroPdf_ScaleResDown_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        VBFpdf_syst1Up = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName_syst1Up, VBFpdfName_syst1Up, D1, D2, D3, x, ROOT.RooArgList(*Sig_T_ScaleResUp_histfunc))
-        VBFpdf_syst1Down = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName_syst1Down, VBFpdfName_syst1Down, D1, D2, D3, x, ROOT.RooArgList(*Sig_T_ScaleResDown_histfunc))
+        VBFpdf_syst1Up = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName_syst1Up, VBFpdfName_syst1Up, D1, D2, D3, x, sigmaioversigma1(self.analysis, "VBF"), ROOT.RooArgList(*Sig_T_ScaleResUp_histfunc))
+        VBFpdf_syst1Down = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName_syst1Down, VBFpdfName_syst1Down, D1, D2, D3, x, sigmaioversigma1(self.analysis, "VBF"), ROOT.RooArgList(*Sig_T_ScaleResDown_histfunc))
 
 
         ## ------------------ END 2D SIGNAL SHAPES FOR PROPERTIES ------------------------ ##
@@ -1359,15 +1359,15 @@ class properties_datacardClass:
                 
                 
         getattr(w,'import')(data_obs,ROOT.RooFit.Rename("data_obs")) ### Should this be renamed?
-        getattr(w,'import')(r_fai_norm) ### Should this be renamed?
+        #getattr(w,'import')(r_fai_norm) ### Should this be renamed?
 
 
-        ggHpdf.SetNameTitle("ggH","ggH")
-        getattr(w,'import')(ggHpdf, ROOT.RooFit.RecycleConflictNodes())
-        ggHpdf_syst1Up.SetNameTitle("ggH_Res{0}Up".format(self.appendName),"ggH_Res{0}Up".format(self.appendName))
-        getattr(w,'import')(ggHpdf_syst1Up, ROOT.RooFit.RecycleConflictNodes())
-        ggHpdf_syst1Down.SetNameTitle("ggH_Res{0}Down".format(self.appendName),"ggH_Res{0}Down".format(self.appendName))
-        getattr(w,'import')(ggHpdf_syst1Down, ROOT.RooFit.RecycleConflictNodes())
+        VBFpdf.SetNameTitle("ggH","ggH")
+        getattr(w,'import')(VBFpdf, ROOT.RooFit.RecycleConflictNodes())
+        VBFpdf_syst1Up.SetNameTitle("ggH_Res{0}Up".format(self.appendName),"ggH_Res{0}Up".format(self.appendName))
+        getattr(w,'import')(VBFpdf_syst1Up, ROOT.RooFit.RecycleConflictNodes())
+        VBFpdf_syst1Down.SetNameTitle("ggH_Res{0}Down".format(self.appendName),"ggH_Res{0}Down".format(self.appendName))
+        getattr(w,'import')(VBFpdf_syst1Down, ROOT.RooFit.RecycleConflictNodes())
         #ggHpdf_syst2Up.SetNameTitle("ggH_Scale{0}Up".format(self.appendName),"ggH_Scale{0}Up".format(self.appendName))
         #getattr(w,'import')(ggHpdf_syst2Up, ROOT.RooFit.RecycleConflictNodes())
         #ggHpdf_syst2Down.SetNameTitle("ggH_Scale{0}Down".format(self.appendName),"ggH_Scale{0}Down".format(self.appendName))
@@ -1387,7 +1387,6 @@ class properties_datacardClass:
         getattr(w,'import')(qqZZTemplatePdf, ROOT.RooFit.RecycleConflictNodes())
         getattr(w,'import')(ggZZTemplatePdf, ROOT.RooFit.RecycleConflictNodes())
         getattr(w,'import')(VBFbkgTemplatePdf, ROOT.RooFit.RecycleConflictNodes())
-        getattr(w,'import')(vbfTemplatePdf, ROOT.RooFit.RecycleConflictNodes())
         getattr(w,'import')(ZjetsTemplateMorphPdf, ROOT.RooFit.RecycleConflictNodes())
         #getattr(w,'import')(ZjetsTemplatePdf, ROOT.RooFit.RecycleConflictNodes())
         #qqZZTemplateMorphPdf.SetNameTitle("bkg_qqzzMorph","bkg_qqzzMorph")
