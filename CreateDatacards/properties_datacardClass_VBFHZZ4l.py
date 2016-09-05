@@ -1507,6 +1507,8 @@ class properties_datacardClass_VBFHZZ4l(object):
 
     def WriteDatacard(self,file,theInputs,nameWS,theRates,obsEvents):
 
+        theInputs['qqH'] = theInputs['VBFbkg'] = 1
+
         numberSig = self.numberOfSigChan(theInputs)
         numberBg  = self.numberOfBgChan(theInputs)
         
