@@ -11,15 +11,15 @@ from array import array
 from systematicsClass import *
 from inputReader import *
 from helperstuff.combinehelpers import discriminantnames, getdatatree, gettemplate, sigmaioversigma1
-from helperstuff.enums import Analysis, Category, Production
+from helperstuff.enums import Analysis, Category, Production, WhichProdDiscriminants
 
 ## ------------------------------------
 ##  card and workspace class
 ## ------------------------------------
 
-class properties_datacardClass:
+class properties_datacardClass_VBFHZZ4l(object):
 
-    def __init__(self, analysis, production, category):
+    def __init__(self, analysis, production, category, whichproddiscriminants):
     
         self.ID_4mu = 1
         self.ID_4e  = 2
@@ -28,6 +28,10 @@ class properties_datacardClass:
         self.analysis = Analysis(analysis)
         self.production = Production(production)
         self.category = Category(category)
+        if self.category == "VBF2jTaggedIchep16":
+            self.whichproddiscriminants = WhichProdDiscriminants(whichproddiscriminants)
+        else:
+            self.whichproddiscriminants = None
 
     def loadIncludes(self):
         import include
@@ -191,6 +195,9 @@ class properties_datacardClass:
         x_name = "CMS_zz4l_fai1"
 
         x = ROOT.RooRealVar(x_name,x_name,-1.,1.)
+        sigmaioversigma1_constvar = ROOT.RooConstVar("sigmaioversigma1", "sigmaioversigma1", sigmaioversigma1(self.analysis, "VBF"))
+        a1 = ROOT.RooFormulaVar("a1", "a1", "(@0>0 ? 1 : -1) * sqrt(1-abs(@0))", ROOT.RooArgList(x))
+        ai = ROOT.RooFormulaVar("ai", "ai", "(@0>0 ? 1 : -1) * sqrt(abs(@0)/@1)", ROOT.RooArgList(x, sigmaioversigma1_constvar))
         x.setBins(bins)
 
         alpha_name = "CMS_zz4l_alpha"
@@ -198,7 +205,7 @@ class properties_datacardClass:
         alpha_zz4l.setBins(bins)
 
 
-        D1Name, D2Name, D3Name = discriminantnames(self.analysis, self.category)
+        D1Name, D2Name, D3Name = discriminantnames(self.analysis, self.category, self.whichproddiscriminants)
 
         self.LUMI = ROOT.RooRealVar("LUMI_{0:.0f}".format(self.production.year),"LUMI_{0:.0f}".format(self.production.year),self.lumi)
         self.LUMI.setConstant(True)
@@ -449,50 +456,50 @@ class properties_datacardClass:
         elif (self.channel == self.ID_2e2mu): channelName = "2e2mu"
         else: print "Input Error: Unknown channel! (4mu = 1, 4e = 2, 2e2mu = 3)" 
 
-        Sig_T = [
-                 gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName),
-                 gettemplate("VBF", self.analysis, self.production, self.category, "g13gi1", channelName),
-                 gettemplate("VBF", self.analysis, self.production, self.category, "g12gi2", channelName),
-                 gettemplate("VBF", self.analysis, self.production, self.category, "g11gi3", channelName),
-                 gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName),
+        VBF_T = [
+                 gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName),
+                 gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, "g13gi1", channelName),
+                 gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, "g12gi2", channelName),
+                 gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi3", channelName),
+                 gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName),
                 ]
-        for i, t in enumerate(Sig_T, start=1):
-            t.SetName("T_ZZ_{:.0f}_{}_3D_{}".format(self.production.year,self.appendName, i))
+        for i, t in enumerate(VBF_T, start=1):
+            t.SetName("VBF_T_ZZ_{:.0f}_{}_3D_{}".format(self.production.year,self.appendName, i))
 
-        Sig_T_ScaleResUp = [
-                            gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResUp"),
-                            gettemplate("VBF", self.analysis, self.production, self.category, "g13gi1", channelName, "ScaleResUp"),
-                            gettemplate("VBF", self.analysis, self.production, self.category, "g12gi2", channelName, "ScaleResUp"),
-                            gettemplate("VBF", self.analysis, self.production, self.category, "g11gi3", channelName, "ScaleResUp"),
-                            gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResUp"),
+        VBF_T_ScaleResUp = [
+                            gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName, "ScaleResUp"),
+                            gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, "g13gi1", channelName, "ScaleResUp"),
+                            gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, "g12gi2", channelName, "ScaleResUp"),
+                            gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi3", channelName, "ScaleResUp"),
+                            gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName, "ScaleResUp"),
                            ]
-        for i, t in enumerate(Sig_T_ScaleResUp, start=1):
-            t.SetName("T_ZZ_{:.0f}_{}_3D_{}_ScaleResUp".format(self.production.year,self.appendName, i))
+        for i, t in enumerate(VBF_T_ScaleResUp, start=1):
+            t.SetName("VBF_T_ZZ_{:.0f}_{}_3D_{}_ScaleResUp".format(self.production.year,self.appendName, i))
 
-        Sig_T_ScaleResDown = [
-                              gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResDown"),
-                              gettemplate("VBF", self.analysis, self.production, self.category, "g13gi1", channelName, "ScaleResDown"),
-                              gettemplate("VBF", self.analysis, self.production, self.category, "g12gi2", channelName, "ScaleResDown"),
-                              gettemplate("VBF", self.analysis, self.production, self.category, "g11gi3", channelName, "ScaleResDown"),
-                              gettemplate("VBF", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResDown"),
+        VBF_T_ScaleResDown = [
+                              gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName, "ScaleResDown"),
+                              gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, "g13gi1", channelName, "ScaleResDown"),
+                              gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, "g12gi2", channelName, "ScaleResDown"),
+                              gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi3", channelName, "ScaleResDown"),
+                              gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName, "ScaleResDown"),
                              ]
-        for i, t in enumerate(Sig_T_ScaleResDown, start=1):
-            t.SetName("T_ZZ_{:.0f}_{}_3D_{}_ScaleResDown".format(self.production.year,self.appendName, i))
+        for i, t in enumerate(VBF_T_ScaleResDown, start=1):
+            t.SetName("VBF_T_ZZ_{:.0f}_{}_3D_{}_ScaleResDown".format(self.production.year,self.appendName, i))
 
-        dBinsX = Sig_T[1].GetXaxis().GetNbins()
+        dBinsX = VBF_T[1].GetXaxis().GetNbins()
         print "X bins: ",dBinsX
-        dLowX = Sig_T[1].GetXaxis().GetXmin()
-        dHighX = Sig_T[1].GetXaxis().GetXmax()
+        dLowX = VBF_T[1].GetXaxis().GetXmin()
+        dHighX = VBF_T[1].GetXaxis().GetXmax()
         
-        dBinsY = Sig_T[1].GetYaxis().GetNbins()
+        dBinsY = VBF_T[1].GetYaxis().GetNbins()
         print "Y bins: ",dBinsY
-        dLowY = Sig_T[1].GetYaxis().GetXmin()
-        dHighY = Sig_T[1].GetYaxis().GetXmax()
+        dLowY = VBF_T[1].GetYaxis().GetXmin()
+        dHighY = VBF_T[1].GetYaxis().GetXmax()
 
-        dBinsZ = Sig_T[1].GetZaxis().GetNbins()
+        dBinsZ = VBF_T[1].GetZaxis().GetNbins()
         print "Z bins: ",dBinsZ
-        dLowZ = Sig_T[1].GetZaxis().GetXmin()
-        dHighZ = Sig_T[1].GetZaxis().GetXmax()
+        dLowZ = VBF_T[1].GetZaxis().GetXmin()
+        dHighZ = VBF_T[1].GetZaxis().GetXmax()
 
         D1 = ROOT.RooRealVar(D1Name,D1Name,dLowX,dHighX)
         D2 = ROOT.RooRealVar(D2Name,D2Name,dLowY,dHighY)
@@ -501,31 +508,71 @@ class properties_datacardClass:
         D2.setBins(dBinsY)
         D3.setBins(dBinsZ)
 
-        T_integralName = ["normt{}_{:.0f}_{:.0f}".format(i, self.channel,self.production.year) for i in range(1, 6)]
-        T_integral = [ROOT.RooConstVar(T_integralName[i], T_integralName[i], t.Integral()) for i, t in enumerate(Sig_T)]
-        for i, integral in enumerate(T_integral, start=1):
-            print "T{}".format(i), integral.getVal()
+        VBF_T_integralName = ["VBF_normt{}_{:.0f}_{:.0f}".format(i, self.channel,self.production.year) for i in range(1, 6)]
+        VBF_T_integral = [ROOT.RooConstVar(VBF_T_integralName[i], VBF_T_integralName[i], t.Integral()) for i, t in enumerate(VBF_T)]
+        for i, integral in enumerate(VBF_T_integral, start=1):
+            print "VBF T{}".format(i), integral.getVal()
 
-        #r_fai_pures_norm_Name = "sig_PuresNorm_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        #r_fai_realints_norm_Name = "sig_RealIntsNorm_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        #r_fai_pures_norm = ROOT.RooFormulaVar(r_fai_pures_norm_Name,r_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",RooArgList(x,T1_integral,T2_integral))
-        #r_fai_realints_norm = ROOT.RooFormulaVar(r_fai_realints_norm_Name,r_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",RooArgList(x,T4_integral,T1_integral))
-        #r_fai_norm = ROOT.RooFormulaVar("ggH_norm","ggH_norm","(abs(@2))>1 ? 0. : TMath::Max((@0+@1)*(1-abs(@3)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,x,alpha_zz4l))
+        VBF_T_hist = [ROOT.RooDataHist ("T_{}_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(VBF_T, start=1)]
+        VBF_T_ScaleResUp_hist = [ROOT.RooDataHist ("T_{}_ScaleResUp_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(VBF_T_ScaleResUp, start=1)]
+        VBF_T_ScaleResDown_hist = [ROOT.RooDataHist ("T_{}_ScaleResDown_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(VBF_T_ScaleResDown, start=1)]
 
-        Sig_T_hist = [ROOT.RooDataHist ("T_{}_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(Sig_T, start=1)]
-        Sig_T_ScaleResUp_hist = [ROOT.RooDataHist ("T_{}_ScaleResUp_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(Sig_T_ScaleResUp, start=1)]
-        Sig_T_ScaleResDown_hist = [ROOT.RooDataHist ("T_{}_ScaleResDown_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(Sig_T_ScaleResDown, start=1)]
-
-        Sig_T_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(Sig_T_hist, start=1)]
-        Sig_T_ScaleResUp_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(Sig_T_ScaleResUp_hist, start=1)]
-        Sig_T_ScaleResDown_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(Sig_T_ScaleResDown_hist, start=1)]
+        VBF_T_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(VBF_T_hist, start=1)]
+        VBF_T_ScaleResUp_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(VBF_T_ScaleResUp_hist, start=1)]
+        VBF_T_ScaleResDown_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(VBF_T_ScaleResDown_hist, start=1)]
         VBFpdfName = "VBF_RooSpinZeroPdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        VBFpdf = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName, VBFpdfName, D1, D2, D3, x, sigmaioversigma1(self.analysis, "VBF"), ROOT.RooArgList(*Sig_T_histfunc))
+        VBFpdf = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName, VBFpdfName, D1, D2, D3, a1, ai, ROOT.RooArgList(*VBF_T_histfunc))
    
         VBFpdfName_syst1Up = "VBF_RooSpinZeroPdf_ScaleResUp_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         VBFpdfName_syst1Down = "VBF_RooSpinZeroPdf_ScaleResDown_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        VBFpdf_syst1Up = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName_syst1Up, VBFpdfName_syst1Up, D1, D2, D3, x, sigmaioversigma1(self.analysis, "VBF"), ROOT.RooArgList(*Sig_T_ScaleResUp_histfunc))
-        VBFpdf_syst1Down = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName_syst1Down, VBFpdfName_syst1Down, D1, D2, D3, x, sigmaioversigma1(self.analysis, "VBF"), ROOT.RooArgList(*Sig_T_ScaleResDown_histfunc))
+        VBFpdf_syst1Up = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName_syst1Up, VBFpdfName_syst1Up, D1, D2, D3, a1, ai, ROOT.RooArgList(*VBF_T_ScaleResUp_histfunc))
+        VBFpdf_syst1Down = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName_syst1Down, VBFpdfName_syst1Down, D1, D2, D3, a1, ai, ROOT.RooArgList(*VBF_T_ScaleResDown_histfunc))
+
+
+
+        ggH_T = [
+                 gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName),
+                 gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName),
+                 gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName),
+                ]
+        for i, t in enumerate(ggH_T, start=1):
+            t.SetName("ggH_T_ZZ_{:.0f}_{}_3D_{}".format(self.production.year,self.appendName, i))
+
+        ggH_T_ScaleResUp = [
+                            gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName, "ScaleResUp"),
+                            gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName, "ScaleResUp"),
+                            gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName, "ScaleResUp"),
+                           ]
+        for i, t in enumerate(ggH_T_ScaleResUp, start=1):
+            t.SetName("ggH_T_ZZ_{:.0f}_{}_3D_{}_ScaleResUp".format(self.production.year,self.appendName, i))
+
+        ggH_T_ScaleResDown = [
+                              gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName, "ScaleResDown"),
+                              gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName, "ScaleResDown"),
+                              gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName, "ScaleResDown"),
+                             ]
+        for i, t in enumerate(ggH_T_ScaleResDown, start=1):
+            t.SetName("ggH_T_ZZ_{:.0f}_{}_3D_{}_ScaleResDown".format(self.production.year,self.appendName, i))
+
+        ggH_T_integralName = ["ggH_normt{}_{:.0f}_{:.0f}".format(i, self.channel,self.production.year) for i in range(1, 6)]
+        ggH_T_integral = [ROOT.RooConstVar(ggH_T_integralName[i], ggH_T_integralName[i], t.Integral()) for i, t in enumerate(ggH_T)]
+        for i, integral in enumerate(ggH_T_integral, start=1):
+            print "ggH T{}".format(i), integral.getVal()
+
+        ggH_T_hist = [ROOT.RooDataHist ("T_{}_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(ggH_T, start=1)]
+        ggH_T_ScaleResUp_hist = [ROOT.RooDataHist ("T_{}_ScaleResUp_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(ggH_T_ScaleResUp, start=1)]
+        ggH_T_ScaleResDown_hist = [ROOT.RooDataHist ("T_{}_ScaleResDown_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(ggH_T_ScaleResDown, start=1)]
+
+        ggH_T_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(ggH_T_hist, start=1)]
+        ggH_T_ScaleResUp_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(ggH_T_ScaleResUp_hist, start=1)]
+        ggH_T_ScaleResDown_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(ggH_T_ScaleResDown_hist, start=1)]
+        ggHpdfName = "ggH_RooSpinZeroPdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        ggHpdf = ROOT.HZZ4L_RooSpinZeroPdf(ggHpdfName, ggHpdfName, D1, D2, D3, x, ROOT.RooArgList(*ggH_T_histfunc))
+   
+        ggHpdfName_syst1Up = "ggH_RooSpinZeroPdf_ScaleResUp_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        ggHpdfName_syst1Down = "ggH_RooSpinZeroPdf_ScaleResDown_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        ggHpdf_syst1Up = ROOT.HZZ4L_RooSpinZeroPdf(ggHpdfName_syst1Up, ggHpdfName_syst1Up, D1, D2, D3, x, ROOT.RooArgList(*ggH_T_ScaleResUp_histfunc))
+        ggHpdf_syst1Down = ROOT.HZZ4L_RooSpinZeroPdf(ggHpdfName_syst1Down, ggHpdfName_syst1Down, D1, D2, D3, x, ROOT.RooArgList(*ggH_T_ScaleResDown_histfunc))
 
 
         ## ------------------ END 2D SIGNAL SHAPES FOR PROPERTIES ------------------------ ##
@@ -767,40 +814,40 @@ class properties_datacardClass:
 
         ## ------------------ 2D BACKGROUND SHAPES FOR PROPERTIES ------------------- ##
 
-        qqZZTemplate = gettemplate(self.analysis, self.production, self.category, "qqZZ", channelName)
+        qqZZTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "qqZZ", channelName)
 
         TemplateName = "qqZZTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         qqZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),qqZZTemplate)
         PdfName = "qqZZ_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         qqZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),qqZZTempDataHist)
 
-        ggZZTemplate = gettemplate(self.analysis, self.production, self.category, "ggZZ", channelName)
+        ggZZTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ggZZ", channelName)
         
         TemplateName = "ggZZTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ggZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ggZZTemplate)
         PdfName = "ggZZ_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ggZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ggZZTempDataHist)
 
-        VBFbkgTemplate = gettemplate(self.analysis, self.production, self.category, "VBFbkg", channelName)
+        VBFbkgTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "VBFbkg", channelName)
 
         TemplateName = "VBFbkgTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         VBFbkgTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),VBFbkgTemplate)
         PdfName = "VBFbkg_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         VBFbkgTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),VBFbkgTempDataHist)
 
-        ZjetsTemplate = gettemplate(self.analysis, self.production, self.category, "ZX", channelName)
+        ZjetsTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ZX", channelName)
         TemplateName = "ZjetsTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ZjetsTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplate)
         PdfName = "Zjets_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ZjetsTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHist)
 
-        ZjetsTemplateDown = gettemplate(self.analysis, self.production, self.category, "ZX", channelName, "ZXDown")
+        ZjetsTemplateDown = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ZX", channelName, "ZXDown")
         TemplateName = "ZjetsTempDownDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ZjetsTempDataHistDown = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateDown)
         PdfName = "Zjets_TemplateDownPdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ZjetsTemplatePdfDown = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHistDown)
 
-        ZjetsTemplateUp = gettemplate(self.analysis, self.production, self.category, "ZX", channelName, "ZXUp")
+        ZjetsTemplateUp = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ZX", channelName, "ZXUp")
         TemplateName = "ZjetsTempUpDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ZjetsTempDataHistUp = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateUp)
         PdfName = "Zjets_TemplateUpPdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
@@ -1282,6 +1329,7 @@ class properties_datacardClass:
                
         bkgRate_qqzz_Shape = sclFactorBkg_qqzz * bkg_qqzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
         bkgRate_ggzz_Shape = sclFactorBkg_ggzz * bkg_ggzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
+        bkgRate_VBFbkg_Shape = sclFactorBkg_ggzz
         bkgRate_zjets_Shape = sclFactorBkg_zjets * bkg_zjets.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
 
         rfvSMD_Ratio_qqZZ = ROOT.RooFormulaVar()
@@ -1334,16 +1382,16 @@ class properties_datacardClass:
         name_ShapeWS2 = ""
         name_ShapeWSXSBR = ""
 
-        if (endsInP5): name_Shape = "{0}/HCG/{1:.1f}/hzz4l_{2}S_{3}.txt".format(self.outputDir,self.mH,self.appendName,self.production.year)
-        else: name_Shape = "{0}/HCG/{1:.0f}/hzz4l_{2}S_{3}.txt".format(self.outputDir,self.mH,self.appendName,self.production.year)
+        if (endsInP5): name_Shape = "{}/HCG/{:.1f}/hzz4l_{}S_{}_{}.txt".format(self.outputDir,self.mH,self.appendName,self.category,self.production.year)
+        else: name_Shape = "{}/HCG/{:.0f}/hzz4l_{}S_{}_{}.txt".format(self.outputDir,self.mH,self.appendName,self.category,self.production.year)
         
-        if (endsInP5): name_ShapeWS = "{0}/HCG/{1:.1f}/hzz4l_{2}S_{3}.input.root".format(self.outputDir,self.mH,self.appendName,self.production.year)
-        else: name_ShapeWS = "{0}/HCG/{1:.0f}/hzz4l_{2}S_{3}.input.root".format(self.outputDir,self.mH,self.appendName,self.production.year)
+        if (endsInP5): name_ShapeWS = "{}/HCG/{:.1f}/hzz4l_{}S_{}_{}.input.root".format(self.outputDir,self.mH,self.appendName,self.category,self.production.year)
+        else: name_ShapeWS = "{}/HCG/{:.0f}/hzz4l_{}S_{}_{}.input.root".format(self.outputDir,self.mH,self.appendName,self.category,self.production.year)
         
-        if (endsInP5): name_ShapeWSXSBR = "{0}/HCG_XSxBR/{1:.1f}/hzz4l_{2}S_{3}.input.root".format(self.outputDir,self.mH,self.appendName,self.production.year)
-        else: name_ShapeWSXSBR = "{0}/HCG_XSxBR/{1:.0f}/hzz4l_{2}S_{3}.input.root".format(self.outputDir,self.mH,self.appendName,self.production.year)
+        if (endsInP5): name_ShapeWSXSBR = "{}/HCG_XSxBR/{:.1f}/hzz4l_{}S_{}_{}.input.root".format(self.outputDir,self.mH,self.appendName,self.category,self.production.year)
+        else: name_ShapeWSXSBR = "{}/HCG_XSxBR/{:.0f}/hzz4l_{}S_{}_{}.input.root".format(self.outputDir,self.mH,self.appendName,self.category,self.production.year)
         
-        name_ShapeWS2 = "hzz4l_{0}S_{1}.input.root".format(self.appendName,self.production.year)
+        name_ShapeWS2 = "hzz4l_{}S_{}_{}.input.root".format(self.appendName,self.category,self.production.year)
 
         if(DEBUG): print name_Shape,"  ",name_ShapeWS2
         
@@ -1423,7 +1471,7 @@ class properties_datacardClass:
 
         rates['qqZZ']  = bkgRate_qqzz_Shape
         rates['ggZZ']  = bkgRate_ggzz_Shape
-        rates['VBFbkg']  = 0  #whatever, replace it yourself
+        rates['VBFbkg']  = bkgRate_VBFbkg_Shape
         rates['zjets'] = bkgRate_zjets_Shape
         rates['ttbar'] = 0
         rates['zbb']   = 0

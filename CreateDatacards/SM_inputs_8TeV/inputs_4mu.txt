@@ -20,6 +20,7 @@ channels ggH qqZZ ggZZ zjets
 rate ggH  5.1963998
 rate qqZZ  92.072
 rate ggZZ  13.372352 
+rate VBFbkg 1
 rate zjets 3.09
 eff qqH 0.4377563
 ## signal functions --- no spaces! ##
