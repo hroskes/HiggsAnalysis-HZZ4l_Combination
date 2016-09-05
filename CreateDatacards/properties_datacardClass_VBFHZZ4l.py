@@ -816,41 +816,41 @@ class properties_datacardClass_VBFHZZ4l(object):
 
         qqZZTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "qqZZ", channelName)
 
-        TemplateName = "qqZZTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        TemplateName = "qqZZTempDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         qqZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),qqZZTemplate)
-        PdfName = "qqZZ_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        PdfName = "qqZZ_TemplatePdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         qqZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),qqZZTempDataHist)
 
         ggZZTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ggZZ", channelName)
         
-        TemplateName = "ggZZTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        TemplateName = "ggZZTempDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ggZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ggZZTemplate)
-        PdfName = "ggZZ_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        PdfName = "ggZZ_TemplatePdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ggZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ggZZTempDataHist)
 
         VBFbkgTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "VBFbkg", channelName)
 
-        TemplateName = "VBFbkgTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        TemplateName = "VBFbkgTempDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         VBFbkgTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),VBFbkgTemplate)
-        PdfName = "VBFbkg_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        PdfName = "VBFbkg_TemplatePdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         VBFbkgTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),VBFbkgTempDataHist)
 
         ZjetsTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ZX", channelName)
-        TemplateName = "ZjetsTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        TemplateName = "ZjetsTempDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ZjetsTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplate)
-        PdfName = "Zjets_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        PdfName = "Zjets_TemplatePdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ZjetsTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHist)
 
         ZjetsTemplateDown = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ZX", channelName, "ZXDown")
-        TemplateName = "ZjetsTempDownDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        TemplateName = "ZjetsTempDownDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ZjetsTempDataHistDown = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateDown)
-        PdfName = "Zjets_TemplateDownPdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        PdfName = "Zjets_TemplateDownPdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ZjetsTemplatePdfDown = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHistDown)
 
         ZjetsTemplateUp = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ZX", channelName, "ZXUp")
-        TemplateName = "ZjetsTempUpDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        TemplateName = "ZjetsTempUpDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ZjetsTempDataHistUp = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateUp)
-        PdfName = "Zjets_TemplateUpPdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        PdfName = "Zjets_TemplateUpPdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ZjetsTemplatePdfUp = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHistUp)
 
         funcList_zjets = ROOT.RooArgList()
@@ -1410,22 +1410,19 @@ class properties_datacardClass_VBFHZZ4l(object):
         #getattr(w,'import')(r_fai_norm) ### Should this be renamed?
 
 
-        VBFpdf.SetNameTitle("ggH","ggH")
+        VBFpdf.SetNameTitle("qqH","qqH")
         getattr(w,'import')(VBFpdf, ROOT.RooFit.RecycleConflictNodes())
-        VBFpdf_syst1Up.SetNameTitle("ggH_Res{0}Up".format(self.appendName),"ggH_Res{0}Up".format(self.appendName))
+        VBFpdf_syst1Up.SetNameTitle("qqH_Res{0}Up".format(self.appendName),"qqH_Res{0}Up".format(self.appendName))
         getattr(w,'import')(VBFpdf_syst1Up, ROOT.RooFit.RecycleConflictNodes())
-        VBFpdf_syst1Down.SetNameTitle("ggH_Res{0}Down".format(self.appendName),"ggH_Res{0}Down".format(self.appendName))
+        VBFpdf_syst1Down.SetNameTitle("qqH_Res{0}Down".format(self.appendName),"qqH_Res{0}Down".format(self.appendName))
         getattr(w,'import')(VBFpdf_syst1Down, ROOT.RooFit.RecycleConflictNodes())
-        #ggHpdf_syst2Up.SetNameTitle("ggH_Scale{0}Up".format(self.appendName),"ggH_Scale{0}Up".format(self.appendName))
-        #getattr(w,'import')(ggHpdf_syst2Up, ROOT.RooFit.RecycleConflictNodes())
-        #ggHpdf_syst2Down.SetNameTitle("ggH_Scale{0}Down".format(self.appendName),"ggH_Scale{0}Down".format(self.appendName))
-        #getattr(w,'import')(ggHpdf_syst2Down, ROOT.RooFit.RecycleConflictNodes())
-        #getattr(w,'import')(Sig_T_1,"T_1") 
-        #getattr(w,'import')(Sig_T_2,"T_2")
-        #getattr(w,'import')(Sig_T_4,"T_3")
-        #getattr(w,'import')(Sig_T_1,"T_1_{0}_{1}".format(self.appendName,self.production.year)) 
-        #getattr(w,'import')(Sig_T_2,"T_2_{0}_{1}".format(self.appendName,self.production.year))
-        #getattr(w,'import')(Sig_T_4,"T_3_{0}_{1}".format(self.appendName,self.production.year))
+
+        ggHpdf.SetNameTitle("ggH","ggH")
+        getattr(w,'import')(ggHpdf, ROOT.RooFit.RecycleConflictNodes())
+        ggHpdf_syst1Up.SetNameTitle("ggH_Res{0}Up".format(self.appendName),"ggH_Res{0}Up".format(self.appendName))
+        getattr(w,'import')(ggHpdf_syst1Up, ROOT.RooFit.RecycleConflictNodes())
+        ggHpdf_syst1Down.SetNameTitle("ggH_Res{0}Down".format(self.appendName),"ggH_Res{0}Down".format(self.appendName))
+        getattr(w,'import')(ggHpdf_syst1Down, ROOT.RooFit.RecycleConflictNodes())
 
         qqZZTemplatePdf.SetNameTitle("bkg_qqzz","bkg_qqzz")
         ggZZTemplatePdf.SetNameTitle("bkg_ggzz","bkg_ggzz")
