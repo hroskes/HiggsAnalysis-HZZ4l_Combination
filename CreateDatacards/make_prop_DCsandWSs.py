@@ -25,10 +25,11 @@ def parseOptions():
     parser.add_option('-a', '--append', dest='appendName', type='string', default="",    help='append name for cards dir')
     parser.add_option('-b', action='store_true', dest='noX', default=True ,help='no X11 windows')
     parser.add_option('-t', '--templateDir', type='string', dest='templateDir', default="templates2D" ,help='directory with 2D template histos')
-    parser.add_option('-m', '--model', type='string', dest='model', default="1D" ,help='model: 1D, phase, 2D ')
+    parser.add_option('-m', '--model', type='string', dest='model', default="1D" ,help='model: 1D, phase, 2D, VBFHZZ4l')
     parser.add_option('-r', '--datadir', type='string', dest='dataDirAppend', default="" ,help='dataDirAppend: Reference CMSdata folder per measurement')
     parser.add_option('-A', "--analysis", type='string', dest='analysis', default="fa3", help="fa3, fa2, or fL1")
     parser.add_option('-P', "--production", type='string', dest='production', help="see helperstuff/enums.py, search for class Production(MyEnum) for the list")
+    parser.add_option('-C', "--category", type='string', dest='category', help="see helperstuff/enums.py, search for class Category(MyEnum) for the list")
     
     # store options and arguments as global variables
     global opt, args
@@ -77,11 +78,13 @@ def creationLoop(directory):
     endVal=[     1]
 
     if (opt.model== '1D'):
-      myClass = properties_datacardClass(opt.analysis, opt.production)
+      myClass = properties_datacardClass(opt.analysis, opt.production, opt.category)
     elif (opt.model== 'phase'):
       myClass = properties_datacardClass_phase()
     elif (opt.model== '2D'):
       myClass = properties_datacardClass_2D()
+    elif (opt.model== 'VBFHZZ4l'):
+      myClass = properties_datacardClass_VBFHZZ4l(opt.analysis, opt.production, opt.category)
     else:
       print 'Unknown model '+opt.model+'. Exiting.'
       sys.exit()
