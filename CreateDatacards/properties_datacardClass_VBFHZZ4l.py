@@ -195,8 +195,8 @@ class properties_datacardClass_VBFHZZ4l(object):
         x_name = "CMS_zz4l_fai1"
 
         x = ROOT.RooRealVar(x_name,x_name,-1.,1.)
-        sigmaioversigma1_constvar = ROOT.RooConstVar("sigmaioversigma1", "sigmaioversigma1", sigmaioversigma1(self.analysis, "VBF"))
-        a1 = ROOT.RooFormulaVar("a1", "a1", "(@0>0 ? 1 : -1) * sqrt(1-abs(@0))", ROOT.RooArgList(x))
+        sigmaioversigma1_constvar = ROOT.RooConstVar("sigmaioversigma1", "sigmaioversigma1", sigmaioversigma1(self.analysis, "ggH"))
+        a1 = ROOT.RooFormulaVar("a1", "a1", "sqrt(1-abs(@0))", ROOT.RooArgList(x))
         ai = ROOT.RooFormulaVar("ai", "ai", "(@0>0 ? 1 : -1) * sqrt(abs(@0)/@1)", ROOT.RooArgList(x, sigmaioversigma1_constvar))
         x.setBins(bins)
 
@@ -513,13 +513,13 @@ class properties_datacardClass_VBFHZZ4l(object):
         for i, integral in enumerate(VBF_T_integral, start=1):
             print "VBF T{}".format(i), integral.getVal()
 
-        VBF_T_hist = [ROOT.RooDataHist ("T_{}_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(VBF_T, start=1)]
-        VBF_T_ScaleResUp_hist = [ROOT.RooDataHist ("T_{}_ScaleResUp_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(VBF_T_ScaleResUp, start=1)]
-        VBF_T_ScaleResDown_hist = [ROOT.RooDataHist ("T_{}_ScaleResDown_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(VBF_T_ScaleResDown, start=1)]
+        VBF_T_hist = [ROOT.RooDataHist ("VBF_T_{}_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(VBF_T, start=1)]
+        VBF_T_ScaleResUp_hist = [ROOT.RooDataHist ("VBF_T_{}_ScaleResUp_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(VBF_T_ScaleResUp, start=1)]
+        VBF_T_ScaleResDown_hist = [ROOT.RooDataHist ("VBF_T_{}_ScaleResDown_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(VBF_T_ScaleResDown, start=1)]
 
-        VBF_T_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(VBF_T_hist, start=1)]
-        VBF_T_ScaleResUp_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(VBF_T_ScaleResUp_hist, start=1)]
-        VBF_T_ScaleResDown_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(VBF_T_ScaleResDown_hist, start=1)]
+        VBF_T_histfunc = [ROOT.RooHistFunc ("VBF_T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(VBF_T_hist, start=1)]
+        VBF_T_ScaleResUp_histfunc = [ROOT.RooHistFunc ("VBF_T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(VBF_T_ScaleResUp_hist, start=1)]
+        VBF_T_ScaleResDown_histfunc = [ROOT.RooHistFunc ("VBF_T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(VBF_T_ScaleResDown_hist, start=1)]
         VBFpdfName = "VBF_RooSpinZeroPdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         VBFpdf = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName, VBFpdfName, D1, D2, D3, a1, ai, ROOT.RooArgList(*VBF_T_histfunc))
    
@@ -559,13 +559,13 @@ class properties_datacardClass_VBFHZZ4l(object):
         for i, integral in enumerate(ggH_T_integral, start=1):
             print "ggH T{}".format(i), integral.getVal()
 
-        ggH_T_hist = [ROOT.RooDataHist ("T_{}_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(ggH_T, start=1)]
-        ggH_T_ScaleResUp_hist = [ROOT.RooDataHist ("T_{}_ScaleResUp_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(ggH_T_ScaleResUp, start=1)]
-        ggH_T_ScaleResDown_hist = [ROOT.RooDataHist ("T_{}_ScaleResDown_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(ggH_T_ScaleResDown, start=1)]
+        ggH_T_hist = [ROOT.RooDataHist ("ggH_T_{}_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(ggH_T, start=1)]
+        ggH_T_ScaleResUp_hist = [ROOT.RooDataHist ("ggH_T_{}_ScaleResUp_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(ggH_T_ScaleResUp, start=1)]
+        ggH_T_ScaleResDown_hist = [ROOT.RooDataHist ("ggH_T_{}_ScaleResDown_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(ggH_T_ScaleResDown, start=1)]
 
-        ggH_T_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(ggH_T_hist, start=1)]
-        ggH_T_ScaleResUp_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(ggH_T_ScaleResUp_hist, start=1)]
-        ggH_T_ScaleResDown_histfunc = [ROOT.RooHistFunc ("T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(ggH_T_ScaleResDown_hist, start=1)]
+        ggH_T_histfunc = [ROOT.RooHistFunc ("ggH_T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(ggH_T_hist, start=1)]
+        ggH_T_ScaleResUp_histfunc = [ROOT.RooHistFunc ("ggH_T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(ggH_T_ScaleResUp_hist, start=1)]
+        ggH_T_ScaleResDown_histfunc = [ROOT.RooHistFunc ("ggH_T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(ggH_T_ScaleResDown_hist, start=1)]
         ggHpdfName = "ggH_RooSpinZeroPdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ggHpdf = ROOT.HZZ4L_RooSpinZeroPdf(ggHpdfName, ggHpdfName, D1, D2, D3, x, ROOT.RooArgList(*ggH_T_histfunc))
    
