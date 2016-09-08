@@ -204,8 +204,8 @@ class properties_datacardClass_VBFHZZ4l(object):
         alpha_zz4l = ROOT.RooRealVar(alpha_name,alpha_name,0.,-1.,1.)
         alpha_zz4l.setBins(bins)
 
-
-        D1Name, D2Name, D3Name = discriminantnames(self.analysis, self.category, self.whichproddiscriminants)
+        #add category name in case the same discriminant is used in multiple categories
+        D1Name, D2Name, D3Name = ("{}_{}".format(dname, self.category) for dname in discriminantnames(self.analysis, self.category, self.whichproddiscriminants))
 
         self.LUMI = ROOT.RooRealVar("LUMI_{0:.0f}".format(self.production.year),"LUMI_{0:.0f}".format(self.production.year),self.lumi)
         self.LUMI.setConstant(True)
@@ -456,6 +456,7 @@ class properties_datacardClass_VBFHZZ4l(object):
         elif (self.channel == self.ID_2e2mu): channelName = "2e2mu"
         else: print "Input Error: Unknown channel! (4mu = 1, 4e = 2, 2e2mu = 3)" 
 
+        #for VBF the order is a1^4 a1^3ai a1^2ai^2 a1ai^3 ai^4
         VBF_T = [
                  gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName),
                  gettemplate("VBF", self.analysis, self.production, self.category, self.whichproddiscriminants, "g13gi1", channelName),
@@ -529,27 +530,27 @@ class properties_datacardClass_VBFHZZ4l(object):
         VBFpdf_syst1Down = ROOT.VBFHZZ4L_RooSpinZeroPdf(VBFpdfName_syst1Down, VBFpdfName_syst1Down, D1, D2, D3, a1, ai, ROOT.RooArgList(*VBF_T_ScaleResDown_histfunc))
 
 
-
+        #for ggH, the order is SM, BSM, int
         ggH_T = [
                  gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName),
-                 gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName),
                  gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName),
+                 gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName),
                 ]
         for i, t in enumerate(ggH_T, start=1):
             t.SetName("ggH_T_ZZ_{:.0f}_{}_3D_{}".format(self.production.year,self.appendName, i))
 
         ggH_T_ScaleResUp = [
                             gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName, "ScaleResUp"),
-                            gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName, "ScaleResUp"),
                             gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName, "ScaleResUp"),
+                            gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName, "ScaleResUp"),
                            ]
         for i, t in enumerate(ggH_T_ScaleResUp, start=1):
             t.SetName("ggH_T_ZZ_{:.0f}_{}_3D_{}_ScaleResUp".format(self.production.year,self.appendName, i))
 
         ggH_T_ScaleResDown = [
                               gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName, "ScaleResDown"),
-                              gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName, "ScaleResDown"),
                               gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName, "ScaleResDown"),
+                              gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName, "ScaleResDown"),
                              ]
         for i, t in enumerate(ggH_T_ScaleResDown, start=1):
             t.SetName("ggH_T_ZZ_{:.0f}_{}_3D_{}_ScaleResDown".format(self.production.year,self.appendName, i))

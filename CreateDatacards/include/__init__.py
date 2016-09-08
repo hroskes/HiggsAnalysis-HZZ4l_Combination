@@ -12,7 +12,6 @@ class cd(object):
         os.chdir(self.bkpdir)
 
 includedir = os.path.relpath(os.path.dirname(__file__))
-print includedir
 
 with cd(includedir):
     for f in os.listdir("."):
