@@ -10,7 +10,7 @@ import ROOT
 from array import array
 from systematicsClass import *
 from inputReader import *
-from helperstuff.combinehelpers import getdatatree, gettemplate, discriminantnames
+from helperstuff.combinehelpers import getdatatree, gettemplate, discriminants
 from helperstuff.enums import Analysis, Category, Production
 
 ## ------------------------------------
@@ -197,7 +197,7 @@ class properties_datacardClass:
         alpha_zz4l.setBins(bins)
 
 
-        D1Name, D2Name, D3Name = discriminantnames(self.analysis)
+        D1Name, D2Name, D3Name = discriminants(self.analysis)
 
         self.LUMI = ROOT.RooRealVar("LUMI_{0:.0f}".format(self.production.year),"LUMI_{0:.0f}".format(self.production.year),self.lumi)
         self.LUMI.setConstant(True)
