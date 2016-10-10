@@ -13,11 +13,8 @@ class cd(object):
 
 includedir = os.path.relpath(os.path.dirname(__file__))
 
-with cd(includedir):
-    for f in os.listdir("."):
-        if f.startswith("build"):
-            subprocess.check_call(["root", "-l", "-b", "-q", f])
-
+for cppfile in "HiggsCSandWidth.cc", "HiggsCSandWidthFermi.cc", "HiggsCSandWidthSM4.cc":
+    ROOT.gROOT.LoadMacro(os.path.join(includedir, cppfile))
 
 ROOT.gSystem.AddIncludePath("-I$ROOFITSYS/include/")
 ROOT.gSystem.AddIncludePath("-I"+os.path.join(includedir, '')) #-Iinclude/
