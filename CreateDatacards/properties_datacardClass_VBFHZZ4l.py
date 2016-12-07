@@ -10,7 +10,7 @@ import ROOT
 from array import array
 from systematicsClass import *
 from inputReader import *
-from helperstuff.combinehelpers import discriminants, getdatatree, gettemplate, sigmaioversigma1
+from helperstuff.combinehelpers import discriminants, getdatatree, gettemplate, mixturesign, sigmaioversigma1
 from helperstuff.enums import Analysis, Category, Production, WhichProdDiscriminants
 
 ## ------------------------------------
@@ -195,9 +195,10 @@ class properties_datacardClass_VBFHZZ4l(object):
         x_name = "CMS_zz4l_fai1"
 
         x = ROOT.RooRealVar(x_name,x_name,-1.,1.)
+        mixturesign_constvar = ROOT.RooConstVar("mixturesign", "mixturesign", mixturesign(self.analysis))
         sigmaioversigma1_constvar = ROOT.RooConstVar("sigmaioversigma1", "sigmaioversigma1", sigmaioversigma1(self.analysis, "ggH"))
         a1 = ROOT.RooFormulaVar("a1", "a1", "sqrt(1-abs(@0))", ROOT.RooArgList(x))
-        ai = ROOT.RooFormulaVar("ai", "ai", "(@0>0 ? 1 : -1) * sqrt(abs(@0)/@1)", ROOT.RooArgList(x, sigmaioversigma1_constvar))
+        ai = ROOT.RooFormulaVar("ai", "ai", "@2 * (@0>0 ? 1 : -1) * sqrt(abs(@0)/@1)".format(mixturesign), ROOT.RooArgList(x, sigmaioversigma1_constvar, mixturesign_constvar))
         x.setBins(bins)
 
         alpha_name = "CMS_zz4l_alpha"
