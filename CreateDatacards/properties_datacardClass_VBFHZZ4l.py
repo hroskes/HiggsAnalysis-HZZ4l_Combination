@@ -11,7 +11,7 @@ from array import array
 from systematicsClass import *
 from inputReader import *
 from helperstuff.combinehelpers import discriminants, getdatatree, gettemplate, mixturesign, sigmaioversigma1
-from helperstuff.enums import Analysis, Category, Production, WhichProdDiscriminants
+from helperstuff.enums import Analysis, Category, Production
 
 ## ------------------------------------
 ##  card and workspace class
@@ -19,7 +19,7 @@ from helperstuff.enums import Analysis, Category, Production, WhichProdDiscrimin
 
 class properties_datacardClass_VBFHZZ4l(object):
 
-    def __init__(self, analysis, production, category, whichproddiscriminants):
+    def __init__(self, analysis, production, category):
 
         self.ID_4mu = 1
         self.ID_4e  = 2
@@ -28,10 +28,6 @@ class properties_datacardClass_VBFHZZ4l(object):
         self.analysis = Analysis(analysis)
         self.production = Production(production)
         self.category = Category(category)
-        if self.category != "UntaggedIchep16":
-            self.whichproddiscriminants = WhichProdDiscriminants(whichproddiscriminants)
-        else:
-            self.whichproddiscriminants = None
 
     def loadIncludes(self):
         import include
@@ -455,7 +451,7 @@ class properties_datacardClass_VBFHZZ4l(object):
         else: print "Input Error: Unknown channel! (4mu = 1, 4e = 2, 2e2mu = 3)"
 
         #add category name in case the same discriminant is used in multiple categories
-        discs = discriminants(self.analysis, self.category, self.whichproddiscriminants)
+        discs = discriminants(self.analysis, self.category)
         D1Name, D2Name, D3Name = ("{}_{}".format(d.name, self.category) for d in discs)
         dBinsX, dBinsY, dBinsZ = (d.bins for d in discs)
         dLowX, dLowY, dLowZ = (d.min for d in discs)
@@ -490,31 +486,31 @@ class properties_datacardClass_VBFHZZ4l(object):
         for p in "VBF", "ZH", "WH":
             #for prod+dec the order is a1^4 a1^3ai a1^2ai^2 a1ai^3 ai^4
             T[p] = [
-                    gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName),
-                    gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, "g13gi1", channelName),
-                    gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, "g12gi2", channelName),
-                    gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi3", channelName),
-                    gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName),
+                    gettemplate(p, self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName),
+                    gettemplate(p, self.analysis, self.production, self.category, "g13gi1", channelName),
+                    gettemplate(p, self.analysis, self.production, self.category, "g12gi2", channelName),
+                    gettemplate(p, self.analysis, self.production, self.category, "g11gi3", channelName),
+                    gettemplate(p, self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName),
                    ]
             for i, t in enumerate(T[p], start=1):
                 t.SetName("{}_T_ZZ_{:.0f}_{}_3D_{}".format(p, self.production.year,self.appendName, i))
 
             T_ScaleResUp[p] = [
-                               gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName, "ScaleResUp"),
-                               gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, "g13gi1", channelName, "ScaleResUp"),
-                               gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, "g12gi2", channelName, "ScaleResUp"),
-                               gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi3", channelName, "ScaleResUp"),
-                               gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName, "ScaleResUp"),
+                               gettemplate(p, self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResUp"),
+                               gettemplate(p, self.analysis, self.production, self.category, "g13gi1", channelName, "ScaleResUp"),
+                               gettemplate(p, self.analysis, self.production, self.category, "g12gi2", channelName, "ScaleResUp"),
+                               gettemplate(p, self.analysis, self.production, self.category, "g11gi3", channelName, "ScaleResUp"),
+                               gettemplate(p, self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResUp"),
                               ]
             for i, t in enumerate(T_ScaleResUp[p], start=1):
                 t.SetName("{}_T_ZZ_{:.0f}_{}_3D_{}_ScaleResUp".format(p, self.production.year,self.appendName, i))
 
             T_ScaleResDown[p] = [
-                                 gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName, "ScaleResDown"),
-                                 gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, "g13gi1", channelName, "ScaleResDown"),
-                                 gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, "g12gi2", channelName, "ScaleResDown"),
-                                 gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi3", channelName, "ScaleResDown"),
-                                 gettemplate(p, self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName, "ScaleResDown"),
+                                 gettemplate(p, self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResDown"),
+                                 gettemplate(p, self.analysis, self.production, self.category, "g13gi1", channelName, "ScaleResDown"),
+                                 gettemplate(p, self.analysis, self.production, self.category, "g12gi2", channelName, "ScaleResDown"),
+                                 gettemplate(p, self.analysis, self.production, self.category, "g11gi3", channelName, "ScaleResDown"),
+                                 gettemplate(p, self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResDown"),
                                 ]
             for i, t in enumerate(T_ScaleResDown[p], start=1):
                 t.SetName("{}_T_ZZ_{:.0f}_{}_3D_{}_ScaleResDown".format(p, self.production.year,self.appendName, i))
@@ -541,25 +537,25 @@ class properties_datacardClass_VBFHZZ4l(object):
 
         #for ggH, the order is SM, BSM, int
         T["ggH"] = [
-                    gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName),
-                    gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName),
-                    gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName),
+                    gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName),
+                    gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName),
+                    gettemplate("ggH", self.analysis, self.production, self.category, "g11gi1", channelName),
                    ]
         for i, t in enumerate(T["ggH"], start=1):
             t.SetName("ggH_T_ZZ_{:.0f}_{}_3D_{}".format(self.production.year,self.appendName, i))
 
         T_ScaleResUp["ggH"] = [
-                               gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName, "ScaleResUp"),
-                               gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName, "ScaleResUp"),
-                               gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName, "ScaleResUp"),
+                               gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResUp"),
+                               gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResUp"),
+                               gettemplate("ggH", self.analysis, self.production, self.category, "g11gi1", channelName, "ScaleResUp"),
                               ]
         for i, t in enumerate(T_ScaleResUp["ggH"], start=1):
             t.SetName("ggH_T_ZZ_{:.0f}_{}_3D_{}_ScaleResUp".format(self.production.year,self.appendName, i))
 
         T_ScaleResDown["ggH"] = [
-                              gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[0], channelName, "ScaleResDown"),
-                              gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, self.analysis.purehypotheses[1], channelName, "ScaleResDown"),
-                              gettemplate("ggH", self.analysis, self.production, self.category, self.whichproddiscriminants, "g11gi1", channelName, "ScaleResDown"),
+                              gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResDown"),
+                              gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResDown"),
+                              gettemplate("ggH", self.analysis, self.production, self.category, "g11gi1", channelName, "ScaleResDown"),
                              ]
         for i, t in enumerate(T_ScaleResDown["ggH"], start=1):
             t.SetName("ggH_T_ZZ_{:.0f}_{}_3D_{}_ScaleResDown".format(self.production.year,self.appendName, i))
@@ -824,40 +820,40 @@ class properties_datacardClass_VBFHZZ4l(object):
 
         ## ------------------ 2D BACKGROUND SHAPES FOR PROPERTIES ------------------- ##
 
-        qqZZTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "qqZZ", channelName)
+        qqZZTemplate = gettemplate(self.analysis, self.production, self.category, "qqZZ", channelName)
 
         TemplateName = "qqZZTempDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         qqZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),qqZZTemplate)
         PdfName = "qqZZ_TemplatePdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         qqZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),qqZZTempDataHist)
 
-        ggZZTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ggZZ", channelName)
+        ggZZTemplate = gettemplate(self.analysis, self.production, self.category, "ggZZ", channelName)
 
         TemplateName = "ggZZTempDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ggZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ggZZTemplate)
         PdfName = "ggZZ_TemplatePdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ggZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ggZZTempDataHist)
 
-        VBFbkgTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "VBFbkg", channelName)
+        VBFbkgTemplate = gettemplate(self.analysis, self.production, self.category, "VBFbkg", channelName)
 
         TemplateName = "VBFbkgTempDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         VBFbkgTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),VBFbkgTemplate)
         PdfName = "VBFbkg_TemplatePdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         VBFbkgTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),VBFbkgTempDataHist)
 
-        ZjetsTemplate = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ZX", channelName)
+        ZjetsTemplate = gettemplate(self.analysis, self.production, self.category, "ZX", channelName)
         TemplateName = "ZjetsTempDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ZjetsTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplate)
         PdfName = "Zjets_TemplatePdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ZjetsTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHist)
 
-        ZjetsTemplateDown = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ZX", channelName, "ZXDown")
+        ZjetsTemplateDown = gettemplate(self.analysis, self.production, self.category, "ZX", channelName, "ZXDown")
         TemplateName = "ZjetsTempDownDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ZjetsTempDataHistDown = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateDown)
         PdfName = "Zjets_TemplateDownPdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ZjetsTemplatePdfDown = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHistDown)
 
-        ZjetsTemplateUp = gettemplate(self.analysis, self.production, self.category, self.whichproddiscriminants, "ZX", channelName, "ZXUp")
+        ZjetsTemplateUp = gettemplate(self.analysis, self.production, self.category, "ZX", channelName, "ZXUp")
         TemplateName = "ZjetsTempUpDataHist_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
         ZjetsTempDataHistUp = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateUp)
         PdfName = "Zjets_TemplateUpPdf_{:.0f}_{}_{:.0f}".format(self.channel,self.category,self.production.year)
