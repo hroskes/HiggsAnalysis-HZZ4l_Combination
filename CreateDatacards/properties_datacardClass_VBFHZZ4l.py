@@ -1368,7 +1368,7 @@ class properties_datacardClass_VBFHZZ4l(object):
 
         ## --------------------------- DATASET --------------------------- ##
 
-        data_obs_tree = getdatatree(channelName, self.production, self.category)
+        data_obs_tree = getdatatree(channelName, self.production, self.category, self.analysis)
         data_obs = ROOT.RooDataSet()
         datasetName = "data_obs_{0}".format(self.appendName)
 
