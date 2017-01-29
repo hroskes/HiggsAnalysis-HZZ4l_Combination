@@ -482,6 +482,7 @@ class properties_datacardClass_VBFHZZ4l(object):
         pdf = {}
         pdf_syst1Up = {}
         pdf_syst1Down = {}
+        norm = {}
 
         for p in "qqH", "ZH", "WH":
             #for prod+dec the order is a1^4 a1^3ai a1^2ai^2 a1ai^3 ai^4
@@ -521,7 +522,7 @@ class properties_datacardClass_VBFHZZ4l(object):
                 print "{} T{}".format(p, i), integral.getVal()
 
             normname = "{}_norm".format(p)
-            formula = " + ".join("@0**{}*@1**{}*@{index}".format(4-i, i, i+2) for i in range(5))
+            formula = " + ".join("@0**{}*@1**{}*@{}".format(4-i, i, i+2) for i in range(5))
             formula = "("+formula+") / @2"
             norm[p] = ROOT.RooFormulaVar(normname, formula, RooArgList(a1, ai, *T_integral[p]))
 
@@ -572,8 +573,8 @@ class properties_datacardClass_VBFHZZ4l(object):
 
         r_fai_pures_norm_Name = "ggH_PuresNorm_{}_{}".format(self.channel,self.production.year)
         r_fai_realints_norm_Name = "ggH_RealIntsNorm_{}_{}".format(self.channel,self.production.year)
-        r_fai_pures_norm = ROOT.RooFormulaVar(r_fai_pures_norm_Name,r_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",RooArgList(x,T_integral_ggH[0],T_integral_ggH[1]))
-        r_fai_realints_norm = ROOT.RooFormulaVar(r_fai_realints_norm_Name,r_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",RooArgList(x,T_integral[2],T_integral[0]))
+        r_fai_pures_norm = ROOT.RooFormulaVar(r_fai_pures_norm_Name,r_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",RooArgList(x,T_integral["ggH"][0],T_integral["ggH"][1]))
+        r_fai_realints_norm = ROOT.RooFormulaVar(r_fai_realints_norm_Name,r_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",RooArgList(x,T_integral["ggH"][2],T_integral["ggH"][0]))
         norm["ggH"] = ROOT.RooFormulaVar("ggH_norm","ggH_norm","(abs(@2))>1 ? 0. : TMath::Max((@0+@1),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,x))
 
         T_hist["ggH"] = [ROOT.RooDataHist ("ggH_T_{}_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(T["ggH"], start=1)]
@@ -581,8 +582,8 @@ class properties_datacardClass_VBFHZZ4l(object):
         T_ScaleResDown_hist["ggH"] = [ROOT.RooDataHist ("ggH_T_{}_ScaleResDown_hist".format(i), "", ROOT.RooArgList(D1,D2,D3), t) for i, t in enumerate(T_ScaleResDown["ggH"], start=1)]
 
         T_histfunc["ggH"] = [ROOT.RooHistFunc ("ggH_T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(T_hist["ggH"], start=1)]
-        T_ScaleResUp_histfunc["ggH"] = [ROOT.RooHistFunc ("ggH_T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(T_ScaleResUp_hist["ggH"], start=1)]
-        T_ScaleResDown_histfunc["ggH"] = [ROOT.RooHistFunc ("ggH_T_{}_histfunc".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(T_ScaleResDown_hist["ggH"], start=1)]
+        T_ScaleResUp_histfunc["ggH"] = [ROOT.RooHistFunc ("ggH_T_{}_histfunc_ScaleResUp".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(T_ScaleResUp_hist["ggH"], start=1)]
+        T_ScaleResDown_histfunc["ggH"] = [ROOT.RooHistFunc ("ggH_T_{}_histfunc_ScaleResDown".format(i), "", ROOT.RooArgSet(D1,D2,D3), datahist) for i, datahist in enumerate(T_ScaleResDown_hist["ggH"], start=1)]
 
         pdf["ggH"] = ROOT.HZZ4L_RooSpinZeroPdf("ggH", "ggH", D1, D2, D3, x, ROOT.RooArgList(*T_histfunc["ggH"]))
 
