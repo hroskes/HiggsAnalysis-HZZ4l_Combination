@@ -2,15 +2,6 @@ import os
 import ROOT
 import subprocess
 
-class cd(object):
-    def __init__(self, folder):
-        self.folder = folder
-    def __enter__(self):
-        self.bkpdir = os.getcwd()
-        os.chdir(self.folder)
-    def __exit__(self, *exceptioninfo):
-        os.chdir(self.bkpdir)
-
 includedir = os.path.relpath(os.path.dirname(__file__))
 
 for cppfile in "HiggsCSandWidth.cc", "HiggsCSandWidthFermi.cc", "HiggsCSandWidthSM4.cc":
