@@ -10,8 +10,8 @@ import ROOT
 from array import array
 from systematicsClass import *
 from inputReader import *
-from helperstuff.combinehelpers import getdatatree, gettemplate, discriminants
-from helperstuff.enums import Analysis, Category, Production
+from helperstuff.combinehelpers import getdatatree, gettemplate, discriminantnames
+from helperstuff.enums import Analysis, Production
 
 ## ------------------------------------
 ##  card and workspace class
@@ -19,7 +19,7 @@ from helperstuff.enums import Analysis, Category, Production
 
 class properties_datacardClass:
 
-    def __init__(self, analysis, production, category):
+    def __init__(self, analysis, production):
     
         self.ID_4mu = 1
         self.ID_4e  = 2
@@ -27,7 +27,6 @@ class properties_datacardClass:
         self.isFSR = True
         self.analysis = Analysis(analysis)
         self.production = Production(production)
-        self.category = Category(category)
 
     def loadIncludes(self):
         import include
@@ -197,7 +196,7 @@ class properties_datacardClass:
         alpha_zz4l.setBins(bins)
 
 
-        D1Name, D2Name, D3Name = discriminants(self.analysis)
+        D1Name, D2Name, D3Name = discriminantnames(self.analysis)
 
         self.LUMI = ROOT.RooRealVar("LUMI_{0:.0f}".format(self.production.year),"LUMI_{0:.0f}".format(self.production.year),self.lumi)
         self.LUMI.setConstant(True)
@@ -448,22 +447,22 @@ class properties_datacardClass:
         elif (self.channel == self.ID_2e2mu): channelName = "2e2mu"
         else: print "Input Error: Unknown channel! (4mu = 1, 4e = 2, 2e2mu = 3)" 
 
-        Sig_T_1 = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName)
-        Sig_T_2 = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName)
-        Sig_T_4 = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.mixdecayhypothesis, channelName)
+        Sig_T_1 = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[0], channelName)
+        Sig_T_2 = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[1], channelName)
+        Sig_T_4 = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[2], channelName)
         Sig_T_1.SetName("T_ZZ_{0:.0f}_{1}_3D_1".format(self.production.year,self.appendName))
         Sig_T_2.SetName("T_ZZ_{0:.0f}_{1}_3D_2".format(self.production.year,self.appendName))
         Sig_T_4.SetName("T_ZZ_{0:.0f}_{1}_3D_4".format(self.production.year,self.appendName))
 
-        Sig_T_1_ScaleResUp = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResUp")
-        Sig_T_2_ScaleResUp = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResUp")
-        Sig_T_4_ScaleResUp = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.mixdecayhypothesis, channelName, "ScaleResUp")
+        Sig_T_1_ScaleResUp = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[0], channelName, "ScaleResUp")
+        Sig_T_2_ScaleResUp = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[1], channelName, "ScaleResUp")
+        Sig_T_4_ScaleResUp = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[2], channelName, "ScaleResUp")
         Sig_T_1_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_1_ScaleResUp".format(self.production.year,self.appendName))
         Sig_T_2_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_2_ScaleResUp".format(self.production.year,self.appendName))
         Sig_T_4_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_4_ScaleResUp".format(self.production.year,self.appendName))
-        Sig_T_1_ScaleResDown = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[0], channelName, "ScaleResDown")
-        Sig_T_2_ScaleResDown = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.purehypotheses[1], channelName, "ScaleResDown")
-        Sig_T_4_ScaleResDown = gettemplate("ggH", self.analysis, self.production, self.category, self.analysis.mixdecayhypothesis, channelName, "ScaleResDown")
+        Sig_T_1_ScaleResDown = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[0], channelName, "ScaleResDown")
+        Sig_T_2_ScaleResDown = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[1], channelName, "ScaleResDown")
+        Sig_T_4_ScaleResDown = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[2], channelName, "ScaleResDown")
         Sig_T_1_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_1_ScaleResDown".format(self.production.year,self.appendName))
         Sig_T_2_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_2_ScaleResDown".format(self.production.year,self.appendName))
         Sig_T_4_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_4_ScaleResDown".format(self.production.year,self.appendName))
@@ -772,14 +771,14 @@ class properties_datacardClass:
 
         ## ------------------ 2D BACKGROUND SHAPES FOR PROPERTIES ------------------- ##
 
-        qqZZTemplate = gettemplate(self.analysis, self.production, self.category, "qqZZ", channelName)
+        qqZZTemplate = gettemplate(self.analysis, self.production, "qqZZ", channelName)
 
         TemplateName = "qqZZTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         qqZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),qqZZTemplate)
         PdfName = "qqZZ_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         qqZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),qqZZTempDataHist)
 
-        ggZZTemplate = gettemplate(self.analysis, self.production, self.category, "ggZZ", channelName)
+        ggZZTemplate = gettemplate(self.analysis, self.production, "ggZZ", channelName)
         
         TemplateName = "ggZZTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ggZZTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ggZZTemplate)
@@ -787,19 +786,19 @@ class properties_datacardClass:
         ggZZTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ggZZTempDataHist)
 
 
-        ZjetsTemplate = gettemplate(self.analysis, self.production, self.category, "ZX", channelName)
+        ZjetsTemplate = gettemplate(self.analysis, self.production, "ZX", channelName)
         TemplateName = "ZjetsTempDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ZjetsTempDataHist = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplate)
         PdfName = "Zjets_TemplatePdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ZjetsTemplatePdf = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHist)
 
-        ZjetsTemplateDown = gettemplate(self.analysis, self.production, self.category, "ZX", channelName, "ZXDown")
+        ZjetsTemplateDown = gettemplate(self.analysis, self.production, "ZX", channelName, "ZXDown")
         TemplateName = "ZjetsTempDownDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ZjetsTempDataHistDown = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateDown)
         PdfName = "Zjets_TemplateDownPdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ZjetsTemplatePdfDown = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHistDown)
 
-        ZjetsTemplateUp = gettemplate(self.analysis, self.production, self.category, "ZX", channelName, "ZXUp")
+        ZjetsTemplateUp = gettemplate(self.analysis, self.production, "ZX", channelName, "ZXUp")
         TemplateName = "ZjetsTempUpDataHist_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         ZjetsTempDataHistUp = ROOT.RooDataHist(TemplateName,TemplateName,ROOT.RooArgList(D1,D2,D3),ZjetsTemplateUp)
         PdfName = "Zjets_TemplateUpPdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
@@ -1313,7 +1312,7 @@ class properties_datacardClass:
         
         ## --------------------------- DATASET --------------------------- ##
 
-        data_obs_tree = getdatatree(channelName, self.production, self.category)
+        data_obs_tree = getdatatree(channelName, self.production)
         data_obs = ROOT.RooDataSet()
         datasetName = "data_obs_{0}".format(self.appendName)
         

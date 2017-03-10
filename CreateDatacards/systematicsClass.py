@@ -137,7 +137,7 @@ class systematicsClass:
 
     def Write_Systematics_Line(self,systLine,theFile,theInputs):
         print "~~~~~~~~~~~~~~~~~"
-        channelList=['ggH','qqH','WH','ZH','ttH','qqZZ','ggZZ','VBFbkg','zjets','ttbar','zbb']
+        channelList=['ggH','qqH','WH','ZH','ttH','qqZZ','ggZZ','zjets','ttbar','zbb']
         if theInputs["all"]:
             channelList=['ggH','qqZZ','ggZZ','zjets','ttbar','zbb']
         
@@ -162,7 +162,6 @@ class systematicsClass:
         systLine['ttH']  = "{0} ".format(self.lumiUncertainty)
         systLine['qqZZ'] = "{0} ".format(self.lumiUncertainty)
         systLine['ggZZ'] = "{0} ".format(self.lumiUncertainty)
-        systLine['VBFbkg'] = "{0} ".format(self.lumiUncertainty)
         systLine['zjets']= "- "
         systLine['ttbar']= "{0} ".format(self.lumiUncertainty)
         systLine['zbb']  = "{0} ".format(self.lumiUncertainty)
@@ -181,7 +180,6 @@ class systematicsClass:
             systLine['ttH']  = "- "
             systLine['qqZZ'] = "{0:.4f} ".format(self.qqVV_pdfSys)
             systLine['ggZZ'] = "- "
-            systLine['VBFbkg'] = "{0:.4f} "
             systLine['zjets']= "- "
             systLine['ttbar']= "- "
             systLine['zbb']  = "- "
@@ -196,7 +194,6 @@ class systematicsClass:
             systLine['ttH']  = "- " 
             systLine['qqZZ'] = "{0:.4f} ".format(self.qqVV_pdfSys)
             systLine['ggZZ'] = "- "
-            systLine['VBFbkg'] = "{0:.4f} ".format(self.qqVV_pdfSys)
             systLine['zjets']= "- "
             systLine['ttbar']= "- "
             systLine['zbb']  = "- "
@@ -215,7 +212,6 @@ class systematicsClass:
             systLine['ttH']  = "{0:.4f} ".format(1. + (self.CSpdfErrPlus_tth-self.CSpdfErrMinus_tth)/2)
             systLine['qqZZ'] = "- " 
             systLine['ggZZ'] = "{0:.4f} ".format(self.ggVV_pdfSys)
-            systLine['VBFbkg'] = "- " 
             systLine['zjets']= "- " 
             systLine['ttbar']= "- "
             systLine['zbb']  = "- "
@@ -230,7 +226,6 @@ class systematicsClass:
             systLine['ttH']  = "- " 
             systLine['qqZZ'] = "- " 
             systLine['ggZZ'] = "{0:.4f} ".format(self.ggVV_pdfSys)
-            systLine['VBFbkg'] = "- " 
             systLine['zjets']= "- " 
             systLine['ttbar']= "- "
             systLine['zbb']  = "- "
@@ -246,7 +241,6 @@ class systematicsClass:
         systLine['ttH']  = "1.02 " 
         systLine['qqZZ'] = "- " 
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- " 
         systLine['zjets']= "- " 
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -264,7 +258,6 @@ class systematicsClass:
         systLine['ttH']  = "- " 
         systLine['qqZZ'] = "- " 
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- " 
         systLine['zjets']= "- " 
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -282,7 +275,6 @@ class systematicsClass:
         systLine['ttH']  = "- " 
         systLine['qqZZ'] = "- " 
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- " 
         systLine['zjets']= "- " 
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -299,7 +291,6 @@ class systematicsClass:
         systLine['ttH']  = "- " 
         systLine['qqZZ'] = "- " 
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- " 
         systLine['zjets']= "- " 
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -317,7 +308,6 @@ class systematicsClass:
         systLine['ttH']  = "{0:.4f} ".format(1. + (self.CSscaleErrPlus_tth-self.CSscaleErrMinus_tth)/2.)
         systLine['qqZZ'] = "- " 
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- " 
         systLine['zjets']= "- " 
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -335,7 +325,6 @@ class systematicsClass:
         systLine['ttH']  = "- "
         systLine['qqZZ'] = "- " 
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- " 
         systLine['zjets']= "- " 
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -353,7 +342,6 @@ class systematicsClass:
         systLine['ttH']  = "- "
         systLine['qqZZ'] = "- " 
         systLine['ggZZ'] = "{0:.4f} ".format(self.ggVV_scaleSys)
-        systLine['VBFbkg'] = "- " 
         systLine['zjets']= "- " 
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -371,7 +359,6 @@ class systematicsClass:
         systLine['ttH']  = "- "
         systLine['qqZZ'] = "{0:.4f} ".format(self.qqVV_scaleSys) 
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "{0:.4f} ".format(self.qqVV_scaleSys) 
         systLine['zjets']= "- " 
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -389,7 +376,6 @@ class systematicsClass:
         systLine['ttH']  = "{0:.3f} ".format(self.theoryHighMass)
         systLine['qqZZ'] = "- "
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- "
         systLine['zjets']= "- "
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -407,7 +393,6 @@ class systematicsClass:
         systLine['ttH']  = "1.02 " 
         systLine['qqZZ'] = "- "
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- "
         systLine['zjets']= "- "
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -424,7 +409,6 @@ class systematicsClass:
         systLine['ttH']  = "{0:.4f} ".format(self.BRErr_Hff)
         systLine['qqZZ'] = "- "
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- "
         systLine['zjets']= "- "
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -442,7 +426,6 @@ class systematicsClass:
         systLine['ttH']  = "{0:.4f} ".format(self.BRErr_HVV)
         systLine['qqZZ'] = "- "
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- "
         systLine['zjets']= "- "
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -459,7 +442,6 @@ class systematicsClass:
         systLine['ttH']  = "{0:.4f} ".format(self.BRErr_Hgg)
         systLine['qqZZ'] = "- "
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- "
         systLine['zjets']= "- "
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -477,7 +459,6 @@ class systematicsClass:
             systLine['ttH']  = "{0:.3f} ".format(self.eSelError)
             systLine['qqZZ'] = "{0:.3f} ".format(self.eSelError)
             systLine['ggZZ'] = "{0:.3f} ".format(self.eSelError)
-            systLine['VBFbkg'] = "{0:.3f} ".format(self.eSelError)
             systLine['zjets']= "- "
             systLine['ttbar']= "- "
             systLine['zbb']  = "- "
@@ -494,7 +475,6 @@ class systematicsClass:
             systLine['ttH']  = "{0:.3f} ".format(self.eSelError2e2mu)
             systLine['qqZZ'] = "{0:.3f} ".format(self.eSelError2e2mu)
             systLine['ggZZ'] = "{0:.3f} ".format(self.eSelError2e2mu)
-            systLine['VBFbkg'] = "{0:.3f} ".format(self.eSelError2e2mu)
             systLine['zjets']= "- "
             systLine['ttbar']= "- "
             systLine['zbb']  = "- "
@@ -512,7 +492,6 @@ class systematicsClass:
             systLine['ttH']  = "{0:.3f} ".format(self.muSelError)
             systLine['qqZZ'] = "{0:.3f} ".format(self.muSelError)
             systLine['ggZZ'] = "{0:.3f} ".format(self.muSelError)
-            systLine['VBFbkg'] = "{0:.3f} ".format(self.muSelError)
             systLine['zjets']= "- "
             systLine['ttbar']= "- "
             systLine['zbb']  = "- "
@@ -529,7 +508,6 @@ class systematicsClass:
             systLine['ttH']  = "{0:.3f} ".format(self.muSelError2e2mu)
             systLine['qqZZ'] = "{0:.3f} ".format(self.muSelError2e2mu)
             systLine['ggZZ'] = "{0:.3f} ".format(self.muSelError2e2mu)
-            systLine['VBFbkg'] = "{0:.3f} ".format(self.muSelError2e2mu)
             systLine['zjets']= "- "
             systLine['ttbar']= "- "
             systLine['zbb']  = "- "
@@ -547,7 +525,6 @@ class systematicsClass:
         systLine['ttH']  = "- " 
         systLine['qqZZ'] = "- " 
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- " 
         systLine['zjets']= "{0}/{1} ".format(self.zjetKappaLow,self.zjetKappaHigh)
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -565,7 +542,6 @@ class systematicsClass:
         systLine['ttH']  = "- " 
         systLine['qqZZ'] = "- " 
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- " 
         systLine['zjets']= "{0}/{1} ".format(self.zjetKappaLow,self.zjetKappaHigh)
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -583,7 +559,6 @@ class systematicsClass:
         systLine['ttH']  = "- " 
         systLine['qqZZ'] = "- " 
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- " 
         systLine['zjets']= "{0}/{1} ".format(self.zjetKappaLow,self.zjetKappaHigh)
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -614,7 +589,6 @@ class systematicsClass:
         systLine['ttH']  = "- "
         systLine['qqZZ'] = "- "
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- "
         systLine['zjets']= "- " 
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "
@@ -633,7 +607,6 @@ class systematicsClass:
         systLine['ttH']  = "- "
         systLine['qqZZ'] = "- "
         systLine['ggZZ'] = "- "
-        systLine['VBFbkg'] = "- "
         systLine['zjets']= "- " 
         systLine['ttbar']= "- "
         systLine['zbb']  = "- "

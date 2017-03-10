@@ -36,7 +36,6 @@ class inputReader:
         self.ttH_chan = False
         self.qqZZ_chan = False
         self.ggZZ_chan = False
-        self.VBFbkg_chan = False
         self.zjets_chan = False
         self.ttbar_chan = False
         self.zbb_chan = False
@@ -49,13 +48,11 @@ class inputReader:
         self.ggH_rate = -999.9
         self.qqZZ_rate = -999.9
         self.ggZZ_rate = -999.9
-        self.VBFbkg_rate = -999.9
         self.zjets_rate = -999.9
         self.ttbar_rate = -999.9
         self.zbb_rate = -999.9
         self.qqZZ_lumi = -999.9
         self.ggZZ_lumi = -999.9
-        self.VBFbkg_lumi = -999.9
         self.zjets_lumi = -999.9
         self.ttbar_lumi = -999.9
         self.zbb_lumi = -999.9
@@ -310,12 +307,11 @@ class inputReader:
                     elif chan.lower().startswith("tth"):   self.ttH_chan = True
                     elif chan.lower().startswith("qqzz"):  self.qqZZ_chan = True
                     elif chan.lower().startswith("ggzz"):  self.ggZZ_chan = True
-                    elif chan.lower().startswith("VBFbkg"):  self.VBFbkg_chan = True
                     elif chan.lower().startswith("zjets"): self.zjets_chan = True
                     elif chan.lower().startswith("ttbar"): self.ttbar_chan = True
                     elif chan.lower().startswith("zbb"):   self.zbb_chan = True
                     elif chan.lower().startswith("all"):   self.all_chan = True
-                    else : raise RuntimeError, "Unknown channel {0}, choices are ggH, qqH, WH, ZH, ttH, qqZZ, ggZZ, VBFbkg, zjets".format(chan)
+                    else : raise RuntimeError, "Unknown channel {0}, choices are ggH, qqH, WH, ZH, ttH, qqZZ, ggZZ, zjets".format(chan)
           
             
             if f[0].lower().startswith("rate"):
@@ -329,9 +325,6 @@ class inputReader:
                 if f[1].lower().startswith("ggzz"):
                     self.ggZZ_rate = float(f[2])
                     if len(f) == 4: self.ggZZ_lumi = float(f[3])
-                if f[1].lower().startswith("VBFbkg"):
-                    self.VBFbkg_rate = float(f[2])
-                    if len(f) == 4: self.VBFbkg_lumi = float(f[3])
                 if f[1].lower().startswith("zjets"):
                     self.zjets_rate = float(f[2])
                     if len(f) == 4: self.zjets_lumi = float(f[3])
@@ -695,7 +688,6 @@ class inputReader:
         if self.ggH_chan and not self.goodEntry(self.ggH_rate): raise RuntimeError, "{0} is not set.  Check inputs!".format("ggH_rate")
         if self.qqZZ_chan and not self.goodEntry(self.qqZZ_rate): raise RuntimeError, "{0} is not set.  Check inputs!".format("qqZZ_rate")
         if self.ggZZ_chan and not self.goodEntry(self.ggZZ_rate): raise RuntimeError, "{0} is not set.  Check inputs!".format("ggZZ_rate")
-        if self.VBFbkg_chan and not self.goodEntry(self.VBFbkg_rate): raise RuntimeError, "{0} is not set.  Check inputs!".format("VBFbkg_rate")
         if self.zjets_chan and not self.goodEntry(self.zjets_rate): raise RuntimeError, "{0} is not set.  Check inputs!".format("zjets_rate")
         if self.zbb_chan and not self.goodEntry(self.zbb_rate): raise RuntimeError, "{0} is not set.  Check inputs!".format("zbb_rate")
         if self.ttbar_chan and not self.goodEntry(self.ttbar_rate): raise RuntimeError, "{0} is not set.  Check inputs!".format("ttbar_rate")
@@ -831,7 +823,6 @@ class inputReader:
 
         if not self.goodEntry(self.qqZZ_lumi):  self.qqZZ_lumi = self.lumi
         if not self.goodEntry(self.ggZZ_lumi):  self.ggZZ_lumi = self.lumi
-        if not self.goodEntry(self.VBFbkg_lumi):  self.VBFbkg_lumi = self.lumi
         if not self.goodEntry(self.zjets_lumi): self.zjets_lumi = self.lumi
         if not self.goodEntry(self.zbb_lumi):   self.zbb_lumi = self.lumi
         if not self.goodEntry(self.ttbar_lumi): self.ttbar_lumi = self.lumi
@@ -887,7 +878,6 @@ class inputReader:
         dict['ttH_SM'] = self.ttH_chan
         dict['qqZZ'] = self.qqZZ_chan
         dict['ggZZ'] = self.ggZZ_chan
-        dict['VBFbkg'] = self.VBFbkg_chan
         dict['zjets'] = self.zjets_chan
         dict['ttbar'] = self.ttbar_chan
         dict['zbb'] = self.zbb_chan
@@ -895,7 +885,6 @@ class inputReader:
         dict['ggH_rate'] = self.ggH_rate
         dict['qqZZ_rate'] = self.qqZZ_rate
         dict['ggZZ_rate'] = self.ggZZ_rate
-        dict['VBFbkg_rate'] = self.VBFbkg_rate
         dict['zjets_rate'] = self.zjets_rate
         dict['ttbar_rate'] = self.ttbar_rate
         dict['zbb_rate'] = self.zbb_rate
@@ -904,7 +893,6 @@ class inputReader:
 
         dict['qqZZ_lumi'] = float(self.qqZZ_lumi)
         dict['ggZZ_lumi'] = float(self.ggZZ_lumi) 
-        dict['VBFbkg_lumi'] = float(self.VBFbkg_lumi) 
         dict['zjets_lumi'] = float(self.zjets_lumi)
         dict['ttbar_lumi'] = float(self.ttbar_lumi)
         dict['zbb_lumi'] = float(self.zbb_lumi)
