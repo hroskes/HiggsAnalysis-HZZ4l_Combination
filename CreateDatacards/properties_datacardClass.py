@@ -81,7 +81,7 @@ class properties_datacardClass:
             #print '\nmakeXsBrFunction : procName=',procName,'   signalProc=',signalProc,'  mH (input)=',rrvMH.getVal(),
             #print '   CS=',myCSWrhf.HiggsCS(signalProc, mHVal, self.sqrts),'   BR=',BR
 
-        rdhname = "rdhXsBr_{0}_{1}_{2}".format(procName,self.channel,self.production.year)
+        rdhname = "rdhXsBr_{0}_{1}_{2}".format(procName,self.channel,self.sqrts)
         rdhXsBr = RooDataHist(rdhname,rdhname, ROOT.RooArgList(rrvMH), histXsBr)
 
         return rdhXsBr
@@ -826,271 +826,28 @@ class properties_datacardClass:
 
         ## ---------------- END 2D BACKGROUND SHAPES FOR PROPERTIES ----------------- ##
 
-        ## ----------------------- PLOTS FOR SANITY CHECKS -------------------------- ##
-
-        canv_name = "czz_{0}_{1}".format(self.mH,self.appendName)
-
-        czz = ROOT.TCanvas( canv_name, canv_name, 750, 700 )
-        czz.cd()
-        zzframe_s = CMS_zz4l_mass.frame(45)
-        if self.bUseCBnoConvolution: super(RooDoubleCB,signalCB_ggH).plotOn(zzframe_s, ROOT.RooFit.LineStyle(1), ROOT.RooFit.LineColor(1) )
-        elif self.isHighMass : super(ROOT.RooFFTConvPdf,sig_ggH_HM).plotOn(zzframe_s, ROOT.RooFit.LineStyle(1), ROOT.RooFit.LineColor(1) )
-        else : super(ROOT.RooFFTConvPdf,sig_ggH).plotOn(zzframe_s, ROOT.RooFit.LineStyle(1), ROOT.RooFit.LineColor(1) )
-        super(ROOT.RooqqZZPdf_v2,bkg_qqzz).plotOn(zzframe_s, ROOT.RooFit.LineStyle(1), ROOT.RooFit.LineColor(4) )
-        super(ROOT.RooggZZPdf_v2,bkg_ggzz).plotOn(zzframe_s, ROOT.RooFit.LineStyle(1), ROOT.RooFit.LineColor(6) )
-        super(ROOT.RooAbsPdf,bkg_zjets).plotOn(zzframe_s, ROOT.RooFit.LineStyle(2), ROOT.RooFit.LineColor(6) )
-        zzframe_s.Draw()
-        figName = "{0}/figs/mzz_{1}_{2}.png".format(self.outputDir, self.mH, self.appendName)
-        czz.SaveAs(figName)
-        del czz
-
         ## ------------------- LUMI -------------------- ##
 
         rrvLumi = ROOT.RooRealVar("cmshzz4l_lumi","cmshzz4l_lumi",self.lumi)
 
         ## ----------------------- SIGNAL RATES ----------------------- ##
 
-        CMS_zz4l_mass.setRange("shape",self.low_M,self.high_M)
-
-        fr_low_M = self.low_M
-        fr_high_M = self.high_M
-        if (self.mH >= 450):
-            fr_low_M = 100
-            fr_high_M = 1000
-        if (self.mH >= 750):
-            fr_low_M = 100
-            fr_high_M = 1400
-
-
-        CMS_zz4l_mass.setRange("fullrangesignal",fr_low_M,fr_high_M)
-        CMS_zz4l_mass.setRange("fullrange",100,1400)
-
-
-        sigEffName = "hzz4lggHeff_{0:.0f}_{1:.0f}_a1".format(self.channel,self.production.year)
-        rrva1 = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_a1'])
-        sigEffName = "hzz4lggHeff_{0:.0f}_{1:.0f}_a2".format(self.channel,self.production.year)
-        rrva2 = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_a2'])
-        sigEffName = "hzz4lggHeff_{0:.0f}_{1:.0f}_a3".format(self.channel,self.production.year)
-        rrva3 = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_a3'])
-        sigEffName = "hzz4lggHeff_{0:.0f}_{1:.0f}_a4".format(self.channel,self.production.year)
-        rrva4 = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_a4'])
-        sigEffName = "hzz4lggHeff_{0:.0f}_{1:.0f}_b1".format(self.channel,self.production.year)
-        rrvb1 = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_b1'])
-        sigEffName = "hzz4lggHeff_{0:.0f}_{1:.0f}_b2".format(self.channel,self.production.year)
-        rrvb2 = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_b2'])
-        sigEffName = "hzz4lggHeff_{0:.0f}_{1:.0f}_b3".format(self.channel,self.production.year)
-        rrvb3 = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_b3'])
-        sigEffName = "hzz4lggHeff_{0:.0f}_{1:.0f}_g1".format(self.channel,self.production.year)
-        rrvg1 = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_g1'])
-        sigEffName = "hzz4lggHeff_{0:.0f}_{1:.0f}_g2".format(self.channel,self.production.year)
-        rrvg2 = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_g2'])
-        sigEffName = "hzz4lggHeff_{0:.0f}_{1:.0f}_g3".format(self.channel,self.production.year)
-        rrvg3 = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_g3'])
-
-        sigEffName = "hzz4lqqHeff_{0:.0f}_{1:.0f}_a1".format(self.channel,self.production.year)
-        rrva1_qqh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_qqHa1'])
-        sigEffName = "hzz4lqqHeff_{0:.0f}_{1:.0f}_a2".format(self.channel,self.production.year)
-        rrva2_qqh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_qqHa2'])
-        sigEffName = "hzz4lqqHeff_{0:.0f}_{1:.0f}_a3".format(self.channel,self.production.year)
-        rrva3_qqh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_qqHa3'])
-        sigEffName = "hzz4lqqHeff_{0:.0f}_{1:.0f}_a4".format(self.channel,self.production.year)
-        rrva4_qqh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_qqHa4'])
-        sigEffName = "hzz4lqqHeff_{0:.0f}_{1:.0f}_b1".format(self.channel,self.production.year)
-        rrvb1_qqh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_qqHb1'])
-        sigEffName = "hzz4lqqHeff_{0:.0f}_{1:.0f}_b2".format(self.channel,self.production.year)
-        rrvb2_qqh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_qqHb2'])
-        sigEffName = "hzz4lqqHeff_{0:.0f}_{1:.0f}_b3".format(self.channel,self.production.year)
-        rrvb3_qqh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_qqHb3'])
-        sigEffName = "hzz4lqqHeff_{0:.0f}_{1:.0f}_g1".format(self.channel,self.production.year)
-        rrvg1_qqh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_qqHg1'])
-        sigEffName = "hzz4lqqHeff_{0:.0f}_{1:.0f}_g2".format(self.channel,self.production.year)
-        rrvg2_qqh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_qqHg2'])
-        sigEffName = "hzz4lqqHeff_{0:.0f}_{1:.0f}_g3".format(self.channel,self.production.year)
-        rrvg3_qqh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_qqHg3'])
-
-        sigEffName = "hzz4lZHeff_{0:.0f}_{1:.0f}_a1".format(self.channel,self.production.year)
-        rrva1_zh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ZHa1'])
-        sigEffName = "hzz4lZHeff_{0:.0f}_{1:.0f}_a2".format(self.channel,self.production.year)
-        rrva2_zh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ZHa2'])
-        sigEffName = "hzz4lZHeff_{0:.0f}_{1:.0f}_a3".format(self.channel,self.production.year)
-        rrva3_zh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ZHa3'])
-        sigEffName = "hzz4lZHeff_{0:.0f}_{1:.0f}_a4".format(self.channel,self.production.year)
-        rrva4_zh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ZHa4'])
-        sigEffName = "hzz4lZHeff_{0:.0f}_{1:.0f}_b1".format(self.channel,self.production.year)
-        rrvb1_zh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ZHb1'])
-        sigEffName = "hzz4lZHeff_{0:.0f}_{1:.0f}_b2".format(self.channel,self.production.year)
-        rrvb2_zh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ZHb2'])
-        sigEffName = "hzz4lZHeff_{0:.0f}_{1:.0f}_b3".format(self.channel,self.production.year)
-        rrvb3_zh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ZHb3'])
-        sigEffName = "hzz4lZHeff_{0:.0f}_{1:.0f}_g1".format(self.channel,self.production.year)
-        rrvg1_zh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ZHg1'])
-        sigEffName = "hzz4lZHeff_{0:.0f}_{1:.0f}_g2".format(self.channel,self.production.year)
-        rrvg2_zh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ZHg2'])
-        sigEffName = "hzz4lZHeff_{0:.0f}_{1:.0f}_g3".format(self.channel,self.production.year)
-        rrvg3_zh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ZHg3'])
-
-        sigEffName = "hzz4lWHeff_{0:.0f}_{1:.0f}_a1".format(self.channel,self.production.year)
-        rrva1_wh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_WHa1'])
-        sigEffName = "hzz4lWHeff_{0:.0f}_{1:.0f}_a2".format(self.channel,self.production.year)
-        rrva2_wh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_WHa2'])
-        sigEffName = "hzz4lWHeff_{0:.0f}_{1:.0f}_a3".format(self.channel,self.production.year)
-        rrva3_wh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_WHa3'])
-        sigEffName = "hzz4lWHeff_{0:.0f}_{1:.0f}_a4".format(self.channel,self.production.year)
-        rrva4_wh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_WHa4'])
-        sigEffName = "hzz4lWHeff_{0:.0f}_{1:.0f}_b1".format(self.channel,self.production.year)
-        rrvb1_wh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_WHb1'])
-        sigEffName = "hzz4lWHeff_{0:.0f}_{1:.0f}_b2".format(self.channel,self.production.year)
-        rrvb2_wh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_WHb2'])
-        sigEffName = "hzz4lWHeff_{0:.0f}_{1:.0f}_b3".format(self.channel,self.production.year)
-        rrvb3_wh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_WHb3'])
-        sigEffName = "hzz4lWHeff_{0:.0f}_{1:.0f}_g1".format(self.channel,self.production.year)
-        rrvg1_wh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_WHg1'])
-        sigEffName = "hzz4lWHeff_{0:.0f}_{1:.0f}_g2".format(self.channel,self.production.year)
-        rrvg2_wh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_WHg2'])
-        sigEffName = "hzz4lWHeff_{0:.0f}_{1:.0f}_g3".format(self.channel,self.production.year)
-        rrvg3_wh = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_WHg3'])
-
-        sigEffName = "hzz4lttHeff_{0:.0f}_{1:.0f}_a1".format(self.channel,self.production.year)
-        rrva1_tth = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ttHa1'])
-        sigEffName = "hzz4lttHeff_{0:.0f}_{1:.0f}_a2".format(self.channel,self.production.year)
-        rrva2_tth = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ttHa2'])
-        sigEffName = "hzz4lttHeff_{0:.0f}_{1:.0f}_a3".format(self.channel,self.production.year)
-        rrva3_tth = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ttHa3'])
-        sigEffName = "hzz4lttHeff_{0:.0f}_{1:.0f}_a4".format(self.channel,self.production.year)
-        rrva4_tth = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ttHa4'])
-        sigEffName = "hzz4lttHeff_{0:.0f}_{1:.0f}_b1".format(self.channel,self.production.year)
-        rrvb1_tth = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ttHb1'])
-        sigEffName = "hzz4lttHeff_{0:.0f}_{1:.0f}_b2".format(self.channel,self.production.year)
-        rrvb2_tth = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ttHb2'])
-        sigEffName = "hzz4lttHeff_{0:.0f}_{1:.0f}_b3".format(self.channel,self.production.year)
-        rrvb3_tth = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ttHb3'])
-        sigEffName = "hzz4lttHeff_{0:.0f}_{1:.0f}_g1".format(self.channel,self.production.year)
-        rrvg1_tth = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ttHg1'])
-        sigEffName = "hzz4lttHeff_{0:.0f}_{1:.0f}_g2".format(self.channel,self.production.year)
-        rrvg2_tth = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ttHg2'])
-        sigEffName = "hzz4lttHeff_{0:.0f}_{1:.0f}_g3".format(self.channel,self.production.year)
-        rrvg3_tth = ROOT.RooRealVar(sigEffName,sigEffName, theInputs['sigEff_ttHg3'])
-
-
-        if(DEBUG):
-            print "sigEff_a1 = ",theInputs['sigEff_a1']
-            print "sigEff_a2 = ",theInputs['sigEff_a2']
-            print "sigEff_a3 = ",theInputs['sigEff_a3']
-            print "sigEff_a4 = ",theInputs['sigEff_a4']
-            print "sigEff_b1 = ",theInputs['sigEff_b1']
-            print "sigEff_b2 = ",theInputs['sigEff_b2']
-            print "sigEff_b3 = ",theInputs['sigEff_b3']
-            print "sigEff_g1 = ",theInputs['sigEff_g1']
-            print "sigEff_g2 = ",theInputs['sigEff_g2']
-            print "sigEff_g3 = ",theInputs['sigEff_g3']
-
-            print "sigEff_qqHa1 = ",theInputs['sigEff_qqHa1']
-            print "sigEff_qqHa2 = ",theInputs['sigEff_qqHa2']
-            print "sigEff_qqHa3 = ",theInputs['sigEff_qqHa3']
-            print "sigEff_qqHa4 = ",theInputs['sigEff_qqHa4']
-            print "sigEff_qqHb1 = ",theInputs['sigEff_qqHb1']
-            print "sigEff_qqHb2 = ",theInputs['sigEff_qqHb2']
-            print "sigEff_qqHb3 = ",theInputs['sigEff_qqHb3']
-            print "sigEff_qqHg1 = ",theInputs['sigEff_qqHg1']
-            print "sigEff_qqHg2 = ",theInputs['sigEff_qqHg2']
-            print "sigEff_qqHg3 = ",theInputs['sigEff_qqHg3']
-
-            print "sigEff_ZHa1 = ",theInputs['sigEff_ZHa1']
-            print "sigEff_ZHa2 = ",theInputs['sigEff_ZHa2']
-            print "sigEff_ZHa3 = ",theInputs['sigEff_ZHa3']
-            print "sigEff_ZHa4 = ",theInputs['sigEff_ZHa4']
-            print "sigEff_ZHb1 = ",theInputs['sigEff_ZHb1']
-            print "sigEff_ZHb2 = ",theInputs['sigEff_ZHb2']
-            print "sigEff_ZHb3 = ",theInputs['sigEff_ZHb3']
-            print "sigEff_ZHg1 = ",theInputs['sigEff_ZHg1']
-            print "sigEff_ZHg2 = ",theInputs['sigEff_ZHg2']
-            print "sigEff_ZHg3 = ",theInputs['sigEff_ZHg3']
-
-            print "sigEff_WHa1 = ",theInputs['sigEff_WHa1']
-            print "sigEff_WHa2 = ",theInputs['sigEff_WHa2']
-            print "sigEff_WHa3 = ",theInputs['sigEff_WHa3']
-            print "sigEff_WHa4 = ",theInputs['sigEff_WHa4']
-            print "sigEff_WHb1 = ",theInputs['sigEff_WHb1']
-            print "sigEff_WHb2 = ",theInputs['sigEff_WHb2']
-            print "sigEff_WHb3 = ",theInputs['sigEff_WHb3']
-            print "sigEff_WHg1 = ",theInputs['sigEff_WHg1']
-            print "sigEff_WHg2 = ",theInputs['sigEff_WHg2']
-            print "sigEff_WHg3 = ",theInputs['sigEff_WHg3']
-
-            print "sigEff_ttHa1 = ",theInputs['sigEff_ttHa1']
-            print "sigEff_ttHa2 = ",theInputs['sigEff_ttHa2']
-            print "sigEff_ttHa3 = ",theInputs['sigEff_ttHa3']
-            print "sigEff_ttHa4 = ",theInputs['sigEff_ttHa4']
-            print "sigEff_ttHb1 = ",theInputs['sigEff_ttHb1']
-            print "sigEff_ttHb2 = ",theInputs['sigEff_ttHb2']
-            print "sigEff_ttHb3 = ",theInputs['sigEff_ttHb3']
-            print "sigEff_ttHg1 = ",theInputs['sigEff_ttHg1']
-            print "sigEff_ttHg2 = ",theInputs['sigEff_ttHg2']
-            print "sigEff_ttHg3 = ",theInputs['sigEff_ttHg3']
-
-
-        sigEffName_ggH = "hzz4lggHeff_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        sigEffName_qqH = "hzz4lqqHeff_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        sigEffName_WH = "hzz4lWHeff_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        sigEffName_ZH = "hzz4lZHeff_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        sigEffName_ttH = "hzz4lttHeff_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-
-        listEff = ROOT.RooArgList(rrva1,rrva2,rrva3,rrva4,rrvb1,rrvb2,rrvb3,self.MH)
-        listEff.add(rrvg1)
-        listEff.add(rrvg2)
-        listEff.add(rrvg3)
-
-        listEff_qqh = ROOT.RooArgList(rrva1_qqh,rrva2_qqh,rrva3_qqh,rrva4_qqh,rrvb1_qqh,rrvb2_qqh,rrvb3_qqh,self.MH)
-        listEff_qqh.add(rrvg1_qqh)
-        listEff_qqh.add(rrvg2_qqh)
-        listEff_qqh.add(rrvg3_qqh)
-
-        listEff_wh = ROOT.RooArgList(rrva1_wh,rrva2_wh,rrva3_wh,rrva4_wh,rrvb1_wh,rrvb2_wh,rrvb3_wh,self.MH)
-        listEff_wh.add(rrvg1_wh)
-        listEff_wh.add(rrvg2_wh)
-        listEff_wh.add(rrvg3_wh)
-
-        listEff_zh = ROOT.RooArgList(rrva1_zh,rrva2_zh,rrva3_zh,rrva4_zh,rrvb1_zh,rrvb2_zh,rrvb3_zh,self.MH)
-        listEff_zh.add(rrvg1_zh)
-        listEff_zh.add(rrvg2_zh)
-        listEff_zh.add(rrvg3_zh)
-
-        listEff_tth = ROOT.RooArgList(rrva1_tth,rrva2_tth,rrva3_tth,rrva4_tth,rrvb1_tth,rrvb2_tth,rrvb3_tth,self.MH)
-        listEff_tth.add(rrvg1_tth)
-        listEff_tth.add(rrvg2_tth)
-        listEff_tth.add(rrvg3_tth)
-
-        rfvSigEff_ggH = ROOT.RooFormulaVar(sigEffName_ggH,"(@0+@1*TMath::Erf((@7-@2)/@3))*(@4+@5*@7+@6*@7*@7)+@8*TMath::Gaus(@7,@9,@10)",listEff) #ROOT.RooArgList(rrva1,rrva2,rrva3,rrva4,rrvb1,rrvb2,rrvb3,self.MH,rrvg1,rrvg2,rrvg3))
-
-        rfvSigEff_qqH = ROOT.RooFormulaVar(sigEffName_qqH,"(@0+@1*TMath::Erf((@7-@2)/@3))*(@4+@5*@7+@6*@7*@7)+@8*TMath::Gaus(@7,@9,@10)",listEff_qqh)
-        rfvSigEff_ZH = ROOT.RooFormulaVar(sigEffName_ZH,"(@0+@1*TMath::Erf((@7-@2)/@3))*(@4+@5*@7+@6*@7*@7)+@8*TMath::Gaus(@7,@9,@10)",listEff_zh)
-        rfvSigEff_WH = ROOT.RooFormulaVar(sigEffName_WH,"(@0+@1*TMath::Erf((@7-@2)/@3))*(@4+@5*@7+@6*@7*@7)+@8*TMath::Gaus(@7,@9,@10)",listEff_wh)
-        rfvSigEff_ttH = ROOT.RooFormulaVar(sigEffName_ttH,"(@0+@1*TMath::Erf((@7-@2)/@3))*(@4+@5*@7+@6*@7*@7)+@8*TMath::Gaus(@7,@9,@10)",listEff_tth)
-        #from TF1 *polyFunc= new TF1("polyFunc","([0]+[1]*TMath::Erf( (x-[2])/[3] ))*([4]+[5]*x+[6]*x*x)+[7]*TMath::Gaus(x,[8],[9])", 110., xMax);
-
-        ## following printout is needed ,  dont remove it
-        print " @@@@@@@@ ggHeff ",rfvSigEff_ggH.getVal()
-        print " @@@@@@@@ qqHeff ",rfvSigEff_qqH.getVal()
-        print " @@@@@@@@ ZHeff ",rfvSigEff_ZH.getVal()
-        print " @@@@@@@@ WHeff ",rfvSigEff_WH.getVal()
-        print " @@@@@@@@ ttHeff ",rfvSigEff_ttH.getVal()
-
-        CS_ggH = myCSW.HiggsCS(1,self.mH,self.production.year)
+        CS_ggH = myCSW.HiggsCS(1,self.mH,self.production.year) #take from YR4
         CS_VBF = myCSW.HiggsCS(2,self.mH,self.production.year)
         CS_WH = myCSW.HiggsCS(3,self.mH,self.production.year)
         CS_ZH = myCSW.HiggsCS(4,self.mH,self.production.year)
         CS_ttH = myCSW.HiggsCS(5,self.mH,self.production.year)
 
-        CS_ggH_rrvname = "CSggHval_{0:.0f}".format(self.production.year)
-        CS_VBF_rrvname = "CSVBFval_{0:.0f}".format(self.production.year)
-        CS_WH_rrvname = "CSWHval_{0:.0f}".format(self.production.year)
-        CS_ZH_rrvname = "CSZHval_{0:.0f}".format(self.production.year)
-        CS_ttH_rrvname = "CSttHval_{0:.0f}".format(self.production.year)
-        CS_total_rrvname = "CStotalval_{0:.0f}".format(self.production.year)
-        CS_totalff_rrvname = "CStotalffval_{0:.0f}".format(self.production.year)
-        CS_totalVV_rrvname = "CStotalVVval_{0:.0f}".format(self.production.year)
-        CS_fracff_rrvname = "CSfracffval_{0:.0f}".format(self.production.year)
-        CS_fracVV_rrvname = "CSfracVVval_{0:.0f}".format(self.production.year)
+        CS_ggH_rrvname = "CSggHval_{0:.0f}".format(self.sqrts)
+        CS_VBF_rrvname = "CSVBFval_{0:.0f}".format(self.sqrts)
+        CS_WH_rrvname = "CSWHval_{0:.0f}".format(self.sqrts)
+        CS_ZH_rrvname = "CSZHval_{0:.0f}".format(self.sqrts)
+        CS_ttH_rrvname = "CSttHval_{0:.0f}".format(self.sqrts)
+        CS_total_rrvname = "CStotalval_{0:.0f}".format(self.sqrts)
+        CS_totalff_rrvname = "CStotalffval_{0:.0f}".format(self.sqrts)
+        CS_totalVV_rrvname = "CStotalVVval_{0:.0f}".format(self.sqrts)
+        CS_fracff_rrvname = "CSfracffval_{0:.0f}".format(self.sqrts)
+        CS_fracVV_rrvname = "CSfracVVval_{0:.0f}".format(self.sqrts)
         self.CS_ggH_rrv = ROOT.RooConstVar(CS_ggH_rrvname,CS_ggH_rrvname,CS_ggH)
         self.CS_VBF_rrv = ROOT.RooConstVar(CS_VBF_rrvname,CS_VBF_rrvname,CS_VBF)
         self.CS_WH_rrv = ROOT.RooConstVar(CS_WH_rrvname,CS_WH_rrvname,CS_WH)
@@ -1104,171 +861,9 @@ class properties_datacardClass:
         self.CSfracff = ROOT.RooFormulaVar(CS_fracff_rrvname,"@0/@1",ROOT.RooArgList(self.CStotalff,self.CStotal))
         self.CSfracVV = ROOT.RooFormulaVar(CS_fracVV_rrvname,"@0/@1",ROOT.RooArgList(self.CStotalVV,self.CStotal))
 
-        BRH2e2mu = myCSW.HiggsBR(13,self.mH)
-        BRH4mu = myCSW.HiggsBR(12,self.mH)
-        BRH4e = myCSW.HiggsBR(12,self.mH)
-        BR = 0.0
-        if( self.channel == self.ID_4mu ): BR = BRH4mu
-        if( self.channel == self.ID_4e ): BR = BRH4e
-        if( self.channel == self.ID_2e2mu ): BR = BRH2e2mu
-
-        #HZZ Branching ratio for ZH,WH,ttH samples
-        BRZZ = myCSW.HiggsBR(11,self.mH)
-
-        sigEfficiency_ggH = rfvSigEff_ggH.getVal()
-        sigEfficiency_qqH = rfvSigEff_qqH.getVal()
-        sigEfficiency_ZH = rfvSigEff_ZH.getVal()
-        sigEfficiency_WH = rfvSigEff_WH.getVal()
-        sigEfficiency_ttH = rfvSigEff_ttH.getVal()
-
-        if(DEBUG):
-            print "CS_ggH: ",CS_ggH,", CS_VBF: ",CS_VBF,", CS_WH: ",CS_WH,", CS_ZH: ",CS_ZH
-            print ", CS_ttH: ",CS_ttH,", BRH2e2mu: ",BRH2e2mu,", BRH4mu: ",BRH4mu,", BRH4e: ",BRH4e,", BRZZ: ",BRZZ
-
-
-        ## SIG YIELDS
-        sigRate_ggH = CS_ggH*BR*sigEfficiency_ggH*1000.*self.lumi
-        sigRate_VBF = CS_VBF*BR*sigEfficiency_qqH*1000.*self.lumi
-        sigRate_WH = CS_WH*BRZZ*sigEfficiency_WH*1000.*self.lumi
-        sigRate_ZH = CS_ZH*BRZZ*sigEfficiency_ZH*1000.*self.lumi
-        sigRate_ttH = CS_ttH*BRZZ*sigEfficiency_ttH*1000.*self.lumi
-
-        rfvSMD_Ratio_ggH = ROOT.RooFormulaVar()
-        rfvSMD_Ratio_qqH = ROOT.RooFormulaVar()
-        rfvSMD_Ratio_WH = ROOT.RooFormulaVar()
-        rfvSMD_Ratio_ZH = ROOT.RooFormulaVar()
-        rfvSMD_Ratio_ttH = ROOT.RooFormulaVar()
-
-        tag_Ratio_Name = "hzz4l_SMD_ratio_ggH_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        rfvSMD_Ratio_ggH = ROOT.RooRealVar(tag_Ratio_Name,tag_Ratio_Name,self.SMDsigCut)
-        tag_Ratio_Name = "hzz4l_SMD_ratio_qqH_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        rfvSMD_Ratio_qqH = ROOT.RooRealVar(tag_Ratio_Name,tag_Ratio_Name,self.SMDsigCut)
-        tag_Ratio_Name = "hzz4l_SMD_ratio_WH_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        rfvSMD_Ratio_WH = ROOT.RooRealVar(tag_Ratio_Name,tag_Ratio_Name,self.SMDsigCut)
-        tag_Ratio_Name = "hzz4l_SMD_ratio_ZH_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        rfvSMD_Ratio_ZH = ROOT.RooRealVar(tag_Ratio_Name,tag_Ratio_Name,self.SMDsigCut)
-        tag_Ratio_Name = "hzz4l_SMD_ratio_ttH_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        rfvSMD_Ratio_ttH = ROOT.RooRealVar(tag_Ratio_Name,tag_Ratio_Name,self.SMDsigCut)
-
-        print "@@@@@@@@@@@@@@@@@@@@@@ ", rfvSMD_Ratio_ggH.getVal()
-        print "@@@@@@@@@@@@@@@@@@@@@@ ", rfvSMD_Ratio_qqH.getVal()
-        print "@@@@@@@@@@@@@@@@@@@@@@ ", rfvSMD_Ratio_WH.getVal()
-        print "@@@@@@@@@@@@@@@@@@@@@@ ", rfvSMD_Ratio_ZH.getVal()
-        print "@@@@@@@@@@@@@@@@@@@@@@ ", rfvSMD_Ratio_ttH.getVal()
-        sigRate_ggH *= rfvSMD_Ratio_ggH.getVal()
-        sigRate_VBF *= rfvSMD_Ratio_qqH.getVal()
-        sigRate_WH *= rfvSMD_Ratio_WH.getVal()
-        sigRate_ZH *= rfvSMD_Ratio_ZH.getVal()
-        sigRate_ttH *= rfvSMD_Ratio_ttH.getVal()
-
-        tmpNormSigNoConv = signalCB_ggH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("fullrangesignal") ).getVal()
-        tmpNormSigConv = sig_ggH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("fullrangesignal") ).getVal()
-        tmpNormSigHM   = sig_ggH_HM.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("fullrangesignal") ).getVal()
-
-        normalizationSignal = 0.0
-        if self.isHighMass : normalizationSignal = tmpNormSigHM
-        else : normalizationSignal = self.getVariable(tmpNormSigNoConv,tmpNormSigConv,self.bUseCBnoConvolution)
-
-        print "#################### ",signalCB_ggH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("fullrangesignal") ).getVal()
-        print "#################### ",signalCB_ggH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
-        print "#################### ",sig_ggH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("fullrangesignal") ).getVal()
-        print "#################### norm Signal",normalizationSignal
-
-        sclFactorSig_ggH = sigRate_ggH/normalizationSignal
-        sclFactorSig_VBF = sigRate_VBF/normalizationSignal
-        sclFactorSig_WH = sigRate_WH/normalizationSignal
-        sclFactorSig_ZH = sigRate_ZH/normalizationSignal
-        sclFactorSig_ttH = sigRate_ttH/normalizationSignal
-
-        integral_ggH = 0.0
-        integral_VBF = 0.0
-        integral_WH  = 0.0
-        integral_ZH  = 0.0
-        integral_ttH = 0.0
-
-        if self.isHighMass : integral_ggH = sig_ggH_HM.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
-        else : integral_ggH = self.getVariable(signalCB_ggH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal(),sig_ggH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal(),self.bUseCBnoConvolution)
-
-        if self.isHighMass : integral_VBF = sig_VBF_HM.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
-        else : integral_VBF = self.getVariable(signalCB_VBF.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal(),sig_VBF.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal(),self.bUseCBnoConvolution)
-
-        if self.isHighMass : integral_WH = sig_WH_HM.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
-        else : integral_WH = self.getVariable(signalCB_WH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal(),sig_WH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal(),self.bUseCBnoConvolution)
-
-
-        if self.isHighMass : integral_ZH = sig_ZH_HM.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
-        else : integral_ZH = self.getVariable(signalCB_ZH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal(),sig_ZH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal(),self.bUseCBnoConvolution)
-
-        if self.isHighMass : integral_ttH = sig_ttH_HM.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
-        else : integral_ttH = self.getVariable(signalCB_ttH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal(),sig_ttH.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal(),self.bUseCBnoConvolution)
-
-        sigRate_ggH_Shape = sclFactorSig_ggH*integral_ggH
-        sigRate_VBF_Shape = sclFactorSig_VBF*integral_VBF
-        sigRate_WH_Shape = sclFactorSig_WH*integral_WH
-        sigRate_ZH_Shape = sclFactorSig_ZH*integral_ZH
-        sigRate_ttH_Shape = sclFactorSig_ttH*integral_ttH
-
-
-        normSigName = "cmshzz4l_normalizationSignal_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        rrvNormSig = ROOT.RooRealVar()
-
-
-
-        if self.isHighMass :
-            rrvNormSig = ROOT.RooRealVar(normSigName,normSigName, sig_ggH_HM.createIntegral(ROOT.RooArgSet(CMS_zz4l_mass)).getVal())
-        else :
-            rrvNormSig = ROOT.RooRealVar(normSigName,normSigName, self.getVariable(signalCB_ggH.createIntegral(ROOT.RooArgSet(CMS_zz4l_mass)).getVal(),sig_ggH.createIntegral(ROOT.RooArgSet(CMS_zz4l_mass)).getVal(),self.bUseCBnoConvolution))
-        rrvNormSig.setConstant(True)
-        print "!!!%%%*** ",rrvNormSig.getVal()
-        print "!!!%%%*** ",integral_ggH
-
-
-        #rfvSigRate_ggH = ROOT.RooFormulaVar("ggH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),self.getVariable(signalCB_ggH.createIntegral(RooArgSet(CMS_zz4l_mass),ROOT.RooFit.Range("shape")).getVal(),sig_ggH.createIntegral(RooArgSet(CMS_zz4l_mass),ROOT.RooFit.Range("shape")).getVal(),self.bUseCBnoConvolution)),ROOT.RooArgList(rfvSigEff_ggH, rhfXsBrFuncV_1))
-
-        rfvSigRate_ggH = ROOT.RooFormulaVar("ggH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_ggH),ROOT.RooArgList(rfvSigEff_ggH, rhfXsBrFuncV_1))
-
-        print "Compare integrals: integral_ggH=",integral_ggH,"  ; calculated=",self.getVariable(signalCB_ggH.createIntegral(RooArgSet(CMS_zz4l_mass),ROOT.RooFit.Range("shape")).getVal(),sig_ggH.createIntegral(RooArgSet(CMS_zz4l_mass),ROOT.RooFit.Range("shape")).getVal(),self.bUseCBnoConvolution)
-
-        rfvSigRate_VBF = ROOT.RooFormulaVar("qqH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_VBF),ROOT.RooArgList(rfvSigEff_qqH, rhfXsBrFuncV_2))
-
-
-        rfvSigRate_WH = ROOT.RooFormulaVar("WH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_WH),ROOT.RooArgList(rfvSigEff_WH, rhfXsBrFuncV_3))
-
-
-        rfvSigRate_ZH = ROOT.RooFormulaVar("ZH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_ZH),ROOT.RooArgList(rfvSigEff_ZH, rhfXsBrFuncV_4))
-
-
-        rfvSigRate_ttH = ROOT.RooFormulaVar("ttH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_ttH),ROOT.RooArgList(rfvSigEff_ttH, rhfXsBrFuncV_5))
-
-
-        print signalCB_ggH.createIntegral(ROOT.RooArgSet(CMS_zz4l_mass)).getVal(),"   ",sig_ggH.createIntegral(ROOT.RooArgSet(CMS_zz4l_mass)).getVal()
-        print signalCB_ggH.createIntegral(ROOT.RooArgSet(CMS_zz4l_mass),ROOT.RooFit.Range("shape")).getVal(),"   ",sig_ggH.createIntegral(ROOT.RooArgSet(CMS_zz4l_mass),ROOT.RooFit.Range("shape")).getVal()
-
-        print " @@@@@@@ norm sig = ",rrvNormSig.getVal()
-        print " @@@@@@@ rfvSigRate_ggH = ",rfvSigRate_ggH.getVal()
-        print " sigRate_ggH_Shape=",sigRate_ggH_Shape
-        print " @@@@@@@ rfvSigRate_VBF = ",rfvSigRate_VBF.getVal()
-        print " sigRate_VBF_Shape=",sigRate_VBF_Shape
-        print " @@@@@@@ rfvSigRate_WH = ",rfvSigRate_WH.getVal()
-        print " sigRate_WH_Shape=",sigRate_WH_Shape
-        print " @@@@@@@ rfvSigRate_ZH = ",rfvSigRate_ZH.getVal()
-        print " sigRate_ZH_Shape=",sigRate_ZH_Shape
-        print " @@@@@@@ rfvSigRate_ttH = ",rfvSigRate_ttH.getVal()
-        print " sigRate_ttH_Shape=",sigRate_ttH_Shape
-        sigRate_Total_Shape_analytical = sigRate_ggH_Shape+sigRate_VBF_Shape+sigRate_WH_Shape+sigRate_ZH_Shape+sigRate_ttH_Shape
-        print "Sum of analytical sigRate_XYZ_Shape=",sigRate_Total_Shape_analytical
-        ## SET RATES TO 1
-        ## DC RATES WILL BE MULTIPLIED
-        ## BY RATES IMPORTED TO WS
-        #sigRate_ggH_Shape = 1
-        #sigRate_VBF_Shape = 1
-        #sigRate_WH_Shape = 1
-        #sigRate_ZH_Shape = 1
-        #sigRate_ttH_Shape = 1
-
         sigRate_ggH_input = theInputs['ggH_rate']
         if sigRate_ggH_input < 0:
-            sigRate_ggH_input=sigRate_ggH_Shape
+            sigRate_ggH_input=5.
         else:
             print "ggH Rate: ",sigRate_ggH_input
             sigRate_ggH_Shape=sigRate_ggH_input
@@ -1394,13 +989,13 @@ class properties_datacardClass:
         name_Shape2 = "hzz4l_{0}S_{1:.0f}TeV.txt".format(self.appendName,self.production.year)
         name_ShapeWS2 = "hzz4l_{0}S_{1:.0f}TeV.input.root".format(self.appendName,self.production.year)
         if (endsInP5):
-           name_Shape       =       "{0}/HCG/{1:.1f}/{2:.0f}TeV/{3}".format(self.outputDir,self.mH,self.production.year,name_Shape2)
-           name_ShapeWS     =       "{0}/HCG/{1:.1f}/{2:.0f}TeV/{3}".format(self.outputDir,self.mH,self.production.year,name_ShapeWS2)
-           name_ShapeWSXSBR = "{0}/HCG_XSxBR/{1:.1f}/{2:.0f}TeV/{3}".format(self.outputDir,self.mH,self.production.year,name_ShapeWS2)
+           name_Shape       =       "{0}/HCG/{1:.1f}/{2:.0f}/{3}".format(self.outputDir,self.mH,self.production.year,name_Shape2)
+           name_ShapeWS     =       "{0}/HCG/{1:.1f}/{2:.0f}/{3}".format(self.outputDir,self.mH,self.production.year,name_ShapeWS2)
+           name_ShapeWSXSBR = "{0}/HCG_XSxBR/{1:.1f}/{2:.0f}/{3}".format(self.outputDir,self.mH,self.production.year,name_ShapeWS2)
         else:
-           name_Shape       =       "{0}/HCG/{1:.0f}/{2:.0f}TeV/{3}".format(self.outputDir,self.mH,self.production.year,name_Shape2)
-           name_ShapeWS     =       "{0}/HCG/{1:.0f}/{2:.0f}TeV/{3}".format(self.outputDir,self.mH,self.production.year,name_ShapeWS2)
-           name_ShapeWSXSBR = "{0}/HCG_XSxBR/{1:.0f}/{2:.0f}TeV/{3}".format(self.outputDir,self.mH,self.production.year,name_ShapeWS2)
+           name_Shape       =       "{0}/HCG/{1:.0f}/{2:.0f}/{3}".format(self.outputDir,self.mH,self.production.year,name_Shape2)
+           name_ShapeWS     =       "{0}/HCG/{1:.0f}/{2:.0f}/{3}".format(self.outputDir,self.mH,self.production.year,name_ShapeWS2)
+           name_ShapeWSXSBR = "{0}/HCG_XSxBR/{1:.0f}/{2:.0f}/{3}".format(self.outputDir,self.mH,self.production.year,name_ShapeWS2)
         if(DEBUG): print name_Shape,"  ",name_ShapeWS2
 
         w = ROOT.RooWorkspace("w","w")
