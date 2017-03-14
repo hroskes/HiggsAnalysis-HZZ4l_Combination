@@ -11,6 +11,7 @@ from array import array
 from systematicsClass import *
 from inputReader import *
 from helperstuff.combinehelpers import getdatatree, gettemplate, discriminantnames
+from helperstuff import constants
 from helperstuff.enums import Analysis, Production
 
 ## ------------------------------------
@@ -26,6 +27,7 @@ class properties_datacardClass:
         self.isFSR = True
         self.analysis = Analysis(analysis)
         self.production = Production(production)
+        self.sqrts = 13
 
     def loadIncludes(self):
         import include
@@ -99,11 +101,11 @@ class properties_datacardClass:
 
         ## --------------- SETTINGS AND DECLARATIONS --------------- ##
         DEBUG = False
-        self.mH = theMH
+        self.mH = 125
         self.SMDsigCut = 1.
         self.SMDbkgCut = 1.
-        self.lumi = theInputs['lumi']
-        self.sqrts = theInputs['sqrts']
+        self.lumi = self.production.dataluminosity
+        self.sqrts = 13
         self.channel = theInputs['decayChannel']
         self.bkgMorph = theInputs['useCMS_zz4l_zjet']
         self.outputDir = theOutputDir
@@ -207,18 +209,18 @@ class properties_datacardClass:
         self.R = ROOT.RooRealVar("R","R",1.,0.,400.)
         self.RF = ROOT.RooRealVar("RF","RF",1.,0.,400.)
         self.RV = ROOT.RooRealVar("RV","RV",1.,0.,400.)
-        Rsqrts_name = "R_{0:.0f}TeV".format(self.realsqrts)
-        RFsqrts_name = "RF_{0:.0f}TeV".format(self.realsqrts)
-        RVsqrts_name = "RV_{0:.0f}TeV".format(self.realsqrts)
+        Rsqrts_name = "R_{0:.0f}TeV".format(self.sqrts)
+        RFsqrts_name = "RF_{0:.0f}TeV".format(self.sqrts)
+        RVsqrts_name = "RV_{0:.0f}TeV".format(self.sqrts)
         self.Rsqrts = ROOT.RooRealVar(Rsqrts_name,Rsqrts_name,1.,0.,400.)
         self.RFsqrts = ROOT.RooRealVar(RFsqrts_name,RFsqrts_name,1.,0.,400.)
         self.RVsqrts = ROOT.RooRealVar(RVsqrts_name,RVsqrts_name,1.,0.,400.)
-        self.muF = ROOT.RooFormulaVar("muF_{0:.0f}TeV".format(self.realsqrts),"@0*@1*@2*@3",ROOT.RooArgList(self.R,self.Rsqrts,self.RF,self.RFsqrts))
-        self.muV = ROOT.RooFormulaVar("muV_{0:.0f}TeV".format(self.realsqrts),"@0*@1*@2*@3",ROOT.RooArgList(self.R,self.Rsqrts,self.RV,self.RVsqrts))
+        self.muF = ROOT.RooFormulaVar("muF_{0:.0f}TeV".format(self.sqrts),"@0*@1*@2*@3",ROOT.RooArgList(self.R,self.Rsqrts,self.RF,self.RFsqrts))
+        self.muV = ROOT.RooFormulaVar("muV_{0:.0f}TeV".format(self.sqrts),"@0*@1*@2*@3",ROOT.RooArgList(self.R,self.Rsqrts,self.RV,self.RVsqrts))
 
         self.sigmaVVaiVal = dict()
         for key, value in self.sigmaVVai.iteritems():
-           rrvname = "{0}_{1:.0f}TeV".format(key,self.realsqrts)
+           rrvname = "{0}_{1:.0f}TeV".format(key,self.sqrts)
            rrv = ROOT.RooConstVar(rrvname,rrvname,value)
            self.sigmaVVaiVal[key] = rrv
         for key, value in self.sigmaVVaiVal.iteritems():
@@ -537,240 +539,6 @@ class properties_datacardClass:
         ## ------------------ END 2D SIGNAL SHAPES FOR PROPERTIES ------------------------ ##
 
 
-        ## -------------------------- BACKGROUND SHAPES ---------------------------------- ##
-
-        ## qqZZ contribution
-        name = "CMS_qqzzbkg_a0_{0:.0f}_{1:.0f}".format( self.channel,self.production.year )
-        CMS_qqzzbkg_a0 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a0",115.3,0.,200.)
-        name = "CMS_qqzzbkg_a1_{0:.0f}_{1:.0f}".format( self.channel,self.production.year )
-        CMS_qqzzbkg_a1 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a1",21.96,0.,200.)
-        name = "CMS_qqzzbkg_a2_{0:.0f}_{1:.0f}".format( self.channel,self.production.year )
-        CMS_qqzzbkg_a2 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a2",122.8,0.,200.)
-        name = "CMS_qqzzbkg_a3_{0:.0f}_{1:.0f}".format( self.channel,self.production.year )
-        CMS_qqzzbkg_a3 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a3",0.03479,0.,1.)
-        name = "CMS_qqzzbkg_a4_{0:.0f}_{1:.0f}".format( self.channel,self.production.year )
-        CMS_qqzzbkg_a4 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a4",185.5,0.,200.)
-        name = "CMS_qqzzbkg_a5_{0:.0f}_{1:.0f}".format( self.channel,self.production.year )
-        CMS_qqzzbkg_a5 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a5",12.67,0.,200.)
-        name = "CMS_qqzzbkg_a6_{0:.0f}_{1:.0f}".format( self.channel,self.production.year )
-        CMS_qqzzbkg_a6 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a6",34.81,0.,100.)
-        name = "CMS_qqzzbkg_a7_{0:.0f}_{1:.0f}".format( self.channel,self.production.year )
-        CMS_qqzzbkg_a7 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a7",0.1393,0.,1.)
-        name = "CMS_qqzzbkg_a8_{0:.0f}_{1:.0f}".format( self.channel,self.production.year )
-        CMS_qqzzbkg_a8 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a8",66.,0.,200.)
-        name = "CMS_qqzzbkg_a9_{0:.0f}_{1:.0f}".format( self.channel,self.production.year )
-        CMS_qqzzbkg_a9 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a9",0.07191,0.,1.)
-        name = "CMS_qqzzbkg_a10_{0:.0f}_{1:.0f}".format(self.channel,self.production.year )
-        CMS_qqzzbkg_a10 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a10",94.11,0.,200.)
-        name = "CMS_qqzzbkg_a11_{0:.0f}_{1:.0f}".format(self.channel,self.production.year )
-        CMS_qqzzbkg_a11 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a11",-5.111,-100.,100.)
-        name = "CMS_qqzzbkg_a12_{0:.0f}_{1:.0f}".format(self.channel,self.production.year )
-        CMS_qqzzbkg_a12 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a12",4834,0.,10000.)
-        name = "CMS_qqzzbkg_a13_{0:.0f}_{1:.0f}".format(self.channel,self.production.year )
-        CMS_qqzzbkg_a13 = ROOT.RooRealVar(name,"CMS_qqzzbkg_a13",0.2543,0.,1.)
-
-
-
-        if (DEBUG) :
-            print "qqZZshape_a0 = ",theInputs['qqZZshape_a0']
-            print "qqZZshape_a1 = ",theInputs['qqZZshape_a1']
-            print "qqZZshape_a2 = ",theInputs['qqZZshape_a2']
-            print "qqZZshape_a3 = ",theInputs['qqZZshape_a3']
-            print "qqZZshape_a4 = ",theInputs['qqZZshape_a4']
-            print "qqZZshape_a5 = ",theInputs['qqZZshape_a5']
-            print "qqZZshape_a6 = ",theInputs['qqZZshape_a6']
-            print "qqZZshape_a7 = ",theInputs['qqZZshape_a7']
-            print "qqZZshape_a8 = ",theInputs['qqZZshape_a8']
-            print "qqZZshape_a9 = ",theInputs['qqZZshape_a9']
-            print "qqZZshape_a10 = ",theInputs['qqZZshape_a10']
-            print "qqZZshape_a11 = ",theInputs['qqZZshape_a11']
-            print "qqZZshape_a12 = ",theInputs['qqZZshape_a12']
-            print "qqZZshape_a13 = ",theInputs['qqZZshape_a13']
-
-
-        CMS_qqzzbkg_a0.setVal(theInputs['qqZZshape_a0'])
-        CMS_qqzzbkg_a1.setVal(theInputs['qqZZshape_a1'])
-        CMS_qqzzbkg_a2.setVal(theInputs['qqZZshape_a2'])
-        CMS_qqzzbkg_a3.setVal(theInputs['qqZZshape_a3'])
-        CMS_qqzzbkg_a4.setVal(theInputs['qqZZshape_a4'])
-        CMS_qqzzbkg_a5.setVal(theInputs['qqZZshape_a5'])
-        CMS_qqzzbkg_a6.setVal(theInputs['qqZZshape_a6'])
-        CMS_qqzzbkg_a7.setVal(theInputs['qqZZshape_a7'])
-        CMS_qqzzbkg_a8.setVal(theInputs['qqZZshape_a8'])
-        CMS_qqzzbkg_a9.setVal(theInputs['qqZZshape_a9'])
-        CMS_qqzzbkg_a10.setVal(theInputs['qqZZshape_a10'])
-        CMS_qqzzbkg_a11.setVal(theInputs['qqZZshape_a11'])
-        CMS_qqzzbkg_a12.setVal(theInputs['qqZZshape_a12'])
-        CMS_qqzzbkg_a13.setVal(theInputs['qqZZshape_a13'])
-
-        CMS_qqzzbkg_a0.setConstant(True)
-        CMS_qqzzbkg_a1.setConstant(True)
-        CMS_qqzzbkg_a2.setConstant(True)
-        CMS_qqzzbkg_a3.setConstant(True)
-        CMS_qqzzbkg_a4.setConstant(True)
-        CMS_qqzzbkg_a5.setConstant(True)
-        CMS_qqzzbkg_a6.setConstant(True)
-        CMS_qqzzbkg_a7.setConstant(True)
-        CMS_qqzzbkg_a8.setConstant(True)
-        CMS_qqzzbkg_a9.setConstant(True)
-        CMS_qqzzbkg_a10.setConstant(True)
-        CMS_qqzzbkg_a11.setConstant(True)
-        CMS_qqzzbkg_a12.setConstant(True)
-        CMS_qqzzbkg_a13.setConstant(True)
-
-        bkg_qqzz = ROOT.RooqqZZPdf_v2("bkg_qqzzTmp","bkg_qqzzTmp",CMS_zz4l_mass,CMS_qqzzbkg_a0,CMS_qqzzbkg_a1,CMS_qqzzbkg_a2,CMS_qqzzbkg_a3,CMS_qqzzbkg_a4,CMS_qqzzbkg_a5,CMS_qqzzbkg_a6,CMS_qqzzbkg_a7,CMS_qqzzbkg_a8,CMS_qqzzbkg_a9,CMS_qqzzbkg_a10,CMS_qqzzbkg_a11,CMS_qqzzbkg_a12,CMS_qqzzbkg_a13)
-
-        ## ggZZ contribution
-        name = "CMS_ggzzbkg_a0_{0:.0f}_{1:.0f}".format( self.channel, self.production.year )
-        CMS_ggzzbkg_a0 = ROOT.RooRealVar(name,"CMS_ggzzbkg_a0",115.3,0.,200.)
-        name = "CMS_ggzzbkg_a1_{0:.0f}_{1:.0f}".format( self.channel, self.production.year )
-        CMS_ggzzbkg_a1 = ROOT.RooRealVar(name,"CMS_ggzzbkg_a1",21.96,0.,200.)
-        name = "CMS_ggzzbkg_a2_{0:.0f}_{1:.0f}".format( self.channel, self.production.year )
-        CMS_ggzzbkg_a2 = ROOT.RooRealVar(name,"CMS_ggzzbkg_a2",122.8,0.,200.)
-        name = "CMS_ggzzbkg_a3_{0:.0f}_{1:.0f}".format( self.channel, self.production.year )
-        CMS_ggzzbkg_a3 = ROOT.RooRealVar(name,"CMS_ggzzbkg_a3",0.03479,0.,1.)
-        name = "CMS_ggzzbkg_a4_{0:.0f}_{1:.0f}".format( self.channel, self.production.year )
-        CMS_ggzzbkg_a4 = ROOT.RooRealVar(name,"CMS_ggzzbkg_a4",185.5,0.,200.)
-        name = "CMS_ggzzbkg_a5_{0:.0f}_{1:.0f}".format( self.channel, self.production.year )
-        CMS_ggzzbkg_a5 = ROOT.RooRealVar(name,"CMS_ggzzbkg_a5",12.67,0.,200.)
-        name = "CMS_ggzzbkg_a6_{0:.0f}_{1:.0f}".format( self.channel, self.production.year )
-        CMS_ggzzbkg_a6 = ROOT.RooRealVar(name,"CMS_ggzzbkg_a6",34.81,0.,100.)
-        name = "CMS_ggzzbkg_a7_{0:.0f}_{1:.0f}".format( self.channel, self.production.year )
-        CMS_ggzzbkg_a7 = ROOT.RooRealVar(name,"CMS_ggzzbkg_a7",0.1393,0.,1.)
-        name = "CMS_ggzzbkg_a8_{0:.0f}_{1:.0f}".format( self.channel, self.production.year )
-        CMS_ggzzbkg_a8 = ROOT.RooRealVar(name,"CMS_ggzzbkg_a8",66.,0.,200.)
-        name = "CMS_ggzzbkg_a9_{0:.0f}_{1:.0f}".format( self.channel, self.production.year )
-        CMS_ggzzbkg_a9 = ROOT.RooRealVar(name,"CMS_ggzzbkg_a9",0.07191,0.,1.)
-
-
-        CMS_ggzzbkg_a0.setVal(theInputs['ggZZshape_a0'])
-        CMS_ggzzbkg_a1.setVal(theInputs['ggZZshape_a1'])
-        CMS_ggzzbkg_a2.setVal(theInputs['ggZZshape_a2'])
-        CMS_ggzzbkg_a3.setVal(theInputs['ggZZshape_a3'])
-        CMS_ggzzbkg_a4.setVal(theInputs['ggZZshape_a4'])
-        CMS_ggzzbkg_a5.setVal(theInputs['ggZZshape_a5'])
-        CMS_ggzzbkg_a6.setVal(theInputs['ggZZshape_a6'])
-        CMS_ggzzbkg_a7.setVal(theInputs['ggZZshape_a7'])
-        CMS_ggzzbkg_a8.setVal(theInputs['ggZZshape_a8'])
-        CMS_ggzzbkg_a9.setVal(theInputs['ggZZshape_a9'])
-
-        CMS_ggzzbkg_a0.setConstant(True)
-        CMS_ggzzbkg_a1.setConstant(True)
-        CMS_ggzzbkg_a2.setConstant(True)
-        CMS_ggzzbkg_a3.setConstant(True)
-        CMS_ggzzbkg_a4.setConstant(True)
-        CMS_ggzzbkg_a5.setConstant(True)
-        CMS_ggzzbkg_a6.setConstant(True)
-        CMS_ggzzbkg_a7.setConstant(True)
-        CMS_ggzzbkg_a8.setConstant(True)
-        CMS_ggzzbkg_a9.setConstant(True)
-
-        if (DEBUG) :
-            print "ggZZshape_a0 = ",theInputs['ggZZshape_a0']
-            print "ggZZshape_a1 = ",theInputs['ggZZshape_a1']
-            print "ggZZshape_a2 = ",theInputs['ggZZshape_a2']
-            print "ggZZshape_a3 = ",theInputs['ggZZshape_a3']
-            print "ggZZshape_a4 = ",theInputs['ggZZshape_a4']
-            print "ggZZshape_a5 = ",theInputs['ggZZshape_a5']
-            print "ggZZshape_a6 = ",theInputs['ggZZshape_a6']
-            print "ggZZshape_a7 = ",theInputs['ggZZshape_a7']
-            print "ggZZshape_a8 = ",theInputs['ggZZshape_a8']
-            print "ggZZshape_a9 = ",theInputs['ggZZshape_a9']
-
-
-        bkg_ggzz = ROOT.RooggZZPdf_v2("bkg_ggzzTmp","bkg_ggzzTmp",CMS_zz4l_mass,CMS_ggzzbkg_a0,CMS_ggzzbkg_a1,CMS_ggzzbkg_a2,CMS_ggzzbkg_a3,CMS_ggzzbkg_a4,CMS_ggzzbkg_a5,CMS_ggzzbkg_a6,CMS_ggzzbkg_a7,CMS_ggzzbkg_a8,CMS_ggzzbkg_a9)
-
-        ## Reducible backgrounds
-        val_meanL_3P1F = float(theInputs['zjetsShape_mean_3P1F'])
-        val_sigmaL_3P1F = float(theInputs['zjetsShape_sigma_3P1F'])
-        val_normL_3P1F = float(theInputs['zjetsShape_norm_3P1F'])
-
-        val_meanL_2P2F = float(theInputs['zjetsShape_mean_2P2F'])
-        val_sigmaL_2P2F = float(theInputs['zjetsShape_sigma_2P2F'])
-        val_normL_2P2F = float(theInputs['zjetsShape_norm_2P2F'])
-        val_pol0_2P2F = float(theInputs['zjetsShape_pol0_2P2F'])
-        val_pol1_2P2F = float(theInputs['zjetsShape_pol1_2P2F'])
-
-        val_meanL_2P2F_2 = float(theInputs['zjetsShape_mean_2P2F_2e2mu'])
-        val_sigmaL_2P2F_2 = float(theInputs['zjetsShape_sigma_2P2F_2e2mu'])
-        val_normL_2P2F_2 = float(theInputs['zjetsShape_norm_2P2F_2e2mu'])
-
-
-        if (self.channel == self.ID_4mu):
-            name = "mlZjet_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            mlZjet = ROOT.RooRealVar(name,"mean landau Zjet",val_meanL_2P2F)
-            name = "slZjet_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            slZjet = ROOT.RooRealVar(name,"sigma landau Zjet",val_sigmaL_2P2F)
-            print "mean 4mu: ",mlZjet.getVal()
-            print "sigma 4mu: ",slZjet.getVal()
-            bkg_zjets = ROOT.RooLandau("bkg_zjetsTmp","bkg_zjetsTmp",CMS_zz4l_mass,mlZjet,slZjet)
-        elif (self.channel == self.ID_4e):
-            name = "mlZjet_2p2f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            mlZjet_2p2f = ROOT.RooRealVar(name,"mean landau Zjet 2p2f",val_meanL_2P2F)
-            name = "slZjet_2p2f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            slZjet_2p2f = ROOT.RooRealVar(name,"sigma landau Zjet 2p2f",val_sigmaL_2P2F)
-            name = "nlZjet_2p2f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            nlZjet_2p2f = ROOT.RooRealVar(name,"norm landau Zjet 2p2f",val_normL_2P2F)
-            name = "p0Zjet_2p2f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            p0Zjet_2p2f = ROOT.RooRealVar(name,"p0 Zjet 2p2f",val_pol0_2P2F)
-            name = "p1Zjet_2p2f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            p1Zjet_2p2f = ROOT.RooRealVar(name,"p1 Zjet 2p2f",val_pol1_2P2F)
-            print "mean 2p2f 4e: ",mlZjet_2p2f.getVal()
-            print "sigma 2p2f 4e: ",slZjet_2p2f.getVal()
-            print "norm 2p2f 4e: ",nlZjet_2p2f.getVal()
-            print "pol0 2p2f 4e: ",p0Zjet_2p2f.getVal()
-            print "pol1 2p2f 4e: ",p1Zjet_2p2f.getVal()
-            bkg_zjets_2p2f = ROOT.RooGenericPdf("bkg_zjetsTmp_2p2f","bkg_zjetsTmp_2p2f","(TMath::Landau(@0,@1,@2))*@3*(1.+ TMath::Exp(@4+@5*@0))",RooArgList(CMS_zz4l_mass,mlZjet_2p2f,slZjet_2p2f,nlZjet_2p2f,p0Zjet_2p2f,p1Zjet_2p2f))
-
-            name = "mlZjet_3p1f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            mlZjet_3p1f = ROOT.RooRealVar(name,"mean landau Zjet 3p1f",val_meanL_3P1F)
-            name = "slZjet_3p1f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            slZjet_3p1f = ROOT.RooRealVar(name,"sigma landau Zjet 3p1f",val_sigmaL_3P1F)
-            name = "nlZjet_3p1f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            nlZjet_3p1f = ROOT.RooRealVar(name,"norm landau Zjet 3p1f",val_normL_3P1F)
-            print "mean 3p1f 4e: ",mlZjet_3p1f.getVal()
-            print "sigma 3p1f 4e: ",slZjet_3p1f.getVal()
-            print "norm 3p1f 4e: ",nlZjet_3p1f.getVal()
-            bkg_zjets_3p1f = ROOT.RooLandau("bkg_zjetsTmp_3p1f","bkg_zjetsTmp_3p1f",CMS_zz4l_mass,mlZjet_3p1f,slZjet_3p1f)
-
-            bkg_zjets = ROOT.RooAddPdf("bkg_zjetsTmp","bkg_zjetsTmp",ROOT.RooArgList(bkg_zjets_2p2f,bkg_zjets_3p1f),ROOT.RooArgList(nlZjet_2p2f,nlZjet_3p1f))
-
-        elif (self.channel == self.ID_2e2mu):
-            name = "mlZjet_2p2f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            mlZjet_2p2f = ROOT.RooRealVar(name,"mean landau Zjet 2p2f",val_meanL_2P2F)
-            name = "slZjet_2p2f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            slZjet_2p2f = ROOT.RooRealVar(name,"sigma landau Zjet 2p2f",val_sigmaL_2P2F)
-            name = "nlZjet_2p2f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            nlZjet_2p2f = ROOT.RooRealVar(name,"norm landau Zjet 2p2f",val_normL_2P2F)
-            print "mean 2p2f 2mu2e: ",mlZjet_2p2f.getVal()
-            print "sigma 2p2f 2mu2e: ",slZjet_2p2f.getVal()
-            print "norm 2p2f 2mu2e: ",nlZjet_2p2f.getVal()
-            bkg_zjets_2p2f = ROOT.RooLandau("bkg_zjetsTmp_2p2f","bkg_zjetsTmp_2p2f",CMS_zz4l_mass,mlZjet_2p2f,slZjet_2p2f)
-
-            name = "mlZjet_2p2f_2_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            mlZjet_2p2f_2 = ROOT.RooRealVar(name,"mean landau Zjet 2p2f 2e2mu",val_meanL_2P2F_2)
-            name = "slZjet_2p2f_2_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            slZjet_2p2f_2 = ROOT.RooRealVar(name,"sigma landau Zjet 2p2f 2e2mu",val_sigmaL_2P2F_2)
-            name = "nlZjet_2p2f_2_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            nlZjet_2p2f_2 = ROOT.RooRealVar(name,"norm landau Zjet 2p2f 2e2mu",val_normL_2P2F_2)
-            print "mean 2p2f 2e2mu: ",mlZjet_2p2f_2.getVal()
-            print "sigma 2p2f 2e2mu: ",slZjet_2p2f_2.getVal()
-            print "norm 2p2f 2e2mu: ",nlZjet_2p2f_2.getVal()
-            bkg_zjets_2p2f_2 = ROOT.RooLandau("bkg_zjetsTmp_2p2f_2","bkg_zjetsTmp_2p2f_2",CMS_zz4l_mass,mlZjet_2p2f_2,slZjet_2p2f_2)
-
-            name = "mlZjet_3p1f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            mlZjet_3p1f = ROOT.RooRealVar(name,"mean landau Zjet 3p1f",val_meanL_3P1F)
-            name = "slZjet_3p1f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            slZjet_3p1f = ROOT.RooRealVar(name,"sigma landau Zjet 3p1f",val_sigmaL_3P1F)
-            name = "nlZjet_3p1f_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-            nlZjet_3p1f = ROOT.RooRealVar(name,"norm landau Zjet 3p1f",val_normL_3P1F)
-            print "mean 3p1f 2mu2e: ",mlZjet_3p1f.getVal()
-            print "sigma 3p1f 2mu2e: ",slZjet_3p1f.getVal()
-            print "norm 3p1f 2mu2e: ",nlZjet_3p1f.getVal()
-            bkg_zjets_3p1f = ROOT.RooLandau("bkg_zjetsTmp_3p1f","bkg_zjetsTmp_3p1f",CMS_zz4l_mass,mlZjet_3p1f,slZjet_3p1f)
-
-            bkg_zjets = ROOT.RooAddPdf("bkg_zjetsTmp","bkg_zjetsTmp",ROOT.RooArgList(bkg_zjets_2p2f,bkg_zjets_3p1f,bkg_zjets_2p2f_2),ROOT.RooArgList(nlZjet_2p2f,nlZjet_3p1f,nlZjet_2p2f_2))
-
         ## ------------------ 2D BACKGROUND SHAPES FOR PROPERTIES ------------------- ##
 
         qqZZTemplate = gettemplate(self.analysis, self.production, "qqZZ", channelName)
@@ -832,11 +600,11 @@ class properties_datacardClass:
 
         ## ----------------------- SIGNAL RATES ----------------------- ##
 
-        CS_ggH = myCSW.HiggsCS(1,self.mH,self.production.year) #take from YR4
-        CS_VBF = myCSW.HiggsCS(2,self.mH,self.production.year)
-        CS_WH = myCSW.HiggsCS(3,self.mH,self.production.year)
-        CS_ZH = myCSW.HiggsCS(4,self.mH,self.production.year)
-        CS_ttH = myCSW.HiggsCS(5,self.mH,self.production.year)
+        CS_ggH = constants.SMXSggH #take from YR4
+        CS_VBF = constants.SMXSVBF
+        CS_WH = constants.SMXSWH
+        CS_ZH = constants.SMXSZH
+        CS_ttH = constants.SMXSttH
 
         CS_ggH_rrvname = "CSggHval_{0:.0f}".format(self.sqrts)
         CS_VBF_rrvname = "CSVBFval_{0:.0f}".format(self.sqrts)
@@ -861,21 +629,7 @@ class properties_datacardClass:
         self.CSfracff = ROOT.RooFormulaVar(CS_fracff_rrvname,"@0/@1",ROOT.RooArgList(self.CStotalff,self.CStotal))
         self.CSfracVV = ROOT.RooFormulaVar(CS_fracVV_rrvname,"@0/@1",ROOT.RooArgList(self.CStotalVV,self.CStotal))
 
-        sigRate_ggH_input = theInputs['ggH_rate']
-        if sigRate_ggH_input < 0:
-            sigRate_ggH_input=5.
-        else:
-            print "ggH Rate: ",sigRate_ggH_input
-            sigRate_ggH_Shape=sigRate_ggH_input
-
-        eff_qqH_input = theInputs['qqH_eff']
-        if eff_qqH_input >= 0:
-            print "qqH Custom Efficiency: ",eff_qqH_input
-            sigRate_VBF_Shape=eff_qqH_input*CS_VBF*BR*1000.*self.lumi
-            print "sigRate_VBF_Shape after custom eficiency: ",sigRate_VBF_Shape
-
-        sigRate_Total_Shape = sigRate_ggH_Shape+sigRate_VBF_Shape+sigRate_WH_Shape+sigRate_ZH_Shape+sigRate_ttH_Shape
-        sigRate_ggH_Shape=sigRate_Total_Shape
+        sigRate_ggH_Shape=5
         print "Total yield: ",sigRate_ggH_Shape
 
         T1_integralName = "normt1_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
@@ -915,57 +669,6 @@ class properties_datacardClass:
           self.r_fai_norm = ROOT.RooFormulaVar("ggH_norm","TMath::Max((@0+@1)*(1-abs(@2)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,alpha_zz4l))
 
 
-        ## ----------------------- BACKGROUND RATES ----------------------- ##
-
-        ## rates per lumi for scaling
-        bkgRate_qqzz = theInputs['qqZZ_rate']/theInputs['qqZZ_lumi']
-        bkgRate_ggzz = theInputs['ggZZ_rate']/theInputs['qqZZ_lumi']
-        bkgRate_zjets = theInputs['zjets_rate']/theInputs['zjets_lumi']
-
-        ## Get Normalizations
-        normalizationBackground_qqzz = bkg_qqzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("fullrange") ).getVal()
-        normalizationBackground_ggzz = bkg_ggzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("fullrange") ).getVal()
-        normalizationBackground_zjets = bkg_zjets.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("fullrange") ).getVal()
-
-        print "channel: "+self.appendName
-        print "fullrange zjets: ",normalizationBackground_zjets
-
-        sclFactorBkg_qqzz = self.lumi*bkgRate_qqzz/normalizationBackground_qqzz
-        sclFactorBkg_ggzz = self.lumi*bkgRate_ggzz/normalizationBackground_ggzz
-        sclFactorBkg_zjets = self.lumi*bkgRate_zjets/normalizationBackground_zjets
-
-        bkgRate_qqzz_Shape = sclFactorBkg_qqzz * bkg_qqzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
-        bkgRate_ggzz_Shape = sclFactorBkg_ggzz * bkg_ggzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
-        bkgRate_zjets_Shape = sclFactorBkg_zjets * bkg_zjets.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("shape") ).getVal()
-
-        rfvSMD_Ratio_qqZZ = ROOT.RooFormulaVar()
-        rfvSMD_Ratio_ggZZ = ROOT.RooFormulaVar()
-        rfvSMD_Ratio_Zjets = ROOT.RooFormulaVar()
-
-        tag_Ratio_Name = "hzz4l_SMD_ratio_qqZZ_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        rfvSMD_Ratio_qqZZ = ROOT.RooRealVar(tag_Ratio_Name,tag_Ratio_Name,self.SMDbkgCut)
-        tag_Ratio_Name = "hzz4l_SMD_ratio_ggZZ_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        rfvSMD_Ratio_ggZZ = ROOT.RooRealVar(tag_Ratio_Name,tag_Ratio_Name,self.SMDbkgCut)
-        tag_Ratio_Name = "hzz4l_SMD_ratio_Zjets_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        rfvSMD_Ratio_Zjets = ROOT.RooRealVar(tag_Ratio_Name,tag_Ratio_Name,self.SMDbkgCut)
-
-        print "@@@@@@@@@@@@@@@@@@@@@@ ", rfvSMD_Ratio_qqZZ.getVal()
-        print "@@@@@@@@@@@@@@@@@@@@@@ ", rfvSMD_Ratio_ggZZ.getVal()
-        print "@@@@@@@@@@@@@@@@@@@@@@ ", rfvSMD_Ratio_Zjets.getVal()
-
-        bkgRate_qqzz_Shape *= rfvSMD_Ratio_qqZZ.getVal()
-        bkgRate_ggzz_Shape *= rfvSMD_Ratio_ggZZ.getVal()
-        bkgRate_zjets_Shape *= rfvSMD_Ratio_Zjets.getVal()
-
-        if(DEBUG):
-            print "Shape signal rate: ",sigRate_ggH_Shape,", background rate: ",bkgRate_qqzz_Shape,", ",bkgRate_zjets_Shape," in ",low_M," - ",high_M
-            CMS_zz4l_mass.setRange("lowmassregion",100.,160.)
-            bkgRate_qqzz_lowmassregion = sclFactorBkg_qqzz * bkg_qqzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("lowmassregion") ).getVal()
-            bkgRate_ggzz_lowmassregion = sclFactorBkg_ggzz * bkg_ggzz.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("lowmassregion") ).getVal()
-            bkgRate_zjets_lowmassregion = sclFactorBkg_zjets * bkg_zjets.createIntegral( ROOT.RooArgSet(CMS_zz4l_mass), ROOT.RooFit.Range("lowmassregion") ).getVal()
-            lowmassyield = bkgRate_qqzz_lowmassregion + bkgRate_ggzz_lowmassregion + bkgRate_zjets_lowmassregion
-            print "low mass yield: ",lowmassyield
-
         ## --------------------------- DATASET --------------------------- ##
 
         data_obs_tree = getdatatree(channelName, self.production)
@@ -986,8 +689,8 @@ class properties_datacardClass:
         name_ShapeWS = ""
         name_ShapeWSXSBR = ""
 
-        name_Shape2 = "hzz4l_{0}S_{1:.0f}TeV.txt".format(self.appendName,self.production.year)
-        name_ShapeWS2 = "hzz4l_{0}S_{1:.0f}TeV.input.root".format(self.appendName,self.production.year)
+        name_Shape2 = "hzz4l_{0}S_{1:.0f}.txt".format(self.appendName,self.production.year)
+        name_ShapeWS2 = "hzz4l_{0}S_{1:.0f}.input.root".format(self.appendName,self.production.year)
         if (endsInP5):
            name_Shape       =       "{0}/HCG/{1:.1f}/{2:.0f}/{3}".format(self.outputDir,self.mH,self.production.year,name_Shape2)
            name_ShapeWS     =       "{0}/HCG/{1:.1f}/{2:.0f}/{3}".format(self.outputDir,self.mH,self.production.year,name_ShapeWS2)
@@ -996,6 +699,14 @@ class properties_datacardClass:
            name_Shape       =       "{0}/HCG/{1:.0f}/{2:.0f}/{3}".format(self.outputDir,self.mH,self.production.year,name_Shape2)
            name_ShapeWS     =       "{0}/HCG/{1:.0f}/{2:.0f}/{3}".format(self.outputDir,self.mH,self.production.year,name_ShapeWS2)
            name_ShapeWSXSBR = "{0}/HCG_XSxBR/{1:.0f}/{2:.0f}/{3}".format(self.outputDir,self.mH,self.production.year,name_ShapeWS2)
+        try:
+            os.makedirs(os.path.dirname(name_Shape))
+        except OSError:
+            pass
+        try:
+            os.makedirs(os.path.dirname(name_ShapeWSXSBR))
+        except OSError:
+            pass
         if(DEBUG): print name_Shape,"  ",name_ShapeWS2
 
         w = ROOT.RooWorkspace("w","w")
@@ -1085,9 +796,6 @@ class properties_datacardClass:
 
         ## --------------------------- DATACARDS -------------------------- ##
 
-        systematics.setSystematics(bkgRate_qqzz_Shape, bkgRate_ggzz_Shape, bkgRate_zjets_Shape)
-        systematics_forXSxBR.setSystematics(bkgRate_qqzz_Shape, bkgRate_ggzz_Shape,bkgRate_zjets_Shape)
-
         ## If the channel is not declared in inputs, set rate = 0
         if not self.ggH_chan:  sigRate_ggH_Shape = 0
         if not self.qqH_chan:  sigRate_VBF_Shape = 0
@@ -1106,12 +814,14 @@ class properties_datacardClass:
         rates['ZH']  = sigRate_ZH_Shape
         rates['ttH'] = sigRate_ttH_Shape
 
-        rates['qqZZ']  = bkgRate_qqzz_Shape
-        rates['ggZZ']  = bkgRate_ggzz_Shape
-        rates['zjets'] = bkgRate_zjets_Shape
+        rates['qqZZ']  = 6
+        rates['ggZZ']  = 6
+        rates['zjets'] = 6
         rates['ttbar'] = 0
         rates['zbb']   = 0
 
+        systematics.setSystematics(None, None, None)
+        systematics_forXSxBR.setSystematics(None, None, None)
 
         ## Write Datacards
         fo = open( name_Shape, "wb")

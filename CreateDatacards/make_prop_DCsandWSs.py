@@ -133,8 +133,8 @@ def creationLoop(directory):
 
             sqrts = str(theInputs4e['sqrts']).replace('.0','')
 
-            makeDirectory(directory+'/HCG/'+mhs+'/'+sqrts+'TeV')
-            makeDirectory(directory+'/HCG_XSxBR/'+mhs+'/'+sqrts+'TeV')
+            #makeDirectory(directory+'/HCG/'+mhs+'/'+sqrts+'TeV')
+            #makeDirectory(directory+'/HCG_XSxBR/'+mhs+'/'+sqrts+'TeV')
             myClass.makeCardsWorkspaces(mh,directory,theInputs4e,opt)
             myClass.makeCardsWorkspaces(mh,directory,theInputs4mu,opt)
             myClass.makeCardsWorkspaces(mh,directory,theInputs2e2mu,opt)
@@ -162,8 +162,8 @@ def make_prop_DCsandWSs():
 
     subdir = ['HCG','HCG_XSxBR','figs']
 
-    for d in subdir:
-        makeDirectory(dirName+'/'+d)
+    #for d in subdir:
+    #    makeDirectory(dirName+'/'+d)
 
 
     creationLoop(dirName)
