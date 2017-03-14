@@ -892,27 +892,27 @@ class properties_datacardClass:
         r_fai_pures_norm = ROOT.RooFormulaVar(r_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",RooArgList(x,T1_integral,T2_integral))
         r_fai_realints_norm = ROOT.RooFormulaVar(r_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",RooArgList(x,T4_integral,T1_integral))
 
-        r_fai_norm = None
-        r_fai_norm_dec = None
+        self.r_fai_norm = None
+        self.r_fai_norm_dec = None
         #rf_fai_norm_prod = None
-        rv_fai_norm_prod = None
-        rv_fai_pures_norm = None
-        rv_fai_realints_norm = None
+        self.rv_fai_norm_prod = None
+        self.rv_fai_pures_norm = None
+        self.rv_fai_realints_norm = None
         if theOptions.newMu:
-          r_fai_norm_dec_name = "sig_DecNormPar_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-          r_fai_norm_dec = ROOT.RooFormulaVar(r_fai_norm_dec_name,"TMath::Max((@0+@1)*(1-abs(@2)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,alpha_zz4l))
+          self.r_fai_norm_dec_name = "sig_DecNormPar_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
+          self.r_fai_norm_dec = ROOT.RooFormulaVar(self.r_fai_norm_dec_name,"TMath::Max((@0+@1)*(1-abs(@2)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,alpha_zz4l))
 
-          rv_fai_pures_norm_Name = "sig_VV_PuresNorm_{0:.0f}".format(self.production.year)
-          rv_fai_realints_norm_Name = "sig_VV_RealIntsNorm_{0:.0f}".format(self.production.year)
-          rv_fai_norm_prod_Name = "sig_VV_Total_{0:.0f}".format(self.production.year)
+          self.rv_fai_pures_norm_Name = "sig_VV_PuresNorm_{0:.0f}".format(self.sqrts)
+          self.rv_fai_realints_norm_Name = "sig_VV_RealIntsNorm_{0:.0f}".format(self.sqrts)
+          self.rv_fai_norm_prod_Name = "sig_VV_Total_{0:.0f}".format(self.sqrts)
 
-          rv_fai_pures_norm = ROOT.RooFormulaVar(rv_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",RooArgList(x,self.sigmaVVaiVal["T1"],self.sigmaVVaiVal["T2"]))
-          rv_fai_realints_norm = ROOT.RooFormulaVar(rv_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",RooArgList(x,self.sigmaVVaiVal["T4"],self.sigmaVVaiVal["T1"]))
-          rv_fai_norm_prod = ROOT.RooFormulaVar(rv_fai_norm_prod_Name,"TMath::Max((@0+@1),0)",RooArgList(rv_fai_pures_norm,rv_fai_realints_norm))
+          self.rv_fai_pures_norm = ROOT.RooFormulaVar(self.rv_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",RooArgList(x,self.sigmaVVaiVal["T1"],self.sigmaVVaiVal["T2"]))
+          self.rv_fai_realints_norm = ROOT.RooFormulaVar(self.rv_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",RooArgList(x,self.sigmaVVaiVal["T4"],self.sigmaVVaiVal["T1"]))
+          self.rv_fai_norm_prod = ROOT.RooFormulaVar(self.rv_fai_norm_prod_Name,"TMath::Max((@0+@1),0)",RooArgList(self.rv_fai_pures_norm,self.rv_fai_realints_norm))
 
-          r_fai_norm = ROOT.RooFormulaVar("ggH_norm","@0*(@1*@2 + @3*@4*@5)",RooArgList(r_fai_norm_dec, self.muF,self.CSfracff, self.muV,rv_fai_norm_prod,self.CSfracVV))
+          self.r_fai_norm = ROOT.RooFormulaVar("ggH_norm","@0*(@1*@2 + @3*@4*@5)",RooArgList(self.r_fai_norm_dec, self.muF,self.CSfracff, self.muV,self.rv_fai_norm_prod,self.CSfracVV))
         else:
-          r_fai_norm = ROOT.RooFormulaVar("ggH_norm","TMath::Max((@0+@1)*(1-abs(@2)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,alpha_zz4l))
+          self.r_fai_norm = ROOT.RooFormulaVar("ggH_norm","TMath::Max((@0+@1)*(1-abs(@2)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,alpha_zz4l))
 
 
         ## ----------------------- BACKGROUND RATES ----------------------- ##
@@ -1011,6 +1011,16 @@ class properties_datacardClass:
 
         getattr(w,'import')(data_obs,ROOT.RooFit.Rename("data_obs")) ### Should this be renamed?
 
+        if self.r_fai_norm is None:
+           print "ERROR: self.r_fai_norm is None!"
+           sys.exit()
+        else:
+           print "Importing {}".format(self.r_fai_norm.GetName())
+           self.r_fai_norm.SetName("ggH_norm")
+           getattr(w,'import')(self.r_fai_norm,ROOT.RooCmdArg()) ### Should this be renamed?
+           #getattr(w,'import')(self.r_fai_norm, ROOT.RooFit.Rename("ggH_norm")) ### Should this be renamed?
+           self.r_fai_norm.Print("v")
+
         if theOptions.newMu:
            print "Importing new mu parameterization variables"
            getattr(w,'import')(self.R, ROOT.RooFit.RecycleConflictNodes())
@@ -1034,19 +1044,10 @@ class properties_datacardClass:
            getattr(w,'import')(self.CStotal, ROOT.RooFit.RecycleConflictNodes())
            getattr(w,'import')(self.CSfracff, ROOT.RooFit.RecycleConflictNodes())
            getattr(w,'import')(self.CSfracVV, ROOT.RooFit.RecycleConflictNodes())
-           getattr(w,'import')(r_fai_norm_dec)
-           getattr(w,'import')(rv_fai_pures_norm, ROOT.RooFit.RecycleConflictNodes())
-           getattr(w,'import')(rv_fai_realints_norm, ROOT.RooFit.RecycleConflictNodes())
-           getattr(w,'import')(rv_fai_norm_prod, ROOT.RooFit.RecycleConflictNodes())
-
-        if r_fai_norm is None:
-           print "ERROR: r_fai_norm is None!"
-           sys.exit()
-        else:
-           print "Importing {}".format(r_fai_norm.GetName())
-           getattr(w,'import')(r_fai_norm) ### Should this be renamed?
-           r_fai_norm.Print("v")
-
+           #getattr(w,'import')(self.r_fai_norm_dec,ROOT.RooCmdArg())
+           getattr(w,'import')(self.rv_fai_pures_norm, ROOT.RooFit.RecycleConflictNodes())
+           getattr(w,'import')(self.rv_fai_realints_norm, ROOT.RooFit.RecycleConflictNodes())
+           getattr(w,'import')(self.rv_fai_norm_prod, ROOT.RooFit.RecycleConflictNodes())
 
         ggHpdf.SetNameTitle("ggH","ggH")
         getattr(w,'import')(ggHpdf, ROOT.RooFit.RecycleConflictNodes())

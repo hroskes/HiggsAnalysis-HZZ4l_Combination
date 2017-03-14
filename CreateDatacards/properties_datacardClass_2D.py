@@ -1327,20 +1327,20 @@ class properties_datacardClass_2D:
 
         #rfvSigRate_ggH = ROOT.RooFormulaVar("ggH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),self.getVariable(signalCB_ggH.createIntegral(RooArgSet(CMS_zz4l_mass),ROOT.RooFit.Range("shape")).getVal(),sig_ggH.createIntegral(RooArgSet(CMS_zz4l_mass),ROOT.RooFit.Range("shape")).getVal(),self.bUseCBnoConvolution)),ROOT.RooArgList(rfvSigEff_ggH, rhfXsBrFuncV_1))
 
-        rfvSigRate_ggH = ROOT.RooFormulaVar("ggH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_ggH),ROOT.RooArgList(rfvSigEff_ggH, rhfXsBrFuncV_1))
+        rfvSigRate_ggH = ROOT.RooFormulaVar("ggHnorm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_ggH),ROOT.RooArgList(rfvSigEff_ggH, rhfXsBrFuncV_1))
 
         print "Compare integrals: integral_ggH=",integral_ggH,"  ; calculated=",self.getVariable(signalCB_ggH.createIntegral(RooArgSet(CMS_zz4l_mass),ROOT.RooFit.Range("shape")).getVal(),sig_ggH.createIntegral(RooArgSet(CMS_zz4l_mass),ROOT.RooFit.Range("shape")).getVal(),self.bUseCBnoConvolution)
 
-        rfvSigRate_VBF = ROOT.RooFormulaVar("qqH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_VBF),ROOT.RooArgList(rfvSigEff_qqH, rhfXsBrFuncV_2))
+        rfvSigRate_VBF = ROOT.RooFormulaVar("qqHnorm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_VBF),ROOT.RooArgList(rfvSigEff_qqH, rhfXsBrFuncV_2))
 
 
-        rfvSigRate_WH = ROOT.RooFormulaVar("WH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_WH),ROOT.RooArgList(rfvSigEff_WH, rhfXsBrFuncV_3))
+        rfvSigRate_WH = ROOT.RooFormulaVar("WHnorm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_WH),ROOT.RooArgList(rfvSigEff_WH, rhfXsBrFuncV_3))
 
 
-        rfvSigRate_ZH = ROOT.RooFormulaVar("ZH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_ZH),ROOT.RooArgList(rfvSigEff_ZH, rhfXsBrFuncV_4))
+        rfvSigRate_ZH = ROOT.RooFormulaVar("ZHnorm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_ZH),ROOT.RooArgList(rfvSigEff_ZH, rhfXsBrFuncV_4))
 
 
-        rfvSigRate_ttH = ROOT.RooFormulaVar("ttH_norm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_ttH),ROOT.RooArgList(rfvSigEff_ttH, rhfXsBrFuncV_5))
+        rfvSigRate_ttH = ROOT.RooFormulaVar("ttHnorm","@0*@1*1000*{0}*{2}/{1}".format(self.lumi,rrvNormSig.getVal(),integral_ttH),ROOT.RooArgList(rfvSigEff_ttH, rhfXsBrFuncV_5))
 
 
         print signalCB_ggH.createIntegral(ROOT.RooArgSet(CMS_zz4l_mass)).getVal(),"   ",sig_ggH.createIntegral(ROOT.RooArgSet(CMS_zz4l_mass)).getVal()
@@ -1420,30 +1420,30 @@ class properties_datacardClass_2D:
         r_fai_realints_norm = ROOT.RooFormulaVar(r_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)-abs(@1)))*cos(@2)*@4 + sign(@1)*sqrt (abs(@1)*(1-abs(@0)-abs(@1)))*cos(@3)*@5 + sign(@0*@1)*sqrt(abs(@1)*abs(@0))*cos(@3-@2)*@6 )/@7",RooArgList(x,y,phix,phiy,T4_integral,T5_integral,T6_integral,T1_integral))
         r_fai_imagints_norm = ROOT.RooFormulaVar(r_fai_imagints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)-abs(@1)))*sin(@2)*@4 + sign(@1)*sqrt (abs(@1)*(1-abs(@0)-abs(@1)))*sin(@3)*@5 + sign(@0*@1)*sqrt(abs(@1)*abs(@0))*sin(@3-@2)*@6 )/@7",RooArgList(x,y,phix,phiy,T7_integral,T8_integral,T9_integral,T1_integral))
 
-        r_fai_norm = None
-        r_fai_norm_dec = None
+        self.r_fai_norm = None
+        self.r_fai_norm_dec = None
         #rf_fai_norm_prod = None
-        rv_fai_norm_prod = None
-        rv_fai_pures_norm = None
-        rv_fai_realints_norm = None
-        rv_fai_imagints_norm = None
+        self.rv_fai_norm_prod = None
+        self.rv_fai_pures_norm = None
+        self.rv_fai_realints_norm = None
+        self.rv_fai_imagints_norm = None
         if theOptions.newMu:
-          r_fai_norm_dec_name = "sig_DecNormPar_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
-          r_fai_norm_dec = ROOT.RooFormulaVar(r_fai_norm_dec_name,"(abs(@3)+abs(@4))>1 ? 0. : TMath::Max((@0+@1+@2)*(1-abs(@5)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,r_fai_imagints_norm,x,y,alpha_zz4l))
+          self.r_fai_norm_dec_name = "sig_DecNormPar_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
+          self.r_fai_norm_dec = ROOT.RooFormulaVar(self.r_fai_norm_dec_name,"(abs(@3)+abs(@4))>1 ? 0. : TMath::Max((@0+@1+@2)*(1-abs(@5)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,r_fai_imagints_norm,x,y,alpha_zz4l))
 
-          rv_fai_pures_norm_Name = "sig_VV_PuresNorm_{0:.0f}".format(self.sqrts)
-          rv_fai_realints_norm_Name = "sig_VV_RealIntsNorm_{0:.0f}".format(self.sqrts)
-          rv_fai_imagints_norm_Name = "sig_VV_ImagIntsNorm_{0:.0f}".format(self.sqrts)
-          rv_fai_norm_prod_Name = "sig_VV_Total_{0:.0f}".format(self.sqrts)
+          self.rv_fai_pures_norm_Name = "sig_VV_PuresNorm_{0:.0f}".format(self.sqrts)
+          self.rv_fai_realints_norm_Name = "sig_VV_RealIntsNorm_{0:.0f}".format(self.sqrts)
+          self.rv_fai_imagints_norm_Name = "sig_VV_ImagIntsNorm_{0:.0f}".format(self.sqrts)
+          self.rv_fai_norm_prod_Name = "sig_VV_Total_{0:.0f}".format(self.sqrts)
 
-          rv_fai_pures_norm = ROOT.RooFormulaVar(rv_fai_pures_norm_Name,"( (1-abs(@0)-abs(@1))*@2+abs(@0)*@3+abs(@1)*@4 )/@2",RooArgList(x,y,self.sigmaVVaiVal["T1"],self.sigmaVVaiVal["T2"],self.sigmaVVaiVal["T3"]))
-          rv_fai_realints_norm = ROOT.RooFormulaVar(rv_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)-abs(@1)))*cos(@2)*@4 + sign(@1)*sqrt (abs(@1)*(1-abs(@0)-abs(@1)))*cos(@3)*@5 + sign(@0*@1)*sqrt(abs(@1)*abs(@0))*cos(@3-@2)*@6 )/@7",RooArgList(x,y,phix,phiy,self.sigmaVVaiVal["T4"],self.sigmaVVaiVal["T5"],self.sigmaVVaiVal["T6"],self.sigmaVVaiVal["T1"]))
-          rv_fai_imagints_norm = ROOT.RooFormulaVar(rv_fai_imagints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)-abs(@1)))*sin(@2)*@4 + sign(@1)*sqrt (abs(@1)*(1-abs(@0)-abs(@1)))*sin(@3)*@5 + sign(@0*@1)*sqrt(abs(@1)*abs(@0))*sin(@3-@2)*@6 )/@7",RooArgList(x,y,phix,phiy,self.sigmaVVaiVal["T7"],self.sigmaVVaiVal["T8"],self.sigmaVVaiVal["T9"],self.sigmaVVaiVal["T1"]))
-          rv_fai_norm_prod = ROOT.RooFormulaVar(rv_fai_norm_prod_Name,"(abs(@3)+abs(@4))>1 ? 0. : TMath::Max((@0+@1+@2),0)",RooArgList(rv_fai_pures_norm,rv_fai_realints_norm,rv_fai_imagints_norm,x,y))
+          self.rv_fai_pures_norm = ROOT.RooFormulaVar(self.rv_fai_pures_norm_Name,"( (1-abs(@0)-abs(@1))*@2+abs(@0)*@3+abs(@1)*@4 )/@2",RooArgList(x,y,self.sigmaVVaiVal["T1"],self.sigmaVVaiVal["T2"],self.sigmaVVaiVal["T3"]))
+          self.rv_fai_realints_norm = ROOT.RooFormulaVar(self.rv_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)-abs(@1)))*cos(@2)*@4 + sign(@1)*sqrt (abs(@1)*(1-abs(@0)-abs(@1)))*cos(@3)*@5 + sign(@0*@1)*sqrt(abs(@1)*abs(@0))*cos(@3-@2)*@6 )/@7",RooArgList(x,y,phix,phiy,self.sigmaVVaiVal["T4"],self.sigmaVVaiVal["T5"],self.sigmaVVaiVal["T6"],self.sigmaVVaiVal["T1"]))
+          self.rv_fai_imagints_norm = ROOT.RooFormulaVar(self.rv_fai_imagints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)-abs(@1)))*sin(@2)*@4 + sign(@1)*sqrt (abs(@1)*(1-abs(@0)-abs(@1)))*sin(@3)*@5 + sign(@0*@1)*sqrt(abs(@1)*abs(@0))*sin(@3-@2)*@6 )/@7",RooArgList(x,y,phix,phiy,self.sigmaVVaiVal["T7"],self.sigmaVVaiVal["T8"],self.sigmaVVaiVal["T9"],self.sigmaVVaiVal["T1"]))
+          self.rv_fai_norm_prod = ROOT.RooFormulaVar(self.rv_fai_norm_prod_Name,"(abs(@3)+abs(@4))>1 ? 0. : TMath::Max((@0+@1+@2),0)",RooArgList(self.rv_fai_pures_norm,self.rv_fai_realints_norm,self.rv_fai_imagints_norm,x,y))
 
-          r_fai_norm = ROOT.RooFormulaVar("ggH_norm","@0*(@1*@2 + @3*@4*@5)",RooArgList(r_fai_norm_dec, self.muF,self.CSfracff, self.muV,rv_fai_norm_prod,self.CSfracVV))
+          self.r_fai_norm = ROOT.RooFormulaVar("ggH_norm","@0*(@1*@2 + @3*@4*@5)",RooArgList(self.r_fai_norm_dec, self.muF,self.CSfracff, self.muV,self.rv_fai_norm_prod,self.CSfracVV))
         else:
-          r_fai_norm = ROOT.RooFormulaVar("ggH_norm","(abs(@3)+abs(@4))>1 ? 0. : TMath::Max((@0+@1+@2)*(1-abs(@5)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,r_fai_imagints_norm,x,y,alpha_zz4l))
+          self.r_fai_norm = ROOT.RooFormulaVar("ggH_norm","(abs(@3)+abs(@4))>1 ? 0. : TMath::Max((@0+@1+@2)*(1-abs(@5)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,r_fai_imagints_norm,x,y,alpha_zz4l))
 
 
         ## ----------------------- BACKGROUND RATES ----------------------- ##
@@ -1557,6 +1557,16 @@ class properties_datacardClass_2D:
 
         getattr(w,'import')(data_obs,ROOT.RooFit.Rename("data_obs")) ### Should this be renamed?
 
+        if self.r_fai_norm is None:
+           print "ERROR: self.r_fai_norm is None!"
+           sys.exit()
+        else:
+           print "Importing {}".format(self.r_fai_norm.GetName())
+           self.r_fai_norm.SetName("ggH_norm")
+           getattr(w,'import')(self.r_fai_norm,ROOT.RooCmdArg()) ### Should this be renamed?
+           #getattr(w,'import')(self.r_fai_norm, ROOT.RooFit.Rename("ggH_norm")) ### Should this be renamed?
+           self.r_fai_norm.Print("v")
+
         if theOptions.newMu:
            print "Importing new mu parameterization variables"
            getattr(w,'import')(self.R, ROOT.RooFit.RecycleConflictNodes())
@@ -1580,19 +1590,11 @@ class properties_datacardClass_2D:
            getattr(w,'import')(self.CStotal, ROOT.RooFit.RecycleConflictNodes())
            getattr(w,'import')(self.CSfracff, ROOT.RooFit.RecycleConflictNodes())
            getattr(w,'import')(self.CSfracVV, ROOT.RooFit.RecycleConflictNodes())
-           getattr(w,'import')(r_fai_norm_dec)
-           getattr(w,'import')(rv_fai_pures_norm, ROOT.RooFit.RecycleConflictNodes())
-           getattr(w,'import')(rv_fai_realints_norm, ROOT.RooFit.RecycleConflictNodes())
-           getattr(w,'import')(rv_fai_imagints_norm, ROOT.RooFit.RecycleConflictNodes())
-           getattr(w,'import')(rv_fai_norm_prod, ROOT.RooFit.RecycleConflictNodes())
-
-        if r_fai_norm is None:
-           print "ERROR: r_fai_norm is None!"
-           sys.exit()
-        else:
-           print "Importing {}".format(r_fai_norm.GetName())
-           getattr(w,'import')(r_fai_norm) ### Should this be renamed?
-           r_fai_norm.Print("v")
+           #getattr(w,'import')(self.r_fai_norm_dec,ROOT.RooCmdArg())
+           getattr(w,'import')(self.rv_fai_pures_norm, ROOT.RooFit.RecycleConflictNodes())
+           getattr(w,'import')(self.rv_fai_realints_norm, ROOT.RooFit.RecycleConflictNodes())
+           getattr(w,'import')(self.rv_fai_imagints_norm, ROOT.RooFit.RecycleConflictNodes())
+           getattr(w,'import')(self.rv_fai_norm_prod, ROOT.RooFit.RecycleConflictNodes())
 
         ggHpdf.SetNameTitle("ggH","ggH")
         getattr(w,'import')(ggHpdf, ROOT.RooFit.RecycleConflictNodes())
