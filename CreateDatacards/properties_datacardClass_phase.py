@@ -26,6 +26,14 @@ class properties_datacardClass_phase:
     def loadIncludes(self):
         import include
 
+    def getChannelName(self):
+        channelName = ""
+        if (self.channel == self.ID_4mu): channelName = "4mu"
+        elif (self.channel == self.ID_4e): channelName = "4e"
+        elif (self.channel == self.ID_2e2mu): channelName = "2e2mu"
+        else: print "Input Error: Unknown channel! (4mu = 1, 4e = 2, 2e2mu = 3)"
+        return channelName
+
     # cs x br function
     def makeXsBrFunction(self,signalProc,rrvMH):
 
@@ -37,16 +45,7 @@ class properties_datacardClass_phase:
         if(signalProc == 4): procName = "ZH"
         if(signalProc == 5): procName = "ttH"
 
-
-
-
-        channelName = ""
-        if (self.channel == self.ID_4mu): channelName = "4mu"
-        elif (self.channel == self.ID_4e): channelName = "4e"
-        elif (self.channel == self.ID_2e2mu): channelName = "2e2mu"
-        else: print "Input Error: Unknown channel! (4mu = 1, 4e = 2, 2e2mu = 3)"
-
-
+        channelName = self.getChannelName()
 
         myCSWrhf = HiggsCSandWidth()
 
@@ -827,7 +826,7 @@ class properties_datacardClass_phase:
         ZjetsTemplatePdfUp = ROOT.RooHistPdf(PdfName,PdfName,ROOT.RooArgSet(D1,D2,D3),ZjetsTempDataHistUp)
 
         funcList_zjets = ROOT.RooArgList()
-        morphBkgVarName =  "CMS_zz4l_smd_zjets_bkg_{0:.0f}".format(self.channel)
+        morphBkgVarName =  "CMS_zz4l_smd_zjets_bkg_{}".format(self.getChannelName())
         alphaMorphBkg = ROOT.RooRealVar(morphBkgVarName,morphBkgVarName,0,-20,20)
         morphVarListBkg = ROOT.RooArgList()
 

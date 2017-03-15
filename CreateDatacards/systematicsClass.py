@@ -517,7 +517,7 @@ class systematicsClass:
 
     def Write_CMS_hzz2e2mu_Zjets(self,theFile,theInputs):
 
-        theFile.write("CMS_hzz2e2mu_Zjets lnN ")
+        theFile.write("CMS_zz2e2mu_Zjets lnN ")
 
         systLine={'ggH':"- "}
         systLine['qqH']  = "- "
@@ -534,7 +534,7 @@ class systematicsClass:
 
     def Write_CMS_hzz4mu_Zjets(self,theFile,theInputs):
 
-        theFile.write("CMS_hzz4mu_Zjets lnN ")
+        theFile.write("CMS_zz4mu_Zjets lnN ")
 
         systLine={'ggH':"- "}
         systLine['qqH']  = "- "
@@ -551,7 +551,7 @@ class systematicsClass:
 
     def Write_CMS_hzz4e_Zjets(self,theFile,theInputs):
 
-        theFile.write("CMS_hzz4e_Zjets lnN ")
+        theFile.write("CMS_zz4e_Zjets lnN ")
 
         systLine={'ggH':"- "}
         systLine['qqH']  = "- "
