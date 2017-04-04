@@ -643,8 +643,8 @@ class properties_datacardClass:
         print "T4 integral",T4_integral.getVal()
         r_fai_pures_norm_Name = "sig_PuresNorm_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         r_fai_realints_norm_Name = "sig_RealIntsNorm_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        r_fai_pures_norm = ROOT.RooFormulaVar(r_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",RooArgList(x,T1_integral,T2_integral))
-        r_fai_realints_norm = ROOT.RooFormulaVar(r_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",RooArgList(x,T4_integral,T1_integral))
+        r_fai_pures_norm = ROOT.RooFormulaVar(r_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",ROOT.RooArgList(x,T1_integral,T2_integral))
+        r_fai_realints_norm = ROOT.RooFormulaVar(r_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",ROOT.RooArgList(x,T4_integral,T1_integral))
 
         self.r_fai_norm = None
         self.r_fai_norm_dec = None
@@ -798,22 +798,13 @@ class properties_datacardClass:
         ## --------------------------- DATACARDS -------------------------- ##
 
         ## If the channel is not declared in inputs, set rate = 0
-        if not self.ggH_chan:  sigRate_ggH_Shape = 0
-        if not self.qqH_chan:  sigRate_VBF_Shape = 0
-        if not self.WH_chan:   sigRate_WH_Shape = 0
-        if not self.ZH_chan:   sigRate_ZH_Shape = 0
-        if not self.ttH_chan:  sigRate_ttH_Shape = 0
-
-        if not self.qqZZ_chan:  bkgRate_qqzz_Shape = 0
-        if not self.ggZZ_chan:  bkgRate_ggzz_Shape = 0
-        if not self.zjets_chan: bkgRate_zjets_Shape = 0
 
         rates = {}
-        rates['ggH'] = sigRate_ggH_Shape
-        rates['qqH'] = sigRate_VBF_Shape
-        rates['WH']  = sigRate_WH_Shape
-        rates['ZH']  = sigRate_ZH_Shape
-        rates['ttH'] = sigRate_ttH_Shape
+        rates['ggH'] = 6
+        rates['qqH'] = 0
+        rates['WH']  = 0
+        rates['ZH']  = 0
+        rates['ttH'] = 0
 
         rates['qqZZ']  = 6
         rates['ggZZ']  = 6
