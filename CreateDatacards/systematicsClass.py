@@ -2,7 +2,6 @@
 import os
 import re
 import math
-from ROOT import *
 import ROOT
 from array import array
 
@@ -94,8 +93,8 @@ class systematicsClass:
         #ROOT.gSystem.Load("include/HiggsCSandWidth_cc.so")
         #ROOT.gSystem.Load("include/HiggsCSandWidthSM4_cc.so")
 
-        self.myCSW = HiggsCSandWidth()
-        self.myCSWSM4 = HiggsCSandWidthSM4()
+        self.myCSW = ROOT.HiggsCSandWidth()
+        self.myCSWSM4 = ROOT.HiggsCSandWidthSM4()
 
         if not self.isForXSxBR:
 
@@ -517,7 +516,7 @@ class systematicsClass:
 
     def Write_CMS_hzz2e2mu_Zjets(self,theFile,theInputs):
 
-        theFile.write("CMS_zz2e2mu_Zjets lnN ")
+        theFile.write("CMS_zz2e2mu_zjets lnN ")
 
         systLine={'ggH':"- "}
         systLine['qqH']  = "- "
@@ -534,7 +533,7 @@ class systematicsClass:
 
     def Write_CMS_hzz4mu_Zjets(self,theFile,theInputs):
 
-        theFile.write("CMS_zz4mu_Zjets lnN ")
+        theFile.write("CMS_zz4mu_zjets lnN ")
 
         systLine={'ggH':"- "}
         systLine['qqH']  = "- "
@@ -551,7 +550,7 @@ class systematicsClass:
 
     def Write_CMS_hzz4e_Zjets(self,theFile,theInputs):
 
-        theFile.write("CMS_zz4e_Zjets lnN ")
+        theFile.write("CMS_zz4e_zjets lnN ")
 
         systLine={'ggH':"- "}
         systLine['qqH']  = "- "

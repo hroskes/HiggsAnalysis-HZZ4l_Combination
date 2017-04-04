@@ -3,7 +3,6 @@ import os
 import re
 import math
 import collections
-from ROOT import *
 from array import array
 
 ## ---------------------------------------------------------------
@@ -16,7 +15,7 @@ class inputReader:
 
         if not os.path.exists(inputTextFile):
             raise RuntimeError, "File {0} does not exist!!!".format(inputTextFile)
-        
+
         # input file
         self.theInput = inputTextFile
         # model
@@ -163,18 +162,18 @@ class inputReader:
         self.zjetsShape_mean_3P1F = -999.9
         self.zjetsShape_sigma_3P1F = -999.9
         self.zjetsShape_norm_3P1F = -999.9
-        
+
         self.zjetsShape_mean_2P2F = -999.9
         self.zjetsShape_sigma_2P2F = -999.9
         self.zjetsShape_norm_2P2F = -999.9
         self.zjetsShape_pol0_2P2F = -999.9
         self.zjetsShape_pol1_2P2F = -999.9
-        
+
         self.zjetsShape_mean_2P2F_2e2mu = -999.9
         self.zjetsShape_sigma_2P2F_2e2mu = -999.9
         self.zjetsShape_norm_2P2F_2e2mu = -999.9
-        
-        # systematics 
+
+        # systematics
         self.zjetsKappaLow = -999.9
         self.zjetsKappaHigh = -999.9
         self.lumiUnc = -999.9
@@ -212,7 +211,7 @@ class inputReader:
         self.useQCDscale_VV = False
         self.useBRhiggs_hzz4l = False
         self.useCMS_eff = False
-        self.useCMS_hzz4l_Zjets = False 
+        self.useCMS_hzz4l_Zjets = False
         self.useCMS_zz4l_bkgMELA = False
         self.useCMS_zz4l_sigMELA = False
         self.useCMS_zz4l_mean = False
@@ -229,7 +228,7 @@ class inputReader:
         self.useCMS_zz4l_doVBFtest = False
         self.useCMS_zz4l_Fisher_sys = False
         self.useCMS_zz4l_Pt_sys = False
-        
+
 	# ---  mekd stuffs
 	self.mekd_sig_a0_shape = -999.
 	self.mekd_sig_a1_shape = -999.
@@ -243,7 +242,7 @@ class inputReader:
 	self.mekd_qqZZ_a4_shape = -999.
 	# --- end mekd
 
-	# --- relative error stuffs 
+	# --- relative error stuffs
 	self.relerr_ggH_ld_mean = -999.
 	self.relerr_ggH_ld_sigma = -999.
 	self.relerr_ggH_ld_frac = -999.
@@ -259,7 +258,7 @@ class inputReader:
 	self.relerr_zx_ld_frac = -999.
 	self.relerr_zx_gs_mean = -999.
 	self.relerr_zx_gs_sigma = -999.
-	# --- end relative error 
+	# --- end relative error
 
     def goodEntry(self,variable):
         if variable == -999.9:
@@ -275,19 +274,19 @@ class inputReader:
 
 
     def readInputs(self):
-        
+
         for line in open(self.theInput,'r'):
             f = line.split()
             if len(f) < 1: continue
 
             if f[0].startswith("#"): continue
-            
+
             if f[0].lower().startswith("model"):
-                
+
                 if f[1].upper() == "SM": self.model = "SM"
                 elif f[1].upper() == "SM4": self.model = "SM4"
                 elif f[1].upper() == "FF" or f[1].upper() == "FP": self.model = "FF"
-                else : raise RuntimeError, "Unknow model {0}, choices are SM, SM4, FF".format(f[1].upper()) 
+                else : raise RuntimeError, "Unknow model {0}, choices are SM, SM4, FF".format(f[1].upper())
 
             if f[0].lower().startswith("decay"):
 
@@ -296,7 +295,7 @@ class inputReader:
                 elif f[1] == "2e2mu": self.decayChan = 3
                 elif f[1] == "2mu2e": self.decayChan = 3
                 else : raise RuntimeError, "Unknown decay channel {0}, choices are 4mu, 4e, or 2e2mu".format(f[1])
-                
+
             if f[0].lower().startswith("channels"):
                 for chan in f:
                     if chan == f[0]: continue
@@ -312,10 +311,10 @@ class inputReader:
                     elif chan.lower().startswith("zbb"):   self.zbb_chan = True
                     elif chan.lower().startswith("all"):   self.all_chan = True
                     else : raise RuntimeError, "Unknown channel {0}, choices are ggH, qqH, WH, ZH, ttH, qqZZ, ggZZ, zjets".format(chan)
-          
-            
+
+
             if f[0].lower().startswith("rate"):
-                
+
                 if f[1].lower().startswith("ggh"):
                     self.ggH_rate = float(f[2])
 #                    if len(f) == 4: self.ggH_lumi = float(f[3])
@@ -336,73 +335,73 @@ class inputReader:
                     if len(f) == 4: self.zbb_lumi = float(f[3])
 
             if f[0].lower().startswith("eff"):
-                
+
                 if f[1].lower().startswith("qqh"):
                     self.qqH_eff = float(f[2])
 
             if f[0].lower().startswith("usehighmassreweightedshapes"):
                 self.useHighMassReweightedShapes = True
-                    
+
             if f[0].lower().startswith("signalshape"):
 
-                if f[1].lower().startswith("n_cb"): 
+                if f[1].lower().startswith("n_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.n_CB_shape = f[2]
-                if f[1].lower().startswith("alpha_cb"): 
+                if f[1].lower().startswith("alpha_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.alpha_CB_shape = f[2]
-                if f[1].lower().startswith("n2_cb"): 
+                if f[1].lower().startswith("n2_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.n2_CB_shape = f[2]
-                if f[1].lower().startswith("alpha2_cb"): 
+                if f[1].lower().startswith("alpha2_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.alpha2_CB_shape = f[2]
-                if f[1].lower().startswith("mean_cb"): 
+                if f[1].lower().startswith("mean_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mean_CB_shape = f[2]
-                if f[1].lower().startswith("sigma_cb"): 
+                if f[1].lower().startswith("sigma_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.sigma_CB_shape = f[2]
-                if f[1].lower().startswith("mekd_sig_a0"): 
+                if f[1].lower().startswith("mekd_sig_a0"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mekd_sig_a0_shape = f[2]
-                if f[1].lower().startswith("mekd_sig_a1"): 
+                if f[1].lower().startswith("mekd_sig_a1"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mekd_sig_a1_shape = f[2]
-                if f[1].lower().startswith("mekd_sig_a2"): 
+                if f[1].lower().startswith("mekd_sig_a2"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mekd_sig_a2_shape = f[2]
-                if f[1].lower().startswith("mekd_sig_a3"): 
+                if f[1].lower().startswith("mekd_sig_a3"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mekd_sig_a3_shape = f[2]
-                if f[1].lower().startswith("mekd_sig_a4"): 
+                if f[1].lower().startswith("mekd_sig_a4"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mekd_sig_a4_shape = f[2]
 
             if f[0].lower().startswith("highmasssignalshape") or f[0].lower().startswith("hmsignalshape"):
 
-                if f[1].lower().startswith("n_cb"): 
+                if f[1].lower().startswith("n_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.n_CB_shape_HM = f[2]
-                if f[1].lower().startswith("alpha_cb"): 
+                if f[1].lower().startswith("alpha_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.alpha_CB_shape_HM = f[2]
-                if f[1].lower().startswith("n2_cb"): 
+                if f[1].lower().startswith("n2_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.n2_CB_shape_HM = f[2]
-                if f[1].lower().startswith("alpha2_cb"): 
+                if f[1].lower().startswith("alpha2_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.alpha2_CB_shape_HM = f[2]
-                if f[1].lower().startswith("mean_cb"): 
+                if f[1].lower().startswith("mean_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mean_CB_shape_HM = f[2]
-                if f[1].lower().startswith("sigma_cb"): 
+                if f[1].lower().startswith("sigma_cb"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.sigma_CB_shape_HM = f[2]
-                if f[1].lower().startswith("gamma_bw"): 
+                if f[1].lower().startswith("gamma_bw"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.gamma_BW_shape_HM = f[2]
-                    
+
             if f[0].lower().startswith("signaleff"):
 
                 if f[1].lower().startswith("a1"): self.sigeff_a1 = float(f[2])
@@ -492,39 +491,39 @@ class inputReader:
                 if f[1].lower().startswith("a11"): self.qqZZshape_a11 = float(f[2])
                 if f[1].lower().startswith("a12"): self.qqZZshape_a12 = float(f[2])
                 if f[1].lower().startswith("a13"): self.qqZZshape_a13 = float(f[2])
-                
-                if f[1].lower().startswith("mekd_qqzz_a0"): 
+
+                if f[1].lower().startswith("mekd_qqzz_a0"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mekd_qqZZ_a0_shape = f[2]; print f[2]; print self.mekd_qqZZ_a0_shape
-                if f[1].lower().startswith("mekd_qqzz_a1"): 
+                if f[1].lower().startswith("mekd_qqzz_a1"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mekd_qqZZ_a1_shape = f[2]
-                if f[1].lower().startswith("mekd_qqzz_a2"): 
+                if f[1].lower().startswith("mekd_qqzz_a2"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mekd_qqZZ_a2_shape = f[2]
-                if f[1].lower().startswith("mekd_qqzz_a3"): 
+                if f[1].lower().startswith("mekd_qqzz_a3"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mekd_qqZZ_a3_shape = f[2]
-                if f[1].lower().startswith("mekd_qqzz_a4"): 
+                if f[1].lower().startswith("mekd_qqzz_a4"):
                     if len(f) > 3 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[1])
                     else: self.mekd_qqZZ_a4_shape = f[2]
 
 	    if f[0].lower().startswith("relerrshape"):
-		if f[1].startswith("relerr_ggH_ld_frac"): self.relerr_ggH_ld_frac =  f[2]		
-		if f[1].startswith("relerr_ggH_ld_mean"): self.relerr_ggH_ld_mean =  f[2]		
-		if f[1].startswith("relerr_ggH_ld_sigma"): self.relerr_ggH_ld_sigma =  f[2]		
-		if f[1].startswith("relerr_ggH_gs_mean"): self.relerr_ggH_gs_mean =  f[2]		
-		if f[1].startswith("relerr_ggH_gs_sigma"): self.relerr_ggH_gs_sigma =  f[2]		
-		if f[1].startswith("relerr_qqzz_ld_frac"): self.relerr_qqzz_ld_frac =  f[2]		
-		if f[1].startswith("relerr_qqzz_ld_mean"): self.relerr_qqzz_ld_mean =  f[2]		
-		if f[1].startswith("relerr_qqzz_ld_sigma"): self.relerr_qqzz_ld_sigma =  f[2]		
-		if f[1].startswith("relerr_qqzz_gs_mean"): self.relerr_qqzz_gs_mean =  f[2]		
-		if f[1].startswith("relerr_qqzz_gs_sigma"): self.relerr_qqzz_gs_sigma =  f[2]		
-		if f[1].startswith("relerr_zx_ld_frac"): self.relerr_zx_ld_frac =  f[2]		
-		if f[1].startswith("relerr_zx_ld_mean"): self.relerr_zx_ld_mean =  f[2]		
-		if f[1].startswith("relerr_zx_ld_sigma"): self.relerr_zx_ld_sigma =  f[2]		
-		if f[1].startswith("relerr_zx_gs_mean"): self.relerr_zx_gs_mean =  f[2]		
-		if f[1].startswith("relerr_zx_gs_sigma"): self.relerr_zx_gs_sigma =  f[2]		
+		if f[1].startswith("relerr_ggH_ld_frac"): self.relerr_ggH_ld_frac =  f[2]
+		if f[1].startswith("relerr_ggH_ld_mean"): self.relerr_ggH_ld_mean =  f[2]
+		if f[1].startswith("relerr_ggH_ld_sigma"): self.relerr_ggH_ld_sigma =  f[2]
+		if f[1].startswith("relerr_ggH_gs_mean"): self.relerr_ggH_gs_mean =  f[2]
+		if f[1].startswith("relerr_ggH_gs_sigma"): self.relerr_ggH_gs_sigma =  f[2]
+		if f[1].startswith("relerr_qqzz_ld_frac"): self.relerr_qqzz_ld_frac =  f[2]
+		if f[1].startswith("relerr_qqzz_ld_mean"): self.relerr_qqzz_ld_mean =  f[2]
+		if f[1].startswith("relerr_qqzz_ld_sigma"): self.relerr_qqzz_ld_sigma =  f[2]
+		if f[1].startswith("relerr_qqzz_gs_mean"): self.relerr_qqzz_gs_mean =  f[2]
+		if f[1].startswith("relerr_qqzz_gs_sigma"): self.relerr_qqzz_gs_sigma =  f[2]
+		if f[1].startswith("relerr_zx_ld_frac"): self.relerr_zx_ld_frac =  f[2]
+		if f[1].startswith("relerr_zx_ld_mean"): self.relerr_zx_ld_mean =  f[2]
+		if f[1].startswith("relerr_zx_ld_sigma"): self.relerr_zx_ld_sigma =  f[2]
+		if f[1].startswith("relerr_zx_gs_mean"): self.relerr_zx_gs_mean =  f[2]
+		if f[1].startswith("relerr_zx_gs_sigma"): self.relerr_zx_gs_sigma =  f[2]
 
             if f[0].lower().startswith("ggzzshape"):
 
@@ -538,26 +537,26 @@ class inputReader:
                 if f[1].lower().startswith("a7"): self.ggZZshape_a7 = float(f[2])
                 if f[1].lower().startswith("a8"): self.ggZZshape_a8 = float(f[2])
                 if f[1].lower().startswith("a9"): self.ggZZshape_a9 = float(f[2])
-               
+
             if f[0].lower().startswith("zjetsshape"):
 
                 if f[1].lower().startswith("mean_3p1f"):  self.zjetsShape_mean_3P1F = f[2]
                 if f[1].lower().startswith("sigma_3p1f"): self.zjetsShape_sigma_3P1F = f[2]
                 if f[1].lower().startswith("norm_3p1f"): self.zjetsShape_norm_3P1F = f[2]
-                
+
                 if f[1].lower().startswith("mean_2p2f"):  self.zjetsShape_mean_2P2F = f[2]
                 if f[1].lower().startswith("sigma_2p2f"): self.zjetsShape_sigma_2P2F = f[2]
                 if f[1].lower().startswith("norm_2p2f"): self.zjetsShape_norm_2P2F = f[2]
                 if f[1].lower().startswith("pol0_2p2f"): self.zjetsShape_pol0_2P2F = f[2]
                 if f[1].lower().startswith("pol1_2p2f"): self.zjetsShape_pol1_2P2F = f[2]
-                
+
                 if f[1].lower().startswith("mean_2e2mu_2p2f"):  self.zjetsShape_mean_2P2F_2e2mu = f[2]
                 if f[1].lower().startswith("sigma_2e2mu_2p2f"): self.zjetsShape_sigma_2P2F_2e2mu = f[2]
                 if f[1].lower().startswith("norm_2e2mu_2p2f"): self.zjetsShape_norm_2P2F_2e2mu = f[2]
-                
+
 
             if f[0].lower().startswith("systematic"):
-                
+
                 if f[1].lower().startswith("zjet") and f[1].lower().find("kappalow") >= 0 :
                     self.zjetsKappaLow = f[2]
                 if f[1].lower().startswith("zjet") and f[1].lower().find("kappahigh") >= 0 :
@@ -604,7 +603,7 @@ class inputReader:
                         self.QCD_scale_qqH_2j_sys = f[3]
                    # if f[2].lower().startswith("qcd_scale_qqh_2j_sys"):
                     #    self.QCD_scale_qqZZ_2j_sys = f[3]
-                        
+
                 if f[1].lower().startswith("luminosity"):
                     self.useLumiUnc = self.parseBoolString(f[2])
                 if f[1].lower().startswith("pdf_gg"):
@@ -651,9 +650,9 @@ class inputReader:
                     self.useScale= self.parseBoolString(f[2])
                 if f[1].lower().startswith("cms_zz4l_zjet"):
                     self.useCMS_zz4l_zjet= self.parseBoolString(f[2])
-                    
-                
-                    
+
+
+
             if f[0].lower().startswith("lumi"):
                 self.lumi = float(f[1])
 
@@ -663,7 +662,7 @@ class inputReader:
             if f[0].lower().startswith("jetyieldratio"):
                 if len(f) > 2 : raise RuntimeError, "{0} has a space in the formula!  Please check!".format(f[0])
                 else : self.dijetRatio = f[1]
-                
+
             if f[0].lower().startswith("dohyptest"):
                 self.doHypTest = self.parseBoolString(f[1])
             if f[0].lower().startswith("althyplabel"):
@@ -674,7 +673,7 @@ class inputReader:
             if f[0].lower().startswith("usecms_zz4l_fisher_sys"):
                 self.useCMS_zz4l_Fisher_sys = self.parseBoolString(f[1])
             if f[0].lower().startswith("usecms_zz4l_pt_sys"):
-                self.useCMS_zz4l_Pt_sys = self.parseBoolString(f[1])             
+                self.useCMS_zz4l_Pt_sys = self.parseBoolString(f[1])
 
     def getInputs(self):
 
@@ -699,7 +698,7 @@ class inputReader:
         if not self.goodEntry(self.mean_CB_shape): raise RuntimeError, "{0} is not set.  Check inputs!".format("mean_CB_shape")
         if not self.goodEntry(self.sigma_CB_shape): raise RuntimeError, "{0} is not set.  Check inputs!".format("sigma_CB_shape")
 
-        
+
         if not self.goodEntry(self.n_CB_shape_HM):
             print "{0} is not set. Using {1} for {0}.".format("n_CB_shape_HM","n_CB_shape")
             self.n_CB_shape_HM = self.n_CB_shape
@@ -724,7 +723,7 @@ class inputReader:
         if not self.goodEntry(self.sigma_CB_shape_HM):
             print "{0} is not set. Using {1} for {0}.".format("sigma_CB_shape_HM","sigma_CB_shape")
             self.sigma_CB_shape_HM = self.sigma_CB_shape
-                        
+
         if not self.goodEntry(self.gamma_BW_shape_HM): raise RuntimeError, "{0} is not set.  Check inputs!".format("gamma_BW_shape_HM")
 
         if not self.goodEntry(self.sigeff_a1): raise RuntimeError, "{0} is not set.  Check inputs!".format("sigEff_a1")
@@ -817,7 +816,7 @@ class inputReader:
         if not self.goodEntry(self.zjetsShape_mean_2P2F_2e2mu): raise RuntimeError, "{0} is not set.  Check inputs!".format("zjetsShape_mean_2P2F_2e2mu")
         if not self.goodEntry(self.zjetsShape_sigma_2P2F_2e2mu): raise RuntimeError, "{0} is not set.  Check inputs!".format("zjetsShape_sigma_2P2F_2e2mu")
         if not self.goodEntry(self.zjetsShape_norm_2P2F_2e2mu): raise RuntimeError, "{0} is not set.  Check inputs!".format("zjetsShape_norm_2P2F_2e2mu")
-        
+
         if not self.goodEntry(self.zjetsKappaLow): raise RuntimeError, "{0} is not set.  Check inputs!".format("self.zjetsKappaLow")
         if not self.goodEntry(self.zjetsKappaHigh): raise RuntimeError, "{0} is not set.  Check inputs!".format("self.zjetsKappaHigh")
 
@@ -855,11 +854,11 @@ class inputReader:
             print "!!! HYPTOTHESIS TESTING !!!"
         if self.useCMS_zz4l_doVBFtest:
             print "!!! VBF TESTING !!!"
-  
+
         if self.doHypTest and not self.all_chan:
             raise RuntimeError,"You asked to prepare DC and WS for Hyp Test but you did not want to sum over all signal channels. This is forbidden. Check inputs !"
       ## Set dictionary entries to be passed to datacard class ##
-        
+
         dict['decayChannel'] = int(self.decayChan)
         dict['model'] = str(self.model)
         dict['lumi'] = float(self.lumi)
@@ -881,7 +880,7 @@ class inputReader:
         dict['zjets'] = self.zjets_chan
         dict['ttbar'] = self.ttbar_chan
         dict['zbb'] = self.zbb_chan
-       
+
         dict['ggH_rate'] = self.ggH_rate
         dict['qqZZ_rate'] = self.qqZZ_rate
         dict['ggZZ_rate'] = self.ggZZ_rate
@@ -892,7 +891,7 @@ class inputReader:
         dict['qqH_eff'] = self.qqH_eff
 
         dict['qqZZ_lumi'] = float(self.qqZZ_lumi)
-        dict['ggZZ_lumi'] = float(self.ggZZ_lumi) 
+        dict['ggZZ_lumi'] = float(self.ggZZ_lumi)
         dict['zjets_lumi'] = float(self.zjets_lumi)
         dict['ttbar_lumi'] = float(self.ttbar_lumi)
         dict['zbb_lumi'] = float(self.zbb_lumi)
@@ -978,7 +977,7 @@ class inputReader:
         #dict['QCD_scale_qqZZ_2j_sys'] = float(self.QCD_scale_qqZZ_2j_sys)
 
         dict['dijetRatio'] = self.dijetRatio
-        
+
         dict['qqZZshape_a0'] = float(self.qqZZshape_a0)
         dict['qqZZshape_a1'] = float(self.qqZZshape_a1)
         dict['qqZZshape_a2'] = float(self.qqZZshape_a2)
@@ -1008,42 +1007,42 @@ class inputReader:
         dict['zjetsShape_mean_3P1F'] = float(self.zjetsShape_mean_3P1F)
         dict['zjetsShape_sigma_3P1F'] = float(self.zjetsShape_sigma_3P1F)
         dict['zjetsShape_norm_3P1F'] = float(self.zjetsShape_norm_3P1F)
-        
+
         dict['zjetsShape_mean_2P2F'] = float(self.zjetsShape_mean_2P2F)
         dict['zjetsShape_sigma_2P2F'] = float(self.zjetsShape_sigma_2P2F)
         dict['zjetsShape_norm_2P2F'] = float(self.zjetsShape_norm_2P2F)
         dict['zjetsShape_pol0_2P2F'] = float(self.zjetsShape_pol0_2P2F)
         dict['zjetsShape_pol1_2P2F'] = float(self.zjetsShape_pol1_2P2F)
-        
+
         dict['zjetsShape_mean_2P2F_2e2mu'] = float(self.zjetsShape_mean_2P2F_2e2mu)
         dict['zjetsShape_sigma_2P2F_2e2mu'] = float(self.zjetsShape_sigma_2P2F_2e2mu)
         dict['zjetsShape_norm_2P2F_2e2mu'] = float(self.zjetsShape_norm_2P2F_2e2mu)
 
         dict['zjetsKappaLow'] = float(self.zjetsKappaLow)
         dict['zjetsKappaHigh'] = float(self.zjetsKappaHigh)
-        
+
 
         dict['lumiUnc'] = self.lumiUnc
         dict['muonFullUnc'] = float(self.muonFullUnc)
-        dict['muonFullUnc_HM'] = float(self.muonFullUnc_HM) 
+        dict['muonFullUnc_HM'] = float(self.muonFullUnc_HM)
         dict['muonFullCutoff'] = float(self.muonFullCutoff)
-        dict['elecFullUnc'] = float(self.elecFullUnc) 
-        dict['elecFullUnc_HM'] = float(self.elecFullUnc_HM) 
+        dict['elecFullUnc'] = float(self.elecFullUnc)
+        dict['elecFullUnc_HM'] = float(self.elecFullUnc_HM)
         dict['elecFullCutoff'] = float(self.elecFullCutoff)
-        
-        dict['muonTrigUnc'] = float(self.muonTrigUnc)
-        dict['muonTrigUnc_HM'] = float(self.muonTrigUnc_HM) 
-        dict['muonTrigCutoff'] = float(self.muonTrigCutoff)
-        dict['elecTrigUnc'] = float(self.elecTrigUnc) 
-        dict['elecTrigUnc_HM'] = float(self.elecTrigUnc_HM)
-        dict['elecTrigCutoff'] = float(self.elecTrigCutoff) 
 
-        dict['useLumiUnc'] = self.useLumiUnc 
+        dict['muonTrigUnc'] = float(self.muonTrigUnc)
+        dict['muonTrigUnc_HM'] = float(self.muonTrigUnc_HM)
+        dict['muonTrigCutoff'] = float(self.muonTrigCutoff)
+        dict['elecTrigUnc'] = float(self.elecTrigUnc)
+        dict['elecTrigUnc_HM'] = float(self.elecTrigUnc_HM)
+        dict['elecTrigCutoff'] = float(self.elecTrigCutoff)
+
+        dict['useLumiUnc'] = self.useLumiUnc
         dict['usePdf_gg'] = self.usePdf_gg
-        dict['usePdf_qqbar'] = self.usePdf_qqbar 
+        dict['usePdf_qqbar'] = self.usePdf_qqbar
         dict['usePdf_hzz4l_accept'] = self.usePdf_hzz4l_accept
         dict['useQCDscale_ggH'] = self.useQCDscale_ggH
-        dict['useQCDscale_qqH'] = self.useQCDscale_qqH 
+        dict['useQCDscale_qqH'] = self.useQCDscale_qqH
         dict['useQCDscale_VH'] = self.useQCDscale_VH
         dict['useQCDscale_ttH'] = self.useQCDscale_ttH
         dict['useTheoryUncXS_HighMH'] = self.useTheoryUncXS_HighMH
@@ -1051,20 +1050,20 @@ class inputReader:
         dict['useQCDscale_VV'] = self.useQCDscale_VV
         dict['useBRhiggs_hzz4l'] = self.useBRhiggs_hzz4l
         dict['useCMS_eff'] = self.useCMS_eff
-        dict['useCMS_hzz4l_Zjets'] = self.useCMS_hzz4l_Zjets 
-        dict['useCMS_zz4l_bkgMELA'] = self.useCMS_zz4l_bkgMELA 
+        dict['useCMS_hzz4l_Zjets'] = self.useCMS_hzz4l_Zjets
+        dict['useCMS_zz4l_bkgMELA'] = self.useCMS_zz4l_bkgMELA
         dict['useCMS_zz4l_sigMELA'] = self.useCMS_zz4l_sigMELA
         dict['useCMS_zz4l_mean'] = self.useCMS_zz4l_mean
-        dict['useCMS_zz4l_sigma'] = self.useCMS_zz4l_sigma 
+        dict['useCMS_zz4l_sigma'] = self.useCMS_zz4l_sigma
         dict['useCMS_zz4l_n'] = self.useCMS_zz4l_n
         dict['useCMS_zz4l_gamma'] = self.useCMS_zz4l_gamma
         dict['useRes'] = self.useRes
         dict['useScale'] = self.useScale
         dict['useCMS_zz4l_zjet'] = self.useCMS_zz4l_zjet
 
-        dict['CMS_zz4l_mean_m_sig'] = float(self.CMS_zz4l_mean_m_sig) 
-        dict['CMS_zz4l_sigma_m_sig'] = float(self.CMS_zz4l_sigma_m_sig) 
-        dict['CMS_zz4l_mean_e_sig'] = float(self.CMS_zz4l_mean_e_sig) 
+        dict['CMS_zz4l_mean_m_sig'] = float(self.CMS_zz4l_mean_m_sig)
+        dict['CMS_zz4l_sigma_m_sig'] = float(self.CMS_zz4l_sigma_m_sig)
+        dict['CMS_zz4l_mean_e_sig'] = float(self.CMS_zz4l_mean_e_sig)
         dict['CMS_zz4l_sigma_e_sig'] = float(self.CMS_zz4l_sigma_e_sig)
         dict['CMS_zz4l_n_sig'] = float(self.CMS_zz4l_n_sig)
         dict['CMS_zz4l_gamma_sig'] = float(self.CMS_zz4l_gamma_sig)
@@ -1076,7 +1075,7 @@ class inputReader:
         dict['useCMS_zz4l_Fisher_sys'] = self.useCMS_zz4l_Fisher_sys
         dict['useCMS_zz4l_Pt_sys'] = self.useCMS_zz4l_Pt_sys
 
-        
+
 	dict['mekd_sig_a0_shape'] = self.mekd_sig_a0_shape
 	dict['mekd_sig_a1_shape'] = self.mekd_sig_a1_shape
 	dict['mekd_sig_a2_shape'] = self.mekd_sig_a2_shape

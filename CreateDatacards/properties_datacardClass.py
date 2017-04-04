@@ -5,11 +5,10 @@ import re
 import math
 import subprocess
 from scipy.special import erf
-from ROOT import *
 import ROOT
 from array import array
-from systematicsClass import *
-from inputReader import *
+from systematicsClass import systematicsClass
+from inputReader import inputReader
 from helperstuff.combinehelpers import getdatatree, gettemplate, discriminantnames
 from helperstuff import constants
 from helperstuff.enums import Analysis, Production
@@ -32,6 +31,12 @@ class properties_datacardClass:
     def loadIncludes(self):
         import include
 
+    def getHistFunc(self,newname,hist,Dx,Dy,Dz):
+        fh = ROOT.FastHisto3D_d(hist)
+        obslist = ROOT.RooArgList(Dx,Dy,Dz)
+        fhfcn = ROOT.FastHisto3DFunc_d(newname,"",obslist,fh)
+        return fhfcn
+
     def getChannelName(self):
         channelName = ""
         if (self.channel == self.ID_4mu): channelName = "4mu"
@@ -53,7 +58,7 @@ class properties_datacardClass:
 
         channelName = self.getChannelName()
 
-        myCSWrhf = HiggsCSandWidth()
+        myCSWrhf = ROOT.HiggsCSandWidth()
 
         histXsBr = ROOT.TH1F("hsmxsbr_{0}_{1}".format(procName,channelName),"", 8905, 109.55, 1000.05)
 
@@ -83,7 +88,7 @@ class properties_datacardClass:
             #print '   CS=',myCSWrhf.HiggsCS(signalProc, mHVal, self.sqrts),'   BR=',BR
 
         rdhname = "rdhXsBr_{0}_{1}_{2}".format(procName,self.channel,self.sqrts)
-        rdhXsBr = RooDataHist(rdhname,rdhname, ROOT.RooArgList(rrvMH), histXsBr)
+        rdhXsBr = ROOT.RooDataHist(rdhname,rdhname, ROOT.RooArgList(rrvMH), histXsBr)
 
         return rdhXsBr
 
@@ -130,7 +135,7 @@ class properties_datacardClass:
         self.bUseCBnoConvolution = False
         ForXSxBR = False
 
-        myCSW = HiggsCSandWidth()
+        myCSW = ROOT.HiggsCSandWidth()
 
         ## ----------------- WIDTH AND RANGES ----------------- ##
         self.widthHVal =  myCSW.HiggsWidth(0,self.mH)
@@ -295,10 +300,10 @@ class properties_datacardClass:
         CMS_zz4l_mean_BW.setVal( mean_BW_d )
         CMS_zz4l_gamma.setVal(0)
         CMS_zz4l_mean_e_sig.setVal(0)
-        CMS_zz4l_mean_e_err.setConstant(kTRUE)
+        CMS_zz4l_mean_e_err.setConstant(True)
         CMS_zz4l_sigma_e_sig.setVal(0)
         CMS_zz4l_mean_m_sig.setVal(0)
-        CMS_zz4l_mean_m_err.setConstant(kTRUE)
+        CMS_zz4l_mean_m_err.setConstant(True)
         CMS_zz4l_sigma_m_sig.setVal(0)
         CMS_zz4l_alpha.setVal(0)
         CMS_zz4l_n.setVal(0)
@@ -465,40 +470,32 @@ class properties_datacardClass:
         elif (self.channel == self.ID_2e2mu): channelName = "2e2mu"
         else: print "Input Error: Unknown channel! (4mu = 1, 4e = 2, 2e2mu = 3)"
 
-        Sig_T_1 = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[0], channelName)
-        Sig_T_2 = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[1], channelName)
-        Sig_T_4 = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[2], channelName)
-        Sig_T_1.SetName("T_ZZ_{0:.0f}_{1}_3D_1".format(self.production.year,self.appendName))
-        Sig_T_2.SetName("T_ZZ_{0:.0f}_{1}_3D_2".format(self.production.year,self.appendName))
-        Sig_T_4.SetName("T_ZZ_{0:.0f}_{1}_3D_4".format(self.production.year,self.appendName))
+        Sig_T = [gettemplate(self.analysis, self.production, s, channelName) for s in self.analysis.signalsamples()]
+        for i, t in enumerate(Sig_T):
+            t.SetName("T_ZZ_{:.0f}_{}_3D_{}".format(self.production.year,self.appendName,i))
 
-        Sig_T_1_ScaleResUp = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[0], channelName, "ScaleResUp")
-        Sig_T_2_ScaleResUp = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[1], channelName, "ScaleResUp")
-        Sig_T_4_ScaleResUp = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[2], channelName, "ScaleResUp")
-        Sig_T_1_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_1_ScaleResUp".format(self.production.year,self.appendName))
-        Sig_T_2_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_2_ScaleResUp".format(self.production.year,self.appendName))
-        Sig_T_4_ScaleResUp.SetName("T_ZZ_{0:.0f}_{1}_3D_4_ScaleResUp".format(self.production.year,self.appendName))
-        Sig_T_1_ScaleResDown = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[0], channelName, "ScaleResDown")
-        Sig_T_2_ScaleResDown = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[1], channelName, "ScaleResDown")
-        Sig_T_4_ScaleResDown = gettemplate(self.analysis, self.production, self.analysis.signalsamples()[2], channelName, "ScaleResDown")
-        Sig_T_1_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_1_ScaleResDown".format(self.production.year,self.appendName))
-        Sig_T_2_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_2_ScaleResDown".format(self.production.year,self.appendName))
-        Sig_T_4_ScaleResDown.SetName("T_ZZ_{0:.0f}_{1}_3D_4_ScaleResDown".format(self.production.year,self.appendName))
+        Sig_T_ScaleResUp = [gettemplate(self.analysis, self.production, s, channelName, "ScaleResUp") for s in self.analysis.signalsamples()]
+        for i, t in enumerate(Sig_T_ScaleResUp):
+            t.SetName("T_ZZ_{:.0f}_{}_3D_{}_ScaleResUp".format(self.production.year,self.appendName,i))
 
-        dBinsX = Sig_T_1.GetXaxis().GetNbins()
+        Sig_T_ScaleResDown = [gettemplate(self.analysis, self.production, s, channelName, "ScaleResDown") for s in self.analysis.signalsamples()]
+        for i, t in enumerate(Sig_T_ScaleResDown):
+            t.SetName("T_ZZ_{:.0f}_{}_3D_{}_ScaleResDown".format(self.production.year,self.appendName,i))
+
+        dBinsX = Sig_T[0].GetXaxis().GetNbins()
         print "X bins: ",dBinsX
-        dLowX = Sig_T_1.GetXaxis().GetXmin()
-        dHighX = Sig_T_1.GetXaxis().GetXmax()
+        dLowX = Sig_T[0].GetXaxis().GetXmin()
+        dHighX = Sig_T[0].GetXaxis().GetXmax()
 
-        dBinsY = Sig_T_1.GetYaxis().GetNbins()
+        dBinsY = Sig_T[0].GetYaxis().GetNbins()
         print "Y bins: ",dBinsY
-        dLowY = Sig_T_1.GetYaxis().GetXmin()
-        dHighY = Sig_T_1.GetYaxis().GetXmax()
+        dLowY = Sig_T[0].GetYaxis().GetXmin()
+        dHighY = Sig_T[0].GetYaxis().GetXmax()
 
-        dBinsZ = Sig_T_1.GetZaxis().GetNbins()
+        dBinsZ = Sig_T[0].GetZaxis().GetNbins()
         print "Z bins: ",dBinsZ
-        dLowZ = Sig_T_1.GetZaxis().GetXmin()
-        dHighZ = Sig_T_1.GetZaxis().GetXmax()
+        dLowZ = Sig_T[0].GetZaxis().GetXmin()
+        dHighZ = Sig_T[0].GetZaxis().GetXmax()
 
         D1 = ROOT.RooRealVar(D1Name,D1Name,dLowX,dHighX)
         D2 = ROOT.RooRealVar(D2Name,D2Name,dLowY,dHighY)
@@ -507,32 +504,39 @@ class properties_datacardClass:
         D2.setBins(dBinsY)
         D3.setBins(dBinsZ)
 
-        Sig_T_1_hist = ROOT.RooDataHist ("T_1_hist","", ROOT.RooArgList(D1,D2,D3),Sig_T_1)
-        Sig_T_2_hist = ROOT.RooDataHist ("T_2_hist","", ROOT.RooArgList(D1,D2,D3),Sig_T_2)
-        Sig_T_4_hist = ROOT.RooDataHist ("T_4_hist","", ROOT.RooArgList(D1,D2,D3),Sig_T_4)
-        Sig_T_1_ScaleResUp_hist = ROOT.RooDataHist ("T_1_ScaleResUp_hist","", ROOT.RooArgList(D1,D2,D3),Sig_T_1_ScaleResUp)
-        Sig_T_2_ScaleResUp_hist = ROOT.RooDataHist ("T_2_ScaleResUp_hist","", ROOT.RooArgList(D1,D2,D3),Sig_T_2_ScaleResUp)
-        Sig_T_4_ScaleResUp_hist = ROOT.RooDataHist ("T_4_ScaleResUp_hist","", ROOT.RooArgList(D1,D2,D3),Sig_T_4_ScaleResUp)
-        Sig_T_1_ScaleResDown_hist = ROOT.RooDataHist ("T_1_ScaleResDown_hist","", ROOT.RooArgList(D1,D2,D3),Sig_T_1_ScaleResDown)
-        Sig_T_2_ScaleResDown_hist = ROOT.RooDataHist ("T_2_ScaleResDown_hist","", ROOT.RooArgList(D1,D2,D3),Sig_T_2_ScaleResDown)
-        Sig_T_4_ScaleResDown_hist = ROOT.RooDataHist ("T_4_ScaleResDown_hist","", ROOT.RooArgList(D1,D2,D3),Sig_T_4_ScaleResDown)
+        SigHFcn = [self.getHistFunc("{}_histfunc".format(tpl.GetName()),tpl,D1,D2,D3) for tpl in Sig_T]
+        SigHFcn_SRUp = [self.getHistFunc("{}_histfunc".format(tpl.GetName()),tpl,D1,D2,D3) for tpl in Sig_T_ScaleResUp]
+        SigHFcn_SRDown = [self.getHistFunc("{}_histfunc".format(tpl.GetName()),tpl,D1,D2,D3) for tpl in Sig_T_ScaleResDown]
 
-        Sig_T_1_histfunc = ROOT.RooHistFunc ("T_1_histfunc","", ROOT.RooArgSet(D1,D2,D3),Sig_T_1_hist)
-        Sig_T_2_histfunc = ROOT.RooHistFunc ("T_2_histfunc","", ROOT.RooArgSet(D1,D2,D3),Sig_T_2_hist)
-        Sig_T_4_histfunc = ROOT.RooHistFunc ("T_4_histfunc","", ROOT.RooArgSet(D1,D2,D3),Sig_T_4_hist)
-        Sig_T_1_ScaleResUp_histfunc = ROOT.RooHistFunc ("T_1_ScaleResUp_histfunc","", ROOT.RooArgSet(D1,D2,D3),Sig_T_1_ScaleResUp_hist)
-        Sig_T_2_ScaleResUp_histfunc = ROOT.RooHistFunc ("T_2_ScaleResUp_histfunc","", ROOT.RooArgSet(D1,D2,D3),Sig_T_2_ScaleResUp_hist)
-        Sig_T_4_ScaleResUp_histfunc = ROOT.RooHistFunc ("T_4_ScaleResUp_histfunc","", ROOT.RooArgSet(D1,D2,D3),Sig_T_4_ScaleResUp_hist)
-        Sig_T_1_ScaleResDown_histfunc = ROOT.RooHistFunc ("T_1_ScaleResDown_histfunc","", ROOT.RooArgSet(D1,D2,D3),Sig_T_1_ScaleResDown_hist)
-        Sig_T_2_ScaleResDown_histfunc = ROOT.RooHistFunc ("T_2_ScaleResDown_histfunc","", ROOT.RooArgSet(D1,D2,D3),Sig_T_2_ScaleResDown_hist)
-        Sig_T_4_ScaleResDown_histfunc = ROOT.RooHistFunc ("T_4_ScaleResDown_histfunc","", ROOT.RooArgSet(D1,D2,D3),Sig_T_4_ScaleResDown_hist)
         ggHpdfName = "ggH_RooSpinZeroPdf_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        ggHpdf = ROOT.HZZ4L_RooSpinZeroPdf(ggHpdfName,ggHpdfName,D1,D2,D3,x,ROOT.RooArgList(Sig_T_1_histfunc,Sig_T_2_histfunc,Sig_T_4_histfunc))
+        ggHpdf = ROOT.HZZ4L_RooSpinZeroPdf_1D_fast(
+           ggHpdfName,ggHpdfName,
+           x,
+           ROOT.RooArgList(D1,D2,D3),
+           ROOT.RooArgList(
+              SigHFcn[0],SigHFcn[1],SigHFcn[2]
+           )
+        )
 
         ggHpdfName_syst1Up = "ggH_RooSpinZeroPdf_ScaleResUp_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
+        ggHpdf_syst1Up = ROOT.HZZ4L_RooSpinZeroPdf_1D_fast(
+           ggHpdfName_syst1Up,ggHpdfName_syst1Up,
+           x,
+           ROOT.RooArgList(D1,D2,D3),
+           ROOT.RooArgList(
+              SigHFcn_SRUp[0],SigHFcn_SRUp[1],SigHFcn_SRUp[2]
+           )
+        )
+
         ggHpdfName_syst1Down = "ggH_RooSpinZeroPdf_ScaleResDown_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        ggHpdf_syst1Up = ROOT.HZZ4L_RooSpinZeroPdf(ggHpdfName_syst1Up,ggHpdfName_syst1Up,D1,D2,D3,x,ROOT.RooArgList(Sig_T_1_ScaleResUp_histfunc,Sig_T_2_ScaleResUp_histfunc,Sig_T_4_ScaleResUp_histfunc))
-        ggHpdf_syst1Down = ROOT.HZZ4L_RooSpinZeroPdf(ggHpdfName_syst1Down,ggHpdfName_syst1Down,D1,D2,D3,x,ROOT.RooArgList(Sig_T_1_ScaleResDown_histfunc,Sig_T_2_ScaleResDown_histfunc,Sig_T_4_ScaleResDown_histfunc))
+        ggHpdf_syst1Down = ROOT.HZZ4L_RooSpinZeroPdf_1D_fast(
+           ggHpdfName_syst1Down,ggHpdfName_syst1Down,
+           x,
+           ROOT.RooArgList(D1,D2,D3),
+           ROOT.RooArgList(
+              SigHFcn_SRDown[0],SigHFcn_SRDown[1],SigHFcn_SRDown[2]
+           )
+        )
 
 
         ## ------------------ END 2D SIGNAL SHAPES FOR PROPERTIES ------------------------ ##
@@ -628,18 +632,15 @@ class properties_datacardClass:
         self.CSfracff = ROOT.RooFormulaVar(CS_fracff_rrvname,"@0/@1",ROOT.RooArgList(self.CStotalff,self.CStotal))
         self.CSfracVV = ROOT.RooFormulaVar(CS_fracVV_rrvname,"@0/@1",ROOT.RooArgList(self.CStotalVV,self.CStotal))
 
-        sigRate_ggH_Shape=5
-        print "Total yield: ",sigRate_ggH_Shape
-
         T1_integralName = "normt1_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         T2_integralName = "normt2_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         T4_integralName = "normt4_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
-        T1_integral = ROOT.RooConstVar (T1_integralName,T1_integralName,Sig_T_1.Integral())
-        T2_integral = ROOT.RooConstVar (T2_integralName,T2_integralName,Sig_T_2.Integral())
-        T4_integral = ROOT.RooConstVar (T4_integralName,T4_integralName,Sig_T_4.Integral())
-        print "T1 ",T1_integral.getVal()
-        print "T2 ",T2_integral.getVal()
-        print "T4 ",T4_integral.getVal()
+        T1_integral = ROOT.RooConstVar (T1_integralName,T1_integralName,Sig_T[0].Integral())
+        T2_integral = ROOT.RooConstVar (T2_integralName,T2_integralName,Sig_T[1].Integral())
+        T4_integral = ROOT.RooConstVar (T4_integralName,T4_integralName,Sig_T[2].Integral())
+        print "T1 integral",T1_integral.getVal()
+        print "T2 integral",T2_integral.getVal()
+        print "T4 integral",T4_integral.getVal()
         r_fai_pures_norm_Name = "sig_PuresNorm_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         r_fai_realints_norm_Name = "sig_RealIntsNorm_{0:.0f}_{1:.0f}".format(self.channel,self.production.year)
         r_fai_pures_norm = ROOT.RooFormulaVar(r_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",RooArgList(x,T1_integral,T2_integral))
@@ -653,19 +654,19 @@ class properties_datacardClass:
         self.rv_fai_realints_norm = None
         if theOptions.newMu:
           self.r_fai_norm_dec_name = "sig_DecNormPar_{0:.0f}_{1:.0f}".format(self.channel,self.sqrts)
-          self.r_fai_norm_dec = ROOT.RooFormulaVar(self.r_fai_norm_dec_name,"TMath::Max((@0+@1)*(1-abs(@2)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,alpha_zz4l))
+          self.r_fai_norm_dec = ROOT.RooFormulaVar(self.r_fai_norm_dec_name,"TMath::Max((@0+@1)*(1-abs(@2)),0)",ROOT.RooArgList(r_fai_pures_norm,r_fai_realints_norm,alpha_zz4l))
 
           self.rv_fai_pures_norm_Name = "sig_VV_PuresNorm_{0:.0f}".format(self.sqrts)
           self.rv_fai_realints_norm_Name = "sig_VV_RealIntsNorm_{0:.0f}".format(self.sqrts)
           self.rv_fai_norm_prod_Name = "sig_VV_Total_{0:.0f}".format(self.sqrts)
 
-          self.rv_fai_pures_norm = ROOT.RooFormulaVar(self.rv_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",RooArgList(x,self.sigmaVVaiVal["T1"],self.sigmaVVaiVal["T2"]))
-          self.rv_fai_realints_norm = ROOT.RooFormulaVar(self.rv_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",RooArgList(x,self.sigmaVVaiVal["T4"],self.sigmaVVaiVal["T1"]))
-          self.rv_fai_norm_prod = ROOT.RooFormulaVar(self.rv_fai_norm_prod_Name,"TMath::Max((@0+@1),0)",RooArgList(self.rv_fai_pures_norm,self.rv_fai_realints_norm))
+          self.rv_fai_pures_norm = ROOT.RooFormulaVar(self.rv_fai_pures_norm_Name,"( (1-abs(@0))*@1+abs(@0)*@2 )/@1",ROOT.RooArgList(x,self.sigmaVVaiVal["T1"],self.sigmaVVaiVal["T2"]))
+          self.rv_fai_realints_norm = ROOT.RooFormulaVar(self.rv_fai_realints_norm_Name,"( sign(@0)*sqrt(abs(@0)*(1-abs(@0)))*@1 )/@2",ROOT.RooArgList(x,self.sigmaVVaiVal["T4"],self.sigmaVVaiVal["T1"]))
+          self.rv_fai_norm_prod = ROOT.RooFormulaVar(self.rv_fai_norm_prod_Name,"TMath::Max((@0+@1),0)",ROOT.RooArgList(self.rv_fai_pures_norm,self.rv_fai_realints_norm))
 
-          self.r_fai_norm = ROOT.RooFormulaVar("ggH_norm","@0*(@1*@2 + @3*@4*@5)",RooArgList(self.r_fai_norm_dec, self.muF,self.CSfracff, self.muV,self.rv_fai_norm_prod,self.CSfracVV))
+          self.r_fai_norm = ROOT.RooFormulaVar("ggH_norm","@0*(@1*@2 + @3*@4*@5)",ROOT.RooArgList(self.r_fai_norm_dec, self.muF,self.CSfracff, self.muV,self.rv_fai_norm_prod,self.CSfracVV))
         else:
-          self.r_fai_norm = ROOT.RooFormulaVar("ggH_norm","TMath::Max((@0+@1)*(1-abs(@2)),0)",RooArgList(r_fai_pures_norm,r_fai_realints_norm,alpha_zz4l))
+          self.r_fai_norm = ROOT.RooFormulaVar("ggH_norm","TMath::Max((@0+@1)*(1-abs(@2)),0)",ROOT.RooArgList(r_fai_pures_norm,r_fai_realints_norm,alpha_zz4l))
 
 
         ## --------------------------- DATASET --------------------------- ##
@@ -709,14 +710,15 @@ class properties_datacardClass:
         if(DEBUG): print name_Shape,"  ",name_ShapeWS2
 
         w = ROOT.RooWorkspace("w","w")
-
-        w.importClassCode(RooqqZZPdf_v2.Class(),True)
-        w.importClassCode(RooggZZPdf_v2.Class(),True)
-        w.importClassCode(HZZ4L_RooSpinZeroPdf.Class(),True)
-        w.importClassCode(RooFormulaVar.Class(),True)
+        #w.importClassCode(ROOT.RooqqZZPdf_v2.Class(),True)
+        #w.importClassCode(ROOT.RooggZZPdf_v2.Class(),True)
+        #w.importClassCode(ROOT.FastHistoFunc_f.Class(),True)
+        #w.importClassCode(ROOT.FastHisto2DFunc_f.Class(),True)
+        w.importClassCode(ROOT.FastHisto3DFunc_f.Class(),True)
+        w.importClassCode(ROOT.HZZ4L_RooSpinZeroPdf_1D_fast.Class(),True)
+        w.importClassCode(ROOT.RooFormulaVar.Class(),True)
         if self.isHighMass :
-            w.importClassCode(RooRelBWHighMass.Class(),True)
-
+            w.importClassCode(ROOT.RooRelBWHighMass.Class(),True)
 
 
         getattr(w,'import')(data_obs,ROOT.RooFit.Rename("data_obs")) ### Should this be renamed?

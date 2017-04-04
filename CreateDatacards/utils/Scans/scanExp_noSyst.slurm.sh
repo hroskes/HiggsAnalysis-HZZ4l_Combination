@@ -29,7 +29,7 @@ name=$name"_"$lastpoint
 fi
 
 
-cmd="-M MultiDimFit "$1" --algo=grid --points 200 -S 0 -t -1 -m 125 --saveNLL --saveSpecifiedNuis=all -v 3 -n "$name" "$cmdadd
+cmd="-M MultiDimFit "$1" --includePOIEdges=1 --X-rtd OPTIMIZE_BOUNDS=0 --X-rtd TMCSO_AdaptivePseudoAsimov=0 --algo=grid --points 200 -S 0 -t -1 -m 125 --saveNLL --saveSpecifiedNuis=all -v 3 -n "$name" "$cmdadd
 
 
 combine $cmd
